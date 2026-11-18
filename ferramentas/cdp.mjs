@@ -29,7 +29,12 @@ await env('Page.enable'); await env('Runtime.enable');
 await env('Emulation.setFocusEmulationEnabled', { enabled: true }).catch(() => {});
 await env('Page.bringToFront').catch(() => {});
 const LARG = Number(process.env.LARG || 1280), ALT = Number(process.env.ALT || 720);
-await env('Emulation.setDeviceMetricsOverride', { width: LARG, height: ALT, deviceScaleFactor: 1, mobile: LARG < 700 });
+await env('Emulation.setDeviceMetricsOverride', { width: LARG, height: ALT, deviceScaleFactor: LARG < 700 ? 2 : 1, mobile: LARG < 700 });
+// celular de verdade: tela de toque (pointer: coarse) e agente de usuário de Android
+if (LARG < 700) {
+  await env('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
+  await env('Emulation.setUserAgentOverride', { userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36' });
+}
 await env('Page.navigate', { url });
 const inicio = Date.now();
 for (;;) {

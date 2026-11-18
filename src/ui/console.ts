@@ -57,6 +57,8 @@ let turno: Turno;
 let aba: Aba = 'fila';
 let selAlerta = 0;
 let selMissao = 0;
+// no celular, lista e detalhe são telas separadas: true = mostrando o alerta ou a missão aberta
+let detalheMob = false;
 let fechar: () => void = () => {};
 let encerrar: () => void = () => {};
 const abertoEm = new Map<string, number>();
@@ -69,6 +71,7 @@ export function abrirConsole(t: Turno, el: HTMLElement, aoFechar: () => void, ao
   fechar = aoFechar;
   encerrar = aoEncerrar;
   raiz = el;
+  detalheMob = false;
   if (!t.fila.some((a) => !a.resposta) && t.missoes.some((m) => !m.feita)) aba = 'missoes';
   desenhar();
 }
@@ -110,21 +113,22 @@ function desenhar() {
   const abas: [Aba, string, string][] = [
     ['fila', 'Fila', pend ? `<span class="n">${pend}</span>` : '<span class="ok">✓</span>'],
     ['missoes', 'Missões', turno.missoes.length ? (mPend ? `<span class="n">${mPend}</span>` : '<span class="ok">✓</span>') : ''],
-    ['vigia', 'Vigia (consulta)', ''],
+    ['vigia', 'Vigia<span class="pc"> (consulta)</span>', ''],
     ['canivete', 'Canivete', ''],
-    ['aula', 'Wiki do SOC: aula do dia', ''],
+    ['aula', '<span class="pc">Wiki do SOC: a</span><span class="mob">A</span>ula<span class="pc"> do dia</span>', ''],
     ['carreira', 'Carreira', ''],
   ];
   raiz.innerHTML = `
-  <div class="console ${e.energia < 25 ? 'cansado' : ''}">
+  <div class="console ${e.energia < 25 ? 'cansado' : ''} ${detalheMob ? 'ver-detalhe' : ''}">
     <div class="c-topo">
-      <div class="marca">Vigia <i>SIEM</i> <span class="fraco" style="font:12px var(--mono)">Olho Vivo · SOC ${d.site === 'alfa' ? 'Alfa' : 'Bravo'}</span></div>
-      <span class="etiqueta rosa">Dia ${d.n} · ${d.turno}</span>
-      <span class="etiqueta">${esc(e.nome)} · ${cargo(e.nivel)}</span>
-      <div class="barras">${barra('Energia', e.energia, e.energia < 25 ? 'var(--vermelho)' : 'var(--ambar)')}${barra('Sanidade', e.sanidade, e.sanidade < 25 ? 'var(--vermelho)' : 'var(--verde)')}</div>
+      <div class="marca">Vigia <i class="pc">SIEM</i> <span class="fraco pc" style="font:12px var(--mono)">Olho Vivo · SOC ${d.site === 'alfa' ? 'Alfa' : 'Bravo'}</span></div>
+      <span class="etiqueta rosa pc">Dia ${d.n} · ${d.turno}</span>
+      <span class="etiqueta pc">${esc(e.nome)} · ${cargo(e.nivel)}</span>
+      <span class="mob mini-rec" title="dia, energia e sanidade">D${d.n} ⚡${e.energia} 🧠${e.sanidade}</span>
+      <div class="barras pc">${barra('Energia', e.energia, e.energia < 25 ? 'var(--vermelho)' : 'var(--ambar)')}${barra('Sanidade', e.sanidade, e.sanidade < 25 ? 'var(--vermelho)' : 'var(--verde)')}</div>
       <div class="esp"></div>
-      <button class="bt sec peq" data-a="levantar">Levantar da cadeira</button>
-      <button class="bt peq" data-a="encerrar" ${completo ? '' : 'disabled title="Termine a fila e as missões"'}>Encerrar o turno</button>
+      <button class="bt sec peq" data-a="levantar">Levantar<span class="pc"> da cadeira</span></button>
+      <button class="bt peq" data-a="encerrar" ${completo ? '' : 'disabled title="Termine a fila e as missões"'}>Encerrar<span class="pc"> o turno</span></button>
     </div>
     <div class="c-abas">${abas
       .filter(([id]) => id !== 'missoes' || turno.missoes.length)
@@ -159,7 +163,8 @@ function corpoFila(): string {
   const lista = turno.fila
     .map((a, i) => `<div class="c-item ${i === selAlerta ? 'sel' : ''} ${a.resposta ? 'feito' : ''}" data-al="${i}"><div class="sev sev-${a.modelo.severidade}"></div><div><div class="t">${a.resposta ? (a.resposta.acertou ? '✅ ' : '❌ ') : ''}${esc(a.titulo)}</div><div class="s">${a.hora} · ${esc(NOME_CLIENTE[a.cliente])} · ${a.modelo.fonte}</div></div></div>`)
     .join('');
-  return `<div class="c-lista">${lista}</div><div class="c-detalhe">${detalheAlerta(turno.fila[selAlerta])}</div>`;
+  const faltam = turno.fila.filter((a) => !a.resposta).length;
+  return `<div class="c-lista">${lista}</div><div class="c-detalhe"><button class="bt sec peq voltar-lista" data-voltar>← Fila${faltam ? ` (${faltam} pendente${faltam > 1 ? 's' : ''})` : ''}</button>${detalheAlerta(turno.fila[selAlerta])}</div>`;
 }
 
 function detalheAlerta(a: AlertaFila): string {
@@ -237,7 +242,7 @@ function corpoMissoes(): string {
   const lista = turno.missoes
     .map((em, i) => `<div class="c-item ${i === selMissao ? 'sel' : ''} ${em.feita ? 'feito' : ''}" data-mi="${i}"><div class="sev" style="background:var(--rosa)"></div><div><div class="t">${em.feita ? '✅ ' : ''}${esc(em.m.titulo)}</div><div class="s">${rotuloTipo(em.m.tipo)}</div></div></div>`)
     .join('');
-  return `<div class="c-lista">${lista}</div><div class="c-detalhe">${detalheMissao(turno.missoes[selMissao])}</div>`;
+  return `<div class="c-lista">${lista}</div><div class="c-detalhe"><button class="bt sec peq voltar-lista" data-voltar>← Missões</button>${detalheMissao(turno.missoes[selMissao])}</div>`;
 }
 
 function rotuloTipo(t: Missao['tipo']) {
@@ -417,7 +422,7 @@ function corpoVigia(): string {
     <p class="fraco">Filtros no começo (<code>campo=valor</code>, <code>campo!=valor</code>, <code>campo>10</code>, <code>*</code> curinga, <code>OU</code>), depois comandos com <code>|</code>: <code>contar por</code>, <code>distintos campo por</code>, <code>somar campo por</code>, <code>onde</code>, <code>ordenar -campo</code>, <code>topo N</code>, <code>tabela a,b</code>, <code>unicos campo</code>. Os nomes em inglês (stats count by, sort, head, table, dedup) também funcionam, porque ninguém é de ferro.</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><select class="campo" style="width:auto" id="fonte">${fs.map((x, i) => `<option value="${i}" ${i === vigia.fonte ? 'selected' : ''}>${esc(x.nome)} (${x.registros.length})</option>`).join('')}</select><span class="fraco" style="font:12px var(--mono)">campos: ${[...campos].map(esc).join(', ')}</span></div>
     <textarea class="consulta" id="consulta" spellcheck="false" placeholder="${esc(EXEMPLOS[0])}">${esc(vigia.consulta)}</textarea>
-    <div class="linha-bt" style="margin-top:8px"><button class="bt" data-a="rodar">Rodar consulta (Ctrl+Enter)</button>${EXEMPLOS.map((x) => `<button class="bt sec peq" data-ex="${esc(x)}">${esc(x.split('|')[1]?.trim().split(' ')[0] ?? 'exemplo')}</button>`).join('')}</div>
+    <div class="linha-bt" style="margin-top:8px"><button class="bt" data-a="rodar">Rodar consulta<span class="pc"> (Ctrl+Enter)</span></button>${EXEMPLOS.map((x) => `<button class="bt sec peq" data-ex="${esc(x)}">${esc(x.split('|')[1]?.trim().split(' ')[0] ?? 'exemplo')}</button>`).join('')}</div>
     ${tabela}`;
 }
 
@@ -483,6 +488,7 @@ function ligar() {
   r.querySelectorAll<HTMLElement>('[data-aba]').forEach((b) =>
     b.addEventListener('click', () => {
       aba = b.dataset.aba as Aba;
+      detalheMob = false;
       Som.clique();
       desenhar();
     }),
@@ -491,6 +497,7 @@ function ligar() {
     b.addEventListener('click', () => {
       selAlerta = Number(b.dataset.al);
       aba = 'fila';
+      detalheMob = true;
       escolha.veredito = escolha.just = escolha.acao = undefined;
       desenhar();
     }),
@@ -499,9 +506,16 @@ function ligar() {
     b.addEventListener('click', () => {
       selMissao = Number(b.dataset.mi);
       aba = 'missoes';
+      detalheMob = true;
       desenhar();
+      r.querySelector('.c-detalhe')?.scrollTo(0, 0);
     }),
   );
+  r.querySelector<HTMLElement>('[data-voltar]')?.addEventListener('click', () => {
+    detalheMob = false;
+    Som.clique();
+    desenhar();
+  });
   r.querySelectorAll<HTMLElement>('[data-ver]').forEach((b) =>
     b.addEventListener('click', () => {
       escolha.veredito = b.dataset.ver;

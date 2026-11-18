@@ -84,8 +84,9 @@ code { font-family: var(--mono); background: #0003; padding: 1px 5px; border-rad
 .mira { position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px; border-radius: 50%; background: #fff9; pointer-events: none; }
 .dica-e { position: absolute; left: 50%; top: calc(50% + 26px); transform: translateX(-50%); background: #0b0f17dd; border: 1px solid var(--linha); padding: 6px 12px; border-radius: 99px; font-size: 13px; pointer-events: none; white-space: nowrap; }
 .dica-e kbd { background: var(--rosa); color: #fff; border-radius: 5px; padding: 0 6px; font: 700 12px var(--mono); margin-right: 6px; }
-.bt-toque { position: absolute; right: 22px; bottom: 110px; width: 72px; height: 72px; border-radius: 50%; background: var(--rosa); color: #fff; border: 0; font: 800 22px var(--titulo); display: none; }
-.toque .bt-toque { display: block; }
+.bt-toque { position: absolute; z-index: 1; right: 22px; bottom: 110px; width: 72px; height: 72px; border-radius: 50%; background: var(--rosa); color: #fff; border: 0; font: 800 22px var(--titulo); display: none; }
+.toque[data-modo='livre'] .bt-toque { display: block; }
+body:not([data-modo='livre']) .mira { display: none; }
 .joy { position: absolute; width: 120px; height: 120px; border-radius: 50%; border: 2px solid #fff4; display: none; pointer-events: none; }
 .joy.ativo { display: block; }
 .joy-pino { position: absolute; left: 35px; top: 35px; width: 50px; height: 50px; border-radius: 50%; background: #fff5; }
@@ -109,7 +110,9 @@ code { font-family: var(--mono); background: #0003; padding: 1px 5px; border-rad
 @keyframes entra { from { transform: translateX(30px); opacity: 0; } }
 
 /* o console (Vigia) */
-.console { position: absolute; inset: 0; background: #070a10f5; display: grid; grid-template-rows: auto auto 1fr; font-size: 14px; }
+.console { position: absolute; inset: 0; background: #070a10f5; display: grid; grid-template-rows: auto auto 1fr; grid-template-columns: minmax(0, 1fr); font-size: 14px; }
+.mob, .voltar-lista { display: none; }
+.mini-rec { font: 600 12px var(--mono); color: var(--fraco); white-space: nowrap; }
 .console.cansado { filter: blur(0.5px) saturate(0.7); }
 .c-topo { display: flex; align-items: center; gap: 14px; padding: 10px 16px; border-bottom: 1px solid var(--linha); background: #0d1320; flex-wrap: wrap; }
 .c-topo .marca { font: 700 18px var(--titulo); }
@@ -175,9 +178,32 @@ code { font-family: var(--mono); background: #0003; padding: 1px 5px; border-rad
 .final .ic { font-size: 70px; }
 
 @media (max-width: 760px) {
+  /* Vigia no celular: lista e detalhe em telas separadas, topo numa faixa só */
+  .pc { display: none !important; }
+  .mob { display: inline; }
+  .c-topo { flex-wrap: nowrap; gap: 8px; overflow: hidden; padding: 8px 10px; padding-top: max(8px, env(safe-area-inset-top)); }
+  .c-topo .marca { font-size: 15px; white-space: nowrap; }
+  .c-topo .etiqueta { font-size: 10px; padding: 2px 6px; white-space: nowrap; }
+  .c-topo .bt.peq { padding: 7px 10px; font-size: 13px; white-space: nowrap; }
+  .c-aba { padding: 10px 11px; font-size: 14px; }
   .c-corpo { flex-direction: column; }
-  .c-lista { width: auto; max-height: 30vh; border-right: 0; border-bottom: 1px solid var(--linha); }
-  .c-detalhe { padding: 14px 14px 40px; }
+  .c-lista { width: auto; flex: 1; max-height: none; border-right: 0; }
+  .c-item { padding: 14px; }
+  .c-item .t { font-size: 14px; }
+  .console:not(.ver-detalhe) .c-lista + .c-detalhe { display: none; }
+  .console.ver-detalhe .c-lista { display: none; }
+  .voltar-lista { display: inline-block; margin-bottom: 12px; }
+  .c-detalhe { padding: 12px 14px 60px; overflow-x: hidden; }
+  .c-topo .esp { display: none; }
+  .c-topo .marca + * { margin-left: auto; }
+  .c-topo .mini-rec { margin-left: auto; }
+  .c-detalhe h2 { font-size: 19px; }
+  .log { font-size: 11.5px; padding: 10px; }
+  .vered .opcao { min-width: 0; flex: 1 1 100%; }
+  .consulta { font-size: 13px; }
+  .tabela-cx { max-height: 52vh; }
+  #avisos { top: 64px; bottom: auto; left: 10px; right: 10px; align-items: center; }
+  .aviso { width: 100%; max-width: 420px; }
   .menu { background: linear-gradient(180deg, #0b0f17ee 0%, #0b0f17bb 60%, #0b0f1777 100%); }
   .dia-num { font-size: 64px; }
   .barras { min-width: 120px; }

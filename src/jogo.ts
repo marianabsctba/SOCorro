@@ -185,6 +185,8 @@ function liberar() {
   modo = 'livre';
   J.livre = true;
   J.alvoOlhar = null;
+  // a cena deixava a câmera olhando para cima (rosto de quem falava); volta para o horizonte
+  J.pitch = Math.max(-0.25, Math.min(0.05, J.pitch));
 }
 
 function objetivo() {
@@ -503,6 +505,8 @@ function levantar() {
 
 let ultimoAlvo = 0;
 function quadro(dt: number, t: number) {
+  // o CSS esconde o botão E e a mira fora do modo livre (no diálogo o botão ficava por cima do texto)
+  if (document.body.dataset.modo !== modo) document.body.dataset.modo = modo;
   sala?.atualizar(dt, t);
   equipe?.atualizar(dt);
   atualizarTelas(t);
