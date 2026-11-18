@@ -17,14 +17,14 @@ export interface AlertaFila {
   resposta?: { veredito: string; justificativa: number; acao?: Acao; acertou: boolean; pontos: number; segundos: number };
 }
 
-const CLIENTES: ClienteId[] = ['tabajara', 'prefeitura', 'hospital', 'cooperativa', 'padaria', 'olhovivo'];
+const CLIENTES: ClienteId[] = ['tabajara', 'prefeitura', 'hospital', 'cooperativa', 'padaria', 'insonia'];
 export const NOME_CLIENTE: Record<ClienteId, string> = {
   tabajara: 'Tabajara Seguros',
   prefeitura: 'Prefeitura de Pindaíba do Sul',
-  hospital: 'Hospital São Judas Tadeu',
-  cooperativa: 'Cooperativa Agro Boi Gordo',
-  padaria: 'Padaria Pão de Ló Digital',
-  olhovivo: 'Olho Vivo (interno)',
+  hospital: 'Hospital Santa Paciência',
+  cooperativa: 'Cooperativa Agro Pasto Ralo',
+  padaria: 'Panificadora Migalha de Byte',
+  insonia: 'Insônia (interno)',
 };
 
 const ORDEM: Record<Nivel, number> = { N1: 1, N2: 2, N3: 3 };
@@ -46,7 +46,7 @@ function instanciar(m: ModeloAlerta, r: Rng, uid: string, hora: string): AlertaF
   return {
     uid,
     modelo: m,
-    cliente: m.cliente === 'qualquer' ? r.um(CLIENTES.filter((c) => c !== 'olhovivo')) : m.cliente,
+    cliente: m.cliente === 'qualquer' ? r.um(CLIENTES.filter((c) => c !== 'insonia')) : m.cliente,
     titulo: p(m.titulo),
     logs: m.logs.map(p),
     contexto: m.contexto.map(p),

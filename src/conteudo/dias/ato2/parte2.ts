@@ -12,7 +12,7 @@ function registrosLsass(): (Registro & { malicioso: 0 | 1 })[] {
     out.push({ hora: hora(base, r.int(0, 40000)), evento: 10, host: r.um(HOSTS), origem_imagem: 'C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\4.18.24090.11-0\\MsMpEng.exe', alvo_imagem: lsass, acesso: r.um(['0x1010', '0x1410']), assinatura: 'Microsoft Corporation', usuario: 'NT AUTHORITY\\SYSTEM', malicioso: 0 });
   }
   for (let i = 0; i < 20; i++) {
-    out.push({ hora: hora(base, r.int(0, 40000)), evento: 10, host: r.um(HOSTS), origem_imagem: 'C:\\Program Files\\Sentinela\\sentinela-agent.exe', alvo_imagem: lsass, acesso: '0x1410', assinatura: 'Sentinela Segurança Ltda.', usuario: 'NT AUTHORITY\\SYSTEM', malicioso: 0 });
+    out.push({ hora: hora(base, r.int(0, 40000)), evento: 10, host: r.um(HOSTS), origem_imagem: 'C:\\Program Files\\Guarita\\guarita-agent.exe', alvo_imagem: lsass, acesso: '0x1410', assinatura: 'Guarita Segurança Ltda.', usuario: 'NT AUTHORITY\\SYSTEM', malicioso: 0 });
   }
   for (let i = 0; i < 6; i++) {
     out.push({ hora: hora(base, r.int(0, 40000)), evento: 10, host: r.um(['SRV-ARQ-01', 'SRV-SQL-02', 'SRV-DC-01']), origem_imagem: 'C:\\Windows\\System32\\wbem\\WmiPrvSE.exe', alvo_imagem: lsass, acesso: '0x1400', assinatura: 'Microsoft Corporation', usuario: 'NT AUTHORITY\\NETWORK SERVICE', malicioso: 0 });
@@ -34,10 +34,10 @@ function registrosExfil(): Registro[] {
   }
   for (let i = 0; i < 15; i++) {
     const hl = r.int(0, 5);
-    out.push({ hora: `2026-03-12T${String(hl + 3).padStart(2, '0')}:${String(r.int(0, 59)).padStart(2, '0')}:00Z`, hora_local: hl, host: r.um(HOSTS), destino: r.um(['download.windowsupdate.com', 'update.sentinela-edr.exemplo']), porta: 443, protocolo: 'HTTPS', bytes_enviados: r.int(1500, 6000), bytes_recebidos: r.int(5000000, 90000000) });
+    out.push({ hora: `2026-03-12T${String(hl + 3).padStart(2, '0')}:${String(r.int(0, 59)).padStart(2, '0')}:00Z`, hora_local: hl, host: r.um(HOSTS), destino: r.um(['download.windowsupdate.com', 'update.guarita-edr.exemplo']), porta: 443, protocolo: 'HTTPS', bytes_enviados: r.int(1500, 6000), bytes_recebidos: r.int(5000000, 90000000) });
   }
   for (let i = 0; i < 8; i++) {
-    out.push({ hora: `2026-03-12T04:${String(i * 7).padStart(2, '0')}:00Z`, hora_local: 1, host: 'SRV-ARQ-01', destino: 'backup.olhovivo-nuvem.exemplo', porta: 443, protocolo: 'HTTPS', bytes_enviados: r.int(2000000000, 4000000000), bytes_recebidos: r.int(20000, 90000) });
+    out.push({ hora: `2026-03-12T04:${String(i * 7).padStart(2, '0')}:00Z`, hora_local: 1, host: 'SRV-ARQ-01', destino: 'backup.insonia-nuvem.exemplo', porta: 443, protocolo: 'HTTPS', bytes_enviados: r.int(2000000000, 4000000000), bytes_recebidos: r.int(20000, 90000) });
   }
   for (let i = 0; i < 20; i++) {
     const min = 10 + i * 6;
@@ -93,9 +93,9 @@ export const DIAS_39_45: Dia[] = [
       {
         tipo: 'quiz',
         titulo: 'A recepção da Tabajara',
-        enunciado: 'O Sentinela EDR alertou no DT-ATEND-031, estação da recepção. Leia a árvore e decida.',
+        enunciado: 'O Guarita EDR alertou no DT-ATEND-031, estação da recepção. Leia a árvore e decida.',
         anexo:
-          'Sentinela EDR | Host: DT-ATEND-031 | Usuário: TABAJARA\\joao.silva | Função (CMDB): recepção\n' +
+          'Guarita EDR | Host: DT-ATEND-031 | Usuário: TABAJARA\\joao.silva | Função (CMDB): recepção\n' +
           '[09:14:02] explorer.exe (PID 3312)\n' +
           '  |-- OUTLOOK.EXE (PID 5120)\n' +
           '       |-- WINWORD.EXE (PID 7788) "...\\INetCache\\Content.Outlook\\8KQ2\\Proposta_Sinistro.docm"\n' +
@@ -166,13 +166,13 @@ export const DIAS_39_45: Dia[] = [
         registros: registrosLsass(),
         exclusoes: [
           { texto: 'Excluir o MsMpEng.exe do caminho oficial do Defender, assinado pela Microsoft', filtro: 'origem_imagem="C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\*\\MsMpEng.exe" assinatura="Microsoft Corporation"' },
-          { texto: 'Excluir o agente do Sentinela EDR no caminho de instalação, assinado pelo fabricante', filtro: 'origem_imagem="C:\\Program Files\\Sentinela\\sentinela-agent.exe" assinatura="Sentinela Segurança Ltda."' },
+          { texto: 'Excluir o agente do Guarita EDR no caminho de instalação, assinado pelo fabricante', filtro: 'origem_imagem="C:\\Program Files\\Guarita\\guarita-agent.exe" assinatura="Guarita Segurança Ltda."' },
           { texto: 'Excluir qualquer processo chamado MsMpEng.exe', filtro: 'origem_imagem=*MsMpEng.exe' },
           { texto: 'Excluir tudo que é assinado pela Microsoft', filtro: 'assinatura="Microsoft Corporation"' },
           { texto: 'Excluir servidores (SRV-*), porque lá só tem gente de TI', filtro: 'host=SRV-*' },
         ],
         minReducao: 0.8,
-        explicacao: 'As duas exclusões seguras amarram caminho completo e assinatura, então só calam o Defender e o Sentinela de verdade. Excluir por nome deixaria passar o `MsMpEng.exe` falso em `C:\\Users\\Public` (não assinado). Excluir tudo assinado pela Microsoft esconderia o `rundll32.exe` com `0x1FFFFF` no SRV-ARQ-01, que é o clássico dump via binário do próprio sistema. Excluir servidores é excluir justamente onde moram as credenciais mais valiosas.',
+        explicacao: 'As duas exclusões seguras amarram caminho completo e assinatura, então só calam o Defender e o Guarita de verdade. Excluir por nome deixaria passar o `MsMpEng.exe` falso em `C:\\Users\\Public` (não assinado). Excluir tudo assinado pela Microsoft esconderia o `rundll32.exe` com `0x1FFFFF` no SRV-ARQ-01, que é o clássico dump via binário do próprio sistema. Excluir servidores é excluir justamente onde moram as credenciais mais valiosas.',
       },
     ],
     saida: [
@@ -268,7 +268,7 @@ export const DIAS_39_45: Dia[] = [
       {
         tipo: 'siem',
         titulo: 'Para onde foram os gigas',
-        enunciado: 'Logs de proxy da Tabajara (hora em UTC, `hora_local` em Brasília). O backup homologado vai para `backup.olhovivo-nuvem.exemplo` toda madrugada. Ache o destino da exfiltração.',
+        enunciado: 'Logs de proxy da Tabajara (hora em UTC, `hora_local` em Brasília). O backup homologado vai para `backup.insonia-nuvem.exemplo` toda madrugada. Ache o destino da exfiltração.',
         registros: registrosExfil(),
         pergunta: 'Qual destino recebeu mais bytes enviados antes das 6h (horário local), fora o backup homologado?',
         resposta: 'nuvem-arquivo-gratis.top',
@@ -361,7 +361,7 @@ export const DIAS_39_45: Dia[] = [
       'Sinais: arquivo `.aspx` que não faz parte do sistema, numa pasta de upload ou de imagens; recebendo **POST de um único IP**, que antes fez varredura (vários 404 para `/.env`, `/wp-login.php`, `/backup.zip`); `User-Agent` antigo ou estranho; `time-taken` variável (cada comando demora o seu tempo). No EDR, o processo `w3wp.exe` criando `cmd.exe`, `powershell.exe` ou `whoami.exe` fecha o caso.\n\n' +
       'Uma pergunta que resolve muita coisa: **quantos clientes diferentes acessam esse arquivo?** Página legítima é usada por muita gente. Webshell é usada por uma pessoa só, que não quer companhia.',
     chegada: [
-      { quem: 'gilmar', texto: 'O Sentinela do servidor web da Tabajara viu o `w3wp.exe` rodando `whoami`. Servidor web com crise de identidade não é bom sinal.', gesto: 'apontar' },
+      { quem: 'gilmar', texto: 'O Guarita do servidor web da Tabajara viu o `w3wp.exe` rodando `whoami`. Servidor web com crise de identidade não é bom sinal.', gesto: 'apontar' },
       { quem: 'thiaguinho', texto: 'Talvez ele só queira saber quem ele é. Todo mundo passa por isso aos 24.', gesto: 'ombros' },
       { quem: 'ro', texto: 'O IIS não faz terapia, Thiaguinho. Ele faz o que mandam por POST.', gesto: 'cruzar' },
       { quem: 'vandeco', texto: 'Webshell é o bilhete escondido embaixo do capacho. Abre o log W3C e vê quem anda pisando nesse capacho.', expr: 'neutro' },

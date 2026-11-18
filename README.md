@@ -4,7 +4,7 @@
 
 **Jogar:** https://marianabsctba.github.io/SOCorro/
 
-Você entra como analista N1 na **Olho Vivo Segurança Gerenciada**, um SOC terceirizado com dois sites redundantes: o **SOC Alfa**, em Curitiba, e o **SOC Bravo**, em Recife. A partir daí pode subir para N2 e N3/CSIRT, continuar N1 para sempre ou largar tudo e ir vender arte na praia.
+Você entra como analista N1 na **Insônia Segurança Gerenciada**, um SOC terceirizado com dois sites redundantes: o **SOC Alfa**, em Curitiba, e o **SOC Bravo**, em Recife. A partir daí pode subir para N2 e N3/CSIRT, continuar N1 para sempre ou largar tudo e ir vender arte na praia.
 
 ## Como se joga
 

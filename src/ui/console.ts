@@ -121,7 +121,7 @@ function desenhar() {
   raiz.innerHTML = `
   <div class="console ${e.energia < 25 ? 'cansado' : ''} ${detalheMob ? 'ver-detalhe' : ''}">
     <div class="c-topo">
-      <div class="marca">Vigia <i class="pc">SIEM</i> <span class="fraco pc" style="font:12px var(--mono)">Olho Vivo · SOC ${d.site === 'alfa' ? 'Alfa' : 'Bravo'}</span></div>
+      <div class="marca">Vigia <i class="pc">SIEM</i> <span class="fraco pc" style="font:12px var(--mono)">Insônia · SOC ${d.site === 'alfa' ? 'Alfa' : 'Bravo'}</span></div>
       <span class="etiqueta rosa pc">Dia ${d.n} · ${d.turno}</span>
       <span class="etiqueta pc">${esc(e.nome)} · ${cargo(e.nivel)}</span>
       <span class="mob mini-rec" title="dia, energia e sanidade">D${d.n} ⚡${e.energia} 🧠${e.sanidade}</span>

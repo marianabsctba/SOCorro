@@ -183,7 +183,7 @@ export const DIAS_08_14: Dia[] = [
       { quem: 'kevin', texto: 'Eu subi o arquivo dele no site de análise pra ver se era vírus. Era!', gesto: 'comemorar', expr: 'sorriso' },
       { quem: 'ro', texto: 'Kevin. O arquivo era o quê?', expr: 'surpresa' },
       { quem: 'kevin', texto: 'Uma planilha "Folha_Pagamento_Cooperativa.xlsm"...' },
-      { quem: 'ro', texto: 'Parabéns, a folha de pagamento da Boi Gordo agora tem leitores no mundo inteiro.', expr: 'bravo' },
+      { quem: 'ro', texto: 'Parabéns, a folha de pagamento da Pasto Ralo agora tem leitores no mundo inteiro.', expr: 'bravo' },
     ],
     fila: { quantidade: 6 },
     missoes: [
@@ -283,7 +283,7 @@ export const DIAS_08_14: Dia[] = [
     titulo: 'Siga o roteiro (até não seguir)',
     resumo: 'Playbook x runbook: seguir os passos e saber a hora de sair do roteiro.',
     aula: aula(
-      '**Playbook** é o roteiro de resposta para um tipo de situação ("phishing reportado", "conta comprometida"): quais decisões tomar, quem acionar, que critérios usar. **Runbook** é o procedimento técnico passo a passo de uma tarefa ("como bloquear um remetente no gateway de e-mail", "como isolar uma máquina no Sentinela EDR"). O playbook diz o quê e quando; o runbook diz como.',
+      '**Playbook** é o roteiro de resposta para um tipo de situação ("phishing reportado", "conta comprometida"): quais decisões tomar, quem acionar, que critérios usar. **Runbook** é o procedimento técnico passo a passo de uma tarefa ("como bloquear um remetente no gateway de e-mail", "como isolar uma máquina no Guarita EDR"). O playbook diz o quê e quando; o runbook diz como.',
       'Playbook existe para que o turno das 3h faça o mesmo que o turno das 15h, com a mesma qualidade, e para que ninguém esqueça o passo chato (registrar, avisar o cliente, preservar evidência). Seguir o playbook não é falta de criatividade, é consistência.',
       'Saia do roteiro quando o caso não cabe nele: o "phishing" veio de dentro da empresa, o ativo afetado é crítico e o passo previsto causa dano (isolar o servidor do prontuário do hospital), ou aparece um sinal de algo maior. Sair do roteiro não é improvisar sozinho: é **escalar**, registrar o motivo e pedir decisão de quem tem autoridade.',
       'Se você sai do roteiro sempre no mesmo ponto, o roteiro está errado: abra uma melhoria. Playbook bom é documento vivo. Playbook da Wiki do SOC é documento arqueológico, atualizado pela última vez em 2019, e cita um sistema que foi desligado em 2020.',

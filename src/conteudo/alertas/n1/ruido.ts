@@ -17,7 +17,7 @@ export const N1_FP: ModeloAlerta[] = [
       'SourceImage=C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\4.18.24090.11-0\\MsMpEng.exe SourceProcessId=3412',
       'TargetImage=C:\\Windows\\system32\\lsass.exe TargetProcessId=788 GrantedAccess=0x1410',
       'CallTrace=C:\\Windows\\SYSTEM32\\ntdll.dll+9d1e4|C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\4.18.24090.11-0\\mpengine.dll+1a3f2c',
-      'Sentinela EDR: assinatura do processo de origem "Microsoft Windows Publisher" VÁLIDA, prevalência 100% dos hosts',
+      'Guarita EDR: assinatura do processo de origem "Microsoft Windows Publisher" VÁLIDA, prevalência 100% dos hosts',
     ],
     contexto: [
       'CMDB: {host} é estação do setor de Sinistros, dona {usuario}.',
@@ -93,7 +93,7 @@ export const N1_FP: ModeloAlerta[] = [
       'Domínio reputacao-av.net: registrado em 2011, pertence ao fabricante do antivírus do hospital, documentado como "consulta de reputação de arquivo via DNS".',
       'Os rótulos são hashes MD5 (32 hex) de arquivos que o antivírus está avaliando.',
     ],
-    vars: { host: ['HSJ-FS-FAT01', 'HSJ-FS-FAT02'], ip: ['10.30.4.11', '10.30.4.12'], hora: HORA_COMERCIAL, data: DATA },
+    vars: { host: ['HSP-FS-FAT01', 'HSP-FS-FAT02'], ip: ['10.30.4.11', '10.30.4.12'], hora: HORA_COMERCIAL, data: DATA },
     veredito: 'fp',
     justificativas: js(
       3,
@@ -178,7 +178,7 @@ export const N1_FP: ModeloAlerta[] = [
   {
     id: 'n1-fp-proxy-blog-seguranca',
     nivel: 'N1',
-    cliente: 'olhovivo',
+    cliente: 'insonia',
     regra: 'PROXY_CATEGORIA_HACKING',
     fonte: 'Proxy',
     severidade: 'alta',
@@ -186,7 +186,7 @@ export const N1_FP: ModeloAlerta[] = [
     logs: [
       '{data} {hora} 1714 {ip} TCP_TUNNEL/200 48213 CONNECT blog.analise-de-ameacas.example:443 {usuario} HIER_DIRECT/203.0.113.10 - categoria="Hacking"',
       '{data} {hora} 312 {ip} TCP_MISS/200 9821 GET https://blog.analise-de-ameacas.example/2026/analise-ransomware-loja-de-roupas {usuario} - categoria="Hacking"',
-      'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/130.0 referer=https://wiki-do-soc.olhovivo.local/leituras-recomendadas',
+      'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/130.0 referer=https://wiki-do-soc.insonia.local/leituras-recomendadas',
     ],
     contexto: [
       'O usuário é analista N1 do SOC Alfa, no turno, e o link veio da página "Leituras recomendadas" da Wiki do SOC.',
@@ -243,7 +243,7 @@ export const N1_FP: ModeloAlerta[] = [
   {
     id: 'n1-fp-ar-condicionado-datacenter',
     nivel: 'N1',
-    cliente: 'olhovivo',
+    cliente: 'insonia',
     regra: 'SYSLOG_GENERICO_PRIORIDADE_ALERT',
     fonte: 'SIEM',
     severidade: 'crítica',
@@ -254,7 +254,7 @@ export const N1_FP: ModeloAlerta[] = [
       'Vigia SIEM: fonte não mapeada, prioridade syslog 161 (facility 20, severity 1 = alert) mapeada para "crítica"',
     ],
     contexto: [
-      'CMDB: {ip} é a unidade de ar-condicionado de precisão 2 do datacenter da Olho Vivo.',
+      'CMDB: {ip} é a unidade de ar-condicionado de precisão 2 do datacenter da Insônia.',
       'A integração de syslog foi configurada por engano apontando para o coletor do SIEM em vez do sistema de facilities.',
       'O alarme é real para a sala, mas não é evento de segurança.',
     ],
@@ -279,10 +279,10 @@ export const N1_FP: ModeloAlerta[] = [
     fonte: 'Proxy',
     severidade: 'alta',
     mitre: 'T1557',
-    titulo: 'Possível ataque de intermediário: certificado inválido em portal.hsj.local',
+    titulo: 'Possível ataque de intermediário: certificado inválido em portal.hsp.local',
     logs: [
-      '{data} {hora} {ip} NONE/503 0 CONNECT portal.hsj.local:443 {usuario} - ssl_error="certificate has expired" notAfter="{vencimento} 23:59:59 GMT"',
-      'issuer="CN=HSJ-AC-Interna, O=Hospital Sao Judas Tadeu" subject="CN=portal.hsj.local" serial=4F:1A:00:7C sha256=igual ao certificado de ontem',
+      '{data} {hora} {ip} NONE/503 0 CONNECT portal.hsp.local:443 {usuario} - ssl_error="certificate has expired" notAfter="{vencimento} 23:59:59 GMT"',
+      'issuer="CN=HSP-AC-Interna, O=Hospital Santa Paciencia" subject="CN=portal.hsp.local" serial=4F:1A:00:7C sha256=igual ao certificado de ontem',
       'Vigia SIEM: 1.327 ocorrências desde 00:00, de 412 estações distintas, mesmo serial',
     ],
     contexto: [
@@ -313,8 +313,8 @@ export const N1_FP: ModeloAlerta[] = [
     mitre: 'T1078.004',
     titulo: 'Viagem impossível: {usuario} em Cascavel e em São Paulo em 4 minutos',
     logs: [
-      '{"CreationTime":"{data}T{hora}","Operation":"UserLoggedIn","UserId":"{usuario}@boigordo.coop.br","ClientIP":"198.51.100.61","Geo":"Cascavel, PR","ResultStatus":"Success","DeviceTrust":"Hybrid Azure AD joined"}',
-      '{"CreationTime":"{data}T{hora}+4min","Operation":"UserLoggedIn","UserId":"{usuario}@boigordo.coop.br","ClientIP":"198.51.100.200","Geo":"São Paulo, SP","ResultStatus":"Success","DeviceTrust":"Hybrid Azure AD joined"}',
+      '{"CreationTime":"{data}T{hora}","Operation":"UserLoggedIn","UserId":"{usuario}@pastoralo.coop.br","ClientIP":"198.51.100.61","Geo":"Cascavel, PR","ResultStatus":"Success","DeviceTrust":"Hybrid Azure AD joined"}',
+      '{"CreationTime":"{data}T{hora}+4min","Operation":"UserLoggedIn","UserId":"{usuario}@pastoralo.coop.br","ClientIP":"198.51.100.200","Geo":"São Paulo, SP","ResultStatus":"Success","DeviceTrust":"Hybrid Azure AD joined"}',
       'VPN: {data} {hora} vpn-gw01 user={usuario} assigned=10.40.200.17 tunnel=full egress=198.51.100.200',
     ],
     contexto: [
@@ -346,8 +346,8 @@ export const N1_FP: ModeloAlerta[] = [
     mitre: 'T1078.004',
     titulo: 'Viagem impossível: {usuario} em Curitiba e em Frankfurt no mesmo minuto',
     logs: [
-      '{"CreationTime":"{data}T{hora}","Operation":"UserLoggedIn","UserId":"{usuario}@paodelodigital.com.br","ClientIP":"203.0.113.90","Geo":"Curitiba, PR","UserAgent":"Outlook-Windows/16.0"}',
-      '{"CreationTime":"{data}T{hora}","Operation":"MailItemsAccessed","UserId":"{usuario}@paodelodigital.com.br","ClientIP":"192.0.2.150","Geo":"Frankfurt, DE","AppId":"conector-erp-pedidos","ClientInfoString":"Client=REST;"}',
+      '{"CreationTime":"{data}T{hora}","Operation":"UserLoggedIn","UserId":"{usuario}@migalhadebytedigital.com.br","ClientIP":"203.0.113.90","Geo":"Curitiba, PR","UserAgent":"Outlook-Windows/16.0"}',
+      '{"CreationTime":"{data}T{hora}","Operation":"MailItemsAccessed","UserId":"{usuario}@migalhadebytedigital.com.br","ClientIP":"192.0.2.150","Geo":"Frankfurt, DE","AppId":"conector-erp-pedidos","ClientInfoString":"Client=REST;"}',
       'Detalhe: o segundo evento é acesso por aplicativo registrado (service principal), não login interativo',
     ],
     contexto: [
@@ -442,7 +442,7 @@ export const N1_FP: ModeloAlerta[] = [
     severidade: 'alta',
     titulo: 'DLP: e-mail externo com {n} números de CPF enviado por {usuario}',
     logs: [
-      '{data} {hora} dlp policy="CPF em massa" action=AUDIT from={usuario}@paodelodigital.com.br to=logistica@transportadora-parceira.example subject="Pedidos para entrega amanhã"',
+      '{data} {hora} dlp policy="CPF em massa" action=AUDIT from={usuario}@migalhadebytedigital.com.br to=logistica@transportadora-parceira.example subject="Pedidos para entrega amanhã"',
       'anexo=pedidos_entrega.csv matches={n} padrao="11 dígitos com ou sem pontuação" validacao_digito_verificador=DESLIGADA',
       'amostra (mascarada): 2026041***** ; 2026041***** ; 2026041*****',
     ],
@@ -508,7 +508,7 @@ export const N1_FP: ModeloAlerta[] = [
       'Sysmon EventID=1 UtcTime={data} {hora} Image=C:\\Users\\{usuario}\\AppData\\Local\\Microsoft\\Teams\\Update.exe CommandLine="Update.exe --processStart Teams.exe" ParentImage=C:\\Windows\\explorer.exe',
       'Hashes=SHA256=8C41F0E29A7D5B36E1C04F9A2B7D6E3C5A18F07B92D4E6C1A3F5B8D0E2C4A6F81',
       'Signature="Microsoft Corporation" SignatureStatus=Valid',
-      'Sentinela EDR: prevalência do hash na base: 1.208 hosts do cliente',
+      'Guarita EDR: prevalência do hash na base: 1.208 hosts do cliente',
     ],
     contexto: [
       'CMDB: {host} é notebook do financeiro, dono {usuario}.',
@@ -536,14 +536,14 @@ export const N1_FP: ModeloAlerta[] = [
     mitre: 'T1566.002',
     titulo: 'Phishing: "URGENTE: campanha de vacinação" com link encurtado para {n} destinatários',
     logs: [
-      'Return-Path: <bounce@mkt.hsj.org.br>',
-      'Received: from mta12.plataforma-mkt.example (mta12.plataforma-mkt.example [198.51.100.12]) by mx.hsj.org.br; {data} {hora} -0300',
-      'Authentication-Results: mx.hsj.org.br; spf=pass smtp.mailfrom=mkt.hsj.org.br; dkim=pass header.d=hsj.org.br; dmarc=pass',
-      'From: Comunicação HSJ <comunicacao@hsj.org.br> Subject: URGENTE: campanha de vacinação da gripe começa amanhã',
-      'link: hxxps://mkt.hsj.org[.]br/r/vacina2026 -> hxxps://intranet.hsj.org[.]br/campanhas/gripe',
+      'Return-Path: <bounce@mkt.hsp.org.br>',
+      'Received: from mta12.plataforma-mkt.example (mta12.plataforma-mkt.example [198.51.100.12]) by mx.hsp.org.br; {data} {hora} -0300',
+      'Authentication-Results: mx.hsp.org.br; spf=pass smtp.mailfrom=mkt.hsp.org.br; dkim=pass header.d=hsp.org.br; dmarc=pass',
+      'From: Comunicação HSP <comunicacao@hsp.org.br> Subject: URGENTE: campanha de vacinação da gripe começa amanhã',
+      'link: hxxps://mkt.hsp.org[.]br/r/vacina2026 -> hxxps://intranet.hsp.org[.]br/campanhas/gripe',
     ],
     contexto: [
-      'mkt.hsj.org.br é o subdomínio de marketing do hospital, delegado à plataforma de disparo contratada.',
+      'mkt.hsp.org.br é o subdomínio de marketing do hospital, delegado à plataforma de disparo contratada.',
       'O link de rastreio redireciona para a própria intranet.',
       'A comunicação interna confirma o disparo no canal oficial.',
     ],
@@ -635,7 +635,7 @@ export const N1_FP: ModeloAlerta[] = [
     mitre: 'T1133',
     titulo: 'Login na VPN a partir da Holanda: {usuario}',
     logs: [
-      '{data} {hora} vpn-hsj: user={usuario} src={ip} geo=NL result=SUCCESS mfa=push_ok device=HSJ-NB-{nb} posture=compliant',
+      '{data} {hora} vpn-hsp: user={usuario} src={ip} geo=NL result=SUCCESS mfa=push_ok device=HSP-NB-{nb} posture=compliant',
       'whois {ip}: operadora de telefonia móvel brasileira, bloco CGNAT de clientes, país do registro BR',
       'base GeoIP do concentrador: atualizada pela última vez há 19 meses',
     ],
@@ -666,9 +666,9 @@ export const N1_FP: ModeloAlerta[] = [
     mitre: 'T1110.003',
     titulo: 'Password spraying via Kerberos: {n} falhas 4771 de {ip}',
     logs: [
-      '{data} {hora} DC02.hsj.local 4771 A pré-autenticação do Kerberos falhou. Conta: {usuario} Endereço do cliente: ::ffff:{ip} Código de falha: 0x25',
-      '{data} {hora} DC02.hsj.local 4771 Conta: {usuario2} Endereço do cliente: ::ffff:{ip} Código de falha: 0x25',
-      '{data} {hora} DC02.hsj.local 4771 Conta: {usuario} Endereço do cliente: ::ffff:{ip} Código de falha: 0x25',
+      '{data} {hora} DC02.hsp.local 4771 A pré-autenticação do Kerberos falhou. Conta: {usuario} Endereço do cliente: ::ffff:{ip} Código de falha: 0x25',
+      '{data} {hora} DC02.hsp.local 4771 Conta: {usuario2} Endereço do cliente: ::ffff:{ip} Código de falha: 0x25',
+      '{data} {hora} DC02.hsp.local 4771 Conta: {usuario} Endereço do cliente: ::ffff:{ip} Código de falha: 0x25',
       'Vigia SIEM: código 0x18 (senha errada) = 0 ocorrências; código 0x25 = {n}',
     ],
     contexto: [
@@ -723,17 +723,17 @@ export const N1_FP: ModeloAlerta[] = [
   {
     id: 'n1-fp-edr-onedrive-massa',
     nivel: 'N1',
-    cliente: 'olhovivo',
+    cliente: 'insonia',
     regra: 'RANSOMWARE_MODIFICACAO_EM_MASSA',
     fonte: 'EDR',
     severidade: 'crítica',
     mitre: 'T1486',
     titulo: 'Comportamento de ransomware: {n} arquivos modificados em 3 minutos em {host}',
     logs: [
-      'Sysmon EventID=11 FileCreate Image=C:\\Program Files\\Microsoft OneDrive\\OneDrive.exe TargetFilename=C:\\Users\\{usuario}\\OneDrive - Olho Vivo\\Relatorios\\2025\\cliente_tabajara_mensal.xlsx',
-      'Sysmon EventID=11 FileCreate Image=C:\\Program Files\\Microsoft OneDrive\\OneDrive.exe TargetFilename=C:\\Users\\{usuario}\\OneDrive - Olho Vivo\\Relatorios\\2025\\cliente_padaria_mensal.xlsx',
-      'Sentinela EDR: extensões finais inalteradas, entropia média dos arquivos 4,1 (documentos comuns), nenhuma nota de resgate criada',
-      'Sentinela EDR: OneDrive.exe assinado "Microsoft Corporation", processo pai explorer.exe',
+      'Sysmon EventID=11 FileCreate Image=C:\\Program Files\\Microsoft OneDrive\\OneDrive.exe TargetFilename=C:\\Users\\{usuario}\\OneDrive - Insônia\\Relatorios\\2025\\cliente_tabajara_mensal.xlsx',
+      'Sysmon EventID=11 FileCreate Image=C:\\Program Files\\Microsoft OneDrive\\OneDrive.exe TargetFilename=C:\\Users\\{usuario}\\OneDrive - Insônia\\Relatorios\\2025\\cliente_padaria_mensal.xlsx',
+      'Guarita EDR: extensões finais inalteradas, entropia média dos arquivos 4,1 (documentos comuns), nenhuma nota de resgate criada',
+      'Guarita EDR: OneDrive.exe assinado "Microsoft Corporation", processo pai explorer.exe',
     ],
     contexto: [
       'CMDB: {host} é o notebook novo entregue hoje para {usuario}.',
@@ -750,7 +750,7 @@ export const N1_FP: ModeloAlerta[] = [
     ),
     explicacao:
       'Ransomware deixa rastros além de volume: extensão nova ou trocada, entropia alta (arquivo cifrado parece aleatório, perto de 8 bits por byte), nota de resgate, apagamento de cópias de sombra (`vssadmin delete shadows`). Sincronização, backup e descompactação também mexem em milhares de arquivos, só que com processo conhecido e conteúdo normal.',
-    piada: 'O notebook novo chegou, sincronizou e quase foi isolado pelo próprio SOC. Bem-vindo à Olho Vivo.',
+    piada: 'O notebook novo chegou, sincronizou e quase foi isolado pelo próprio SOC. Bem-vindo à Insônia.',
   },
   {
     id: 'n1-fp-antivirus-assinatura-ruim',
@@ -772,7 +772,7 @@ export const N1_FP: ModeloAlerta[] = [
       'O fabricante do antivírus publicou aviso de falso positivo na versão 1.421.300.0 e lançou a 1.421.302.0.',
       'A ação está "pendente de aprovação" pela política do hospital, então nada foi removido ainda.',
     ],
-    vars: { host: ['HSJ-PS-011', 'HSJ-UTI-004', 'HSJ-AMB-022'], n: ['184', '236', '301'], hora: HORA_MADRUGADA, data: DATA },
+    vars: { host: ['HSP-PS-011', 'HSP-UTI-004', 'HSP-AMB-022'], n: ['184', '236', '301'], hora: HORA_MADRUGADA, data: DATA },
     veredito: 'fp',
     justificativas: js(
       3,

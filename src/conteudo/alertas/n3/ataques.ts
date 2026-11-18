@@ -11,18 +11,18 @@ export const N3_TP: ModeloAlerta[] = [
     fonte: 'EDR',
     severidade: 'crítica',
     mitre: 'T1486',
-    titulo: 'Renomeação em massa com extensão .causaperdida em HSJ-FS01',
+    titulo: 'Renomeação em massa com extensão .causaperdida em HSP-FS01',
     logs: [
-      '{data} {hora} HSJ-FS01 Sentinela EDR | 14.200 arquivos renomeados em 3 minutos | extensão nova: .causaperdida | entropia do conteúdo após escrita: 7,98 de 8',
-      '{data} {hora} HSJ-FS01 Sysmon 11 | TargetFilename=\\\\HSJ-FS01\\Laudos\\LEIA_PARA_RECUPERAR.txt | Image=System (escrita via SMB)',
-      '{data} {hora} HSJ-FS01 Event 5145 | Compartilhamento Laudos | Origem={ip} | Account={usuario} | gravações e renomeações em sequência',
+      '{data} {hora} HSP-FS01 Guarita EDR | 14.200 arquivos renomeados em 3 minutos | extensão nova: .causaperdida | entropia do conteúdo após escrita: 7,98 de 8',
+      '{data} {hora} HSP-FS01 Sysmon 11 | TargetFilename=\\\\HSP-FS01\\Laudos\\LEIA_PARA_RECUPERAR.txt | Image=System (escrita via SMB)',
+      '{data} {hora} HSP-FS01 Event 5145 | Compartilhamento Laudos | Origem={ip} | Account={usuario} | gravações e renomeações em sequência',
     ],
     contexto: [
-      'CMDB: HSJ-FS01 guarda laudos e imagens dos exames. {ip} é a estação {host}, do faturamento.',
+      'CMDB: HSP-FS01 guarda laudos e imagens dos exames. {ip} é a estação {host}, do faturamento.',
       'O prontuário eletrônico roda em outro servidor, que ainda responde.',
       'A extensão .causaperdida nunca foi vista em nenhum cliente; a nota pede contato por um endereço em rede anônima.',
     ],
-    vars: { ip: IP_INT, host: ['HSJ-FAT-02', 'HSJ-FAT-05'], usuario: U_HOSP, data: DATA3, hora: MADRUGADA },
+    vars: { ip: IP_INT, host: ['HSP-FAT-02', 'HSP-FAT-05'], usuario: U_HOSP, data: DATA3, hora: MADRUGADA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -48,7 +48,7 @@ export const N3_TP: ModeloAlerta[] = [
     titulo: 'Mesmo arquivo de texto criado em 900 pastas de {host}',
     logs: [
       '{data} {hora} {host} Sysmon 11 | TargetFilename=C:\\Users\\Public\\Documents\\COMO_RECUPERAR_PINDAIBA.txt | Image=C:\\ProgramData\\vmtoolsd.exe',
-      '{data} {hora} +40s {host} Sentinela EDR | o mesmo nome de arquivo criado em 900 pastas, mesmo hash | processo pai sem assinatura, nome imitando ferramenta de virtualização',
+      '{data} {hora} +40s {host} Guarita EDR | o mesmo nome de arquivo criado em 900 pastas, mesmo hash | processo pai sem assinatura, nome imitando ferramenta de virtualização',
       '{data} {hora} +1m {host} EventID=7036 | serviços de banco de dados e de backup parados em sequência',
     ],
     contexto: [
@@ -232,7 +232,7 @@ export const N3_TP: ModeloAlerta[] = [
     ),
     explicacao:
       'Injeção aparece como **Sysmon 10** (acesso ao processo com direitos de escrita e execução) seguido de **Sysmon 8** (thread remota), com início em memória sem módulo em disco. Depois disso, o processo legítimo passa a fazer coisas que nunca fez, como sair para a internet. Isole sem desligar, porque a prova está na memória: colete antes de qualquer limpeza.',
-    piada: 'O explorer.exe virou ameaça e nem pediu currículo. Mais rápido que promoção na Olho Vivo.',
+    piada: 'O explorer.exe virou ameaça e nem pediu currículo. Mais rápido que promoção na Insônia.',
   },
   {
     id: 'n3-tp-lsass-dump',
@@ -245,13 +245,13 @@ export const N3_TP: ModeloAlerta[] = [
     titulo: 'Leitura da memória do lsass.exe por processo do sistema em {host}',
     logs: [
       '{data} {hora} {host} Sysmon 10 | SourceImage=rundll32.exe | TargetImage=lsass.exe | GrantedAccess amplo (leitura total da memória)',
-      '{data} {hora} {host} Sentinela EDR | rundll32 usou biblioteca nativa do Windows para gerar despejo de memória do lsass | arquivo .dmp gravado em C:\\Windows\\Temp',
+      '{data} {hora} {host} Guarita EDR | rundll32 usou biblioteca nativa do Windows para gerar despejo de memória do lsass | arquivo .dmp gravado em C:\\Windows\\Temp',
       '{data} {hora} +30s {host} Sysmon 3 | Image=svchost.exe (não assinado, em C:\\ProgramData) | arquivo .dmp enviado para {ip}',
     ],
     contexto: [
       'CMDB: {host} é servidor de aplicação com sessão aberta de três administradores.',
       'Logon RDP de {usuario} 10 minutos antes, de origem nunca vista.',
-      'O Sentinela está em modo só detecção neste servidor "porque travava o sistema de tributos".',
+      'O Guarita está em modo só detecção neste servidor "porque travava o sistema de tributos".',
     ],
     vars: { host: ['PREF-TRIB01', 'PREF-APP01'], usuario: U_PREF, ip: IP_EXT, data: DATA3, hora: MADRUGADA },
     veredito: 'tp',
@@ -277,9 +277,9 @@ export const N3_TP: ModeloAlerta[] = [
     mitre: 'T1550.001',
     titulo: 'Refresh token de {usuario} usado de infraestrutura de hospedagem',
     logs: [
-      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@agroboigordo.coop.br","ipAddress":"{ip}","incomingTokenType":"refreshToken","authenticationRequirement":"singleFactor","deviceDetail":"não registrado","appDisplayName":"Microsoft Graph"}',
+      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@agropastoralo.coop.br","ipAddress":"{ip}","incomingTokenType":"refreshToken","authenticationRequirement":"singleFactor","deviceDetail":"não registrado","appDisplayName":"Microsoft Graph"}',
       '{"activityDisplayName":"Update user","target":"{usuario}","modifiedProperties":"StrongAuthenticationMethod: novo app autenticador adicionado","ipAddress":"{ip}"}',
-      '{"Operation":"Set-Mailbox","Parameters":"ForwardingSmtpAddress=contas.boigordo@caixapostal-segura[.]top","ClientIP":"{ip}"}',
+      '{"Operation":"Set-Mailbox","Parameters":"ForwardingSmtpAddress=contas.pastoralo@caixapostal-segura[.]top","ClientIP":"{ip}"}',
     ],
     contexto: [
       'A senha de {usuario} foi trocada ontem, mas as sessões não foram revogadas.',
@@ -310,8 +310,8 @@ export const N3_TP: ModeloAlerta[] = [
     mitre: 'T1195.002',
     titulo: 'Atualizador do sistema de cotação conectando a domínio novo em 63 hosts',
     logs: [
-      '{data} {hora} Sentinela EDR | CotaFacilUpdater.exe versão 8.4.2 | assinatura válida do fornecedor | 63 hosts | comportamento novo: conexão para telemetria-cotafacil[.]cloud',
-      '{data} {hora} Sentinela EDR | CotaFacilUpdater.exe carregou biblioteca nova que enumera usuários e grupos do domínio',
+      '{data} {hora} Guarita EDR | CotaFacilUpdater.exe versão 8.4.2 | assinatura válida do fornecedor | 63 hosts | comportamento novo: conexão para telemetria-cotafacil[.]cloud',
+      '{data} {hora} Guarita EDR | CotaFacilUpdater.exe carregou biblioteca nova que enumera usuários e grupos do domínio',
       'Enriquecimento: telemetria-cotafacil[.]cloud registrado há 9 dias; o domínio oficial do fornecedor tem 14 anos e outro nome',
     ],
     contexto: [
@@ -343,9 +343,9 @@ export const N3_TP: ModeloAlerta[] = [
     mitre: 'T1046',
     titulo: 'Estação do tomógrafo varrendo a rede por SMB',
     logs: [
-      '{data} {hora} IDS alert | src=10.50.3.21 (HSJ-TC-CONSOLE) | dst=10.40.0.0/16 | dpt=445 | 2.400 hosts distintos em 5 minutos',
+      '{data} {hora} IDS alert | src=10.50.3.21 (HSP-TC-CONSOLE) | dst=10.40.0.0/16 | dpt=445 | 2.400 hosts distintos em 5 minutos',
       '{data} {hora} IDS alert | src=10.50.3.21 | assinatura: tentativa de exploração de SMBv1 conhecida',
-      'Inventário: HSJ-TC-CONSOLE é a estação de controle do tomógrafo, Windows 7 embarcado, sem EDR (o fabricante não permite)',
+      'Inventário: HSP-TC-CONSOLE é a estação de controle do tomógrafo, Windows 7 embarcado, sem EDR (o fabricante não permite)',
     ],
     contexto: [
       'O tomógrafo está com paciente agendado a cada 20 minutos até as 22h.',
@@ -376,9 +376,9 @@ export const N3_TP: ModeloAlerta[] = [
     mitre: 'T1484.001',
     titulo: 'GPO padrão do domínio alterada para criar tarefa em todas as máquinas',
     logs: [
-      '{data} {hora} DC01.paodelo.local EventID=5136 ObjectClass=groupPolicyContainer ObjectDN=Default Domain Policy Attribute=gPCMachineExtensionNames SubjectUserName={usuario}',
+      '{data} {hora} DC01.migalhadebyte.local EventID=5136 ObjectClass=groupPolicyContainer ObjectDN=Default Domain Policy Attribute=gPCMachineExtensionNames SubjectUserName={usuario}',
       '{data} {hora} +1m Vigia SIEM | 4698 em 180 hosts | TaskName=AtualizaPDV | Action=\\\\PAD-DC01\\NETLOGON\\pdv.exe',
-      '{data} {hora} +3m Sentinela EDR | 40 hosts | serviço do Sentinela parado e exclusão de cópias de sombra em sequência',
+      '{data} {hora} +3m Guarita EDR | 40 hosts | serviço do Guarita parado e exclusão de cópias de sombra em sequência',
     ],
     contexto: [
       '{usuario} é conta de TI de uma loja; não administra GPO.',
@@ -441,7 +441,7 @@ export const N3_TP: ModeloAlerta[] = [
     mitre: 'T1567.002',
     titulo: 'Compactação de prontuários e envio para armazenamento externo em {host}',
     logs: [
-      '{data} {hora} {host} Sysmon 1 | Image=7z.exe (em C:\\PerfLogs) | Resumo do EDR: compactação com senha de 60 GB da pasta \\\\HSJ-FS01\\Prontuarios',
+      '{data} {hora} {host} Sysmon 1 | Image=7z.exe (em C:\\PerfLogs) | Resumo do EDR: compactação com senha de 60 GB da pasta \\\\HSP-FS01\\Prontuarios',
       '{data} {hora} +40m {host} Sysmon 3 | Image=sync64.exe | DestinationHost=armazenamento-anonimo[.]cc | 58 GB enviados',
       'DLP: arquivos com padrão de CPF e CID detectados no conjunto compactado',
     ],
@@ -450,7 +450,7 @@ export const N3_TP: ModeloAlerta[] = [
       '7z.exe e sync64.exe não fazem parte da imagem do servidor; foram copiados há 2 horas.',
       'A quadrilha que atacou o hospital no início do ato é conhecida por dupla extorsão.',
     ],
-    vars: { host: ['HSJ-PRINT01', 'HSJ-PRINT02'], data: DATA3, hora: MADRUGADA },
+    vars: { host: ['HSP-PRINT01', 'HSP-PRINT02'], data: DATA3, hora: MADRUGADA },
     veredito: 'tp',
     acao: 'incidente',
     justificativas: js(
@@ -483,7 +483,7 @@ export const N3_TP: ModeloAlerta[] = [
       '{usuario} está de licença médica e não acessa a VPN há 40 dias.',
       'A VPN do hospital não exige MFA para fornecedores e plantonistas.',
     ],
-    vars: { host: ['HSJ-ADM-11', 'HSJ-ADM-14'], usuario: U_HOSP, ip: IP_INT, data: DATA3, hora: MADRUGADA },
+    vars: { host: ['HSP-ADM-11', 'HSP-ADM-14'], usuario: U_HOSP, ip: IP_INT, data: DATA3, hora: MADRUGADA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -500,16 +500,16 @@ export const N3_TP: ModeloAlerta[] = [
   {
     id: 'n3-tp-break-glass-credencial-app',
     nivel: 'N3',
-    cliente: 'olhovivo',
+    cliente: 'insonia',
     regra: 'ENTRA_BREAK_GLASS_USADA',
     fonte: 'M365',
     severidade: 'crítica',
     mitre: 'T1098.001',
     titulo: 'Conta de emergência entrou e adicionou credencial em aplicativo',
     logs: [
-      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"emergencia01@olhovivo.example","ipAddress":"{ip}","conditionalAccessStatus":"notApplied","location":"desconhecida"}',
-      '{"activityDisplayName":"Add service principal credentials","initiatedBy":"emergencia01@olhovivo.example","target":"Vigia-Integracao-SIEM","ipAddress":"{ip}"}',
-      '{"activityDisplayName":"Add member to role","target":"Vigia-Integracao-SIEM","role":"Global Administrator","initiatedBy":"emergencia01@olhovivo.example"}',
+      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"emergencia01@insonia.example","ipAddress":"{ip}","conditionalAccessStatus":"notApplied","location":"desconhecida"}',
+      '{"activityDisplayName":"Add service principal credentials","initiatedBy":"emergencia01@insonia.example","target":"Vigia-Integracao-SIEM","ipAddress":"{ip}"}',
+      '{"activityDisplayName":"Add member to role","target":"Vigia-Integracao-SIEM","role":"Global Administrator","initiatedBy":"emergencia01@insonia.example"}',
     ],
     contexto: [
       'A conta de emergência só deve ser usada em pane do provedor de identidade, com dois aprovadores e registro no Chamadão.',
@@ -541,7 +541,7 @@ export const N3_TP: ModeloAlerta[] = [
     titulo: 'Driver vulnerável carregado e sensor do EDR encerrado em {host}',
     logs: [
       '{data} {hora} {host} Sysmon 6 | Driver carregado: C:\\Windows\\Temp\\gpuoc64.sys | assinatura válida, porém em lista pública de drivers vulneráveis',
-      '{data} {hora} +8s {host} Sentinela EDR | processo do sensor encerrado a partir do kernel | último heartbeat',
+      '{data} {hora} +8s {host} Guarita EDR | processo do sensor encerrado a partir do kernel | último heartbeat',
       '{data} {hora} +2m Vigia SIEM | {host} sem telemetria do EDR; 4624 tipo 3 de {host} para 6 servidores',
     ],
     contexto: [

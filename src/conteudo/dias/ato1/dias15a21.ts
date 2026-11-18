@@ -90,7 +90,7 @@ export const DIAS_15_21: Dia[] = [
       {
         tipo: 'decodificar',
         titulo: 'Os A alternados',
-        enunciado: `O Sentinela EDR registrou na estação DT-CAIXA-05 da Tabajara:\n\n\`powershell.exe -NoP -NonI -W Hidden -Enc ${codificarBase64Utf16(COMANDO_DIA16)}\`\n\nDecodifique no Canivete e descubra para onde o comando quer ir.`,
+        enunciado: `O Guarita EDR registrou na estação DT-CAIXA-05 da Tabajara:\n\n\`powershell.exe -NoP -NonI -W Hidden -Enc ${codificarBase64Utf16(COMANDO_DIA16)}\`\n\nDecodifique no Canivete e descubra para onde o comando quer ir.`,
         entrada: codificarBase64Utf16(COMANDO_DIA16),
         receita: ['base64', 'utf16le'],
         pergunta: 'Qual domínio o comando tenta acessar?',
@@ -175,7 +175,7 @@ export const DIAS_15_21: Dia[] = [
       'Resposta típica: rate limiting por IP e por conta, desafio para clientes suspeitos, bloqueio do padrão de user-agent, **reset de senha e encerramento de sessão** das contas que tiveram sucesso a partir do padrão do bot, e aviso ao titular. No Vigia: `url=/conta/login status=401 | contar por user_agent | ordenar -total` acha a assinatura do robô.',
     ),
     chegada: [
-      { quem: 'narrador', texto: 'Sexta-feira, 22h. A Padaria Pão de Ló Digital anunciou sonho de creme com 70% de desconto. O e-commerce recebeu mais visitas que o site da Receita em maio.' },
+      { quem: 'narrador', texto: 'Sexta-feira, 22h. A Panificadora Migalha de Byte anunciou sonho de creme com 70% de desconto. O e-commerce recebeu mais visitas que o site da Receita em maio.' },
       { quem: 'chat', texto: 'Padaria (TI): está tudo lento, mas está vendendo! Por favor, não bloqueiem NADA. Nada. É Black Friday.' },
       { quem: 'gilmar', texto: 'Plano de guerra: ninguém sai, pizza por conta da empresa, e o Tomatinho fica no modo turbo.', gesto: 'cintura' },
       { quem: 'ro', texto: 'A pizza é do mesmo fornecedor do ano passado?', expr: 'neutro' },
@@ -216,7 +216,7 @@ export const DIAS_15_21: Dia[] = [
       'Feche a ligação com combinado claro: número do ticket, o que o SOC vai fazer agora, quando o cliente terá retorno e quem vai ligar. Depois escale. Cliente que ouve "vou acionar o especialista e te ligo até as 4h" dorme. Cliente que ouve "acho que não é nada" liga de novo às 3h15.',
     ),
     chegada: [
-      { quem: 'narrador', texto: '3h02. O SOC está silencioso, só o zumbido do videowall. O telefone do plantão toca. No identificador: "COOP BOI GORDO DIRETORIA".' },
+      { quem: 'narrador', texto: '3h02. O SOC está silencioso, só o zumbido do videowall. O telefone do plantão toca. No identificador: "COOP PASTO RALO DIRETORIA".' },
       { quem: 'telefone', texto: 'Dr. Leôncio: Meu jovem! Graças a Deus. Chegou um e-mail do banco dizendo que minha conta ia ser bloqueada, eu cliquei, coloquei a senha e agora a tela ficou azul. Não a tela da morte, um azul bonito, do banco.' },
       { quem: 'voce', texto: 'Doutor, o senhor colocou a senha de onde?' },
       { quem: 'telefone', texto: 'Dr. Leôncio: Do e-mail da cooperativa. E do banco. É a mesma, meu jovem, para não esquecer. É o nome do meu cavalo com o ano que ele nasceu.' },

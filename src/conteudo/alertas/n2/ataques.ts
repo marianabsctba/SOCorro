@@ -21,7 +21,7 @@ export const N2_TP: ModeloAlerta[] = [
     contexto: [
       'CMDB: {ip} é o notebook de {usuario}, analista de sinistros. Nenhum motivo de negócio para falar com 37 serviços.',
       'Política do domínio: AES habilitado para todas as contas de serviço desde 2024; RC4 só aparece quando o cliente pede.',
-      'Sentinela EDR no notebook: processo não assinado iniciado de Downloads 4 minutos antes.',
+      'Guarita EDR no notebook: processo não assinado iniciado de Downloads 4 minutos antes.',
     ],
     vars: { ip: IP_INT, usuario: U_TAB, data: DATA, hora: HORA },
     veredito: 'tp',
@@ -121,9 +121,9 @@ export const N2_TP: ModeloAlerta[] = [
     contexto: [
       'CMDB: {host} é estação da recepção do pronto-socorro.',
       '{usuario} não é da TI e não tem motivo para criar tarefa com nome de pasta da Microsoft.',
-      'Hash de upd.exe: nunca visto em nenhum cliente da Olho Vivo.',
+      'Hash de upd.exe: nunca visto em nenhum cliente da Insônia.',
     ],
-    vars: { host: ['HSJ-RECEP-01', 'HSJ-RECEP-04', 'HSJ-TRIAGEM-02'], usuario: U_HOSP, data: DATA, hora: MADRUGADA },
+    vars: { host: ['HSP-RECEP-01', 'HSP-RECEP-04', 'HSP-TRIAGEM-02'], usuario: U_HOSP, data: DATA, hora: MADRUGADA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -212,8 +212,8 @@ export const N2_TP: ModeloAlerta[] = [
     mitre: 'T1114.003',
     titulo: 'Regra de caixa de entrada encaminhando para fora na conta de {usuario}',
     logs: [
-      '{"CreationTime":"{data}T{hora}","Operation":"New-InboxRule","UserId":"{usuario}@agroboigordo.coop.br","ClientIP":"{ip}","Parameters":"ForwardTo=financeiro.boigordo@mailbox-seguro[.]top; SubjectContainsWords=boleto, pagamento, TED; MarkAsRead=True; MoveToFolder=RSS"}',
-      '{"CreationTime":"{data}T{hora}","Operation":"UserLoggedIn","UserId":"{usuario}@agroboigordo.coop.br","ClientIP":"{ip}","Country":"desconhecido","UserAgent":"python-requests"}',
+      '{"CreationTime":"{data}T{hora}","Operation":"New-InboxRule","UserId":"{usuario}@agropastoralo.coop.br","ClientIP":"{ip}","Parameters":"ForwardTo=financeiro.pastoralo@mailbox-seguro[.]top; SubjectContainsWords=boleto, pagamento, TED; MarkAsRead=True; MoveToFolder=RSS"}',
+      '{"CreationTime":"{data}T{hora}","Operation":"UserLoggedIn","UserId":"{usuario}@agropastoralo.coop.br","ClientIP":"{ip}","Country":"desconhecido","UserAgent":"python-requests"}',
     ],
     contexto: [
       'Domínio mailbox-seguro[.]top registrado há 6 dias.',
@@ -353,7 +353,7 @@ export const N2_TP: ModeloAlerta[] = [
       'Os outros hosts do faturamento fazem em média 12 NXDOMAIN por dia.',
       'O único domínio que resolveu foi registrado ontem.',
     ],
-    vars: { host: ['HSJ-FAT-02', 'HSJ-FAT-05', 'HSJ-ALMOX-01'], ip: IP_INT, data: DATA, hora: HORA },
+    vars: { host: ['HSP-FAT-02', 'HSP-FAT-05', 'HSP-ALMOX-01'], ip: IP_INT, data: DATA, hora: HORA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -518,7 +518,7 @@ export const N2_TP: ModeloAlerta[] = [
       'O backup do hospital é feito por agente de terceiros, que não usa vssadmin para apagar nada.',
       'Nenhuma GMUD para {host}.',
     ],
-    vars: { host: ['HSJ-FS-LAB01', 'HSJ-FS-ADM02'], data: DATA, hora: MADRUGADA },
+    vars: { host: ['HSP-FS-LAB01', 'HSP-FS-ADM02'], data: DATA, hora: MADRUGADA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -632,7 +632,7 @@ export const N2_TP: ModeloAlerta[] = [
   {
     id: 'n2-tp-rundll32-sem-argumento',
     nivel: 'N2',
-    cliente: 'olhovivo',
+    cliente: 'insonia',
     regra: 'LOLBIN_RUNDLL32_SEM_ARGUMENTOS_COM_REDE',
     fonte: 'EDR',
     severidade: 'alta',

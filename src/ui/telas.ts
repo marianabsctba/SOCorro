@@ -18,9 +18,9 @@ function camada(html: string, cls = 'veu'): HTMLElement {
 
 // linhas de log que aparecem sendo "digitadas" na primeira página
 const LOG_ABERTURA = [
-  '07:00:00  olhovivo-soc-alfa  EventID=4624 LogonType=2  usuario=voce  resultado=SUCESSO',
+  '07:00:00  insonia-soc-alfa  EventID=4624 LogonType=2  usuario=voce  resultado=SUCESSO',
   '07:00:01  vigia-siem         fila=412 alertas  falso_positivo=71%  cafe=0',
-  '07:00:02  sentinela-edr      host=NB-SOC-15  cadeira=rasgada  severidade=baixa',
+  '07:00:02  guarita-edr      host=NB-SOC-15  cadeira=rasgada  severidade=baixa',
   '07:00:03  chamadao           status=FORA_DO_AR  motivo="é segunda-feira"',
   '07:00:04  gilmar             "abriu ticket? então não aconteceu."',
   '07:00:05  telefone           origem=Dr. Leoncio  horario=03:12  tentativas=7',
@@ -62,7 +62,7 @@ export function menuInicial(temSave: boolean, diaSave: number): Promise<'novo' |
         <div class="ab-ticker"><div class="ab-rolo">${[...TICKER, ...TICKER].map((t) => `<span>⚠ ${t}</span>`).join('')}</div></div>
         <div class="ab-assina">
           <span class="ab-powered">Powered by <b>Mariana BS</b></span>
-          <span class="ab-aviso">Olho Vivo Segurança Gerenciada é fictícia, assim como clientes, IPs e tragédias · <a href="https://github.com/marianabsctba/SOCorro" target="_blank" rel="noopener">código</a></span>
+          <span class="ab-aviso">Insônia Segurança Gerenciada é fictícia, assim como clientes, IPs e tragédias · <a href="https://github.com/marianabsctba/SOCorro" target="_blank" rel="noopener">código</a></span>
         </div>
       </div>`,
       'menu',
@@ -121,7 +121,7 @@ export function comoSeJoga(): Promise<void> {
 export function cracha(): Promise<{ nome: string; genero: Genero }> {
   return new Promise((res) => {
     let genero: Genero = 'f';
-    const d = camada(`<div class="cartao"><span class="etiqueta rosa">RH · Olho Vivo</span><h2>Seu crachá</h2>
+    const d = camada(`<div class="cartao"><span class="etiqueta rosa">RH · Insônia</span><h2>Seu crachá</h2>
       <p class="fraco">O sistema do RH é de 2011 e só aceita três formas de tratamento. Ele também não aceita acento no nome, mas a gente aceita.</p>
       <h3>Nome no crachá</h3><input class="campo" id="nome" maxlength="24" placeholder="como a equipe vai te chamar">
       <h3>O crachá te chama de</h3>

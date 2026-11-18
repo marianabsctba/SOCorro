@@ -326,7 +326,7 @@ export const DIAS_22_30: Dia[] = [
       'Quem clica não é a piada da empresa. Simulado que humilha ensina as pessoas a esconder o clique, e clique escondido é o pior cenário para o SOC. Agradeça o reporte, sempre, inclusive de quem clicou e depois reportou: essa pessoa acabou de salvar a sua madrugada.',
     ),
     chegada: [
-      { quem: 'narrador', texto: '14h. Chega na caixa de todo mundo da Olho Vivo: "URGENTE: seu vale-refeição foi BLOQUEADO. Regularize em até 2 horas."' },
+      { quem: 'narrador', texto: '14h. Chega na caixa de todo mundo da Insônia: "URGENTE: seu vale-refeição foi BLOQUEADO. Regularize em até 2 horas."' },
       { quem: 'jefferson', texto: 'Se bloquearem meu vale-refeição, eu paro de estudar e vou viver de luz.', expr: 'surpresa' },
       { quem: 'brenda', texto: 'Já escalei para o CSIRT, o Vandeco, a diretoria e a Dona Neide.', gesto: 'apontar' },
       { quem: 'neide', texto: 'Eu não tenho e-mail, meu bem. Mas obrigada pela consideração.', expr: 'sorriso' },

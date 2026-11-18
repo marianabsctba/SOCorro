@@ -39,7 +39,7 @@ CASUAL_F1 = ["female_casualsuit01", "toigo_flats"]
 CASUAL_F2 = ["female_casualsuit02", "toigo_flats"]
 SUETER_F = ["toigo_fisherman_sweater", "toigo_wool_pants", "toigo_ballet_flats"]
 
-# elenco do SOC Olho Vivo (adultos, roupa de escritório de quem trabalha em turno)
+# elenco do SOC Insônia (adultos, roupa de escritório de quem trabalha em turno)
 SPECS = [
     dict(id="gilmar", f=0, anos=52, raca=PARDO, peso=0.85, musc=0.45, alt=0.55, cabelo=None, roupas=POLO, capa=0, pele="middleage_caucasian_male"),
     dict(id="ro", f=1, anos=44, raca="african", peso=0.6, musc=0.45, alt=0.5, cabelo="afro01", roupas=SUETER_F, capa=0, pele="middleage_african_female"),

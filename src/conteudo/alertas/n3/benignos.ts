@@ -13,9 +13,9 @@ export const N3_RUIDO: ModeloAlerta[] = [
     mitre: 'T1003.001',
     titulo: 'Leitura completa da memória do lsass.exe em {host}',
     logs: [
-      '{data} {hora} {host} Sysmon 10 | SourceImage=C:\\Program Files\\Sentinela\\SentinelaCollector.exe | TargetImage=lsass.exe | GrantedAccess amplo',
-      '{data} {hora} {host} Sentinela EDR | coleta forense de memória iniciada pelo console | operador: vandeco.csirt | caso IR-{caso}',
-      '{data} {hora} +4m {host} Sentinela EDR | imagem de memória enviada ao cofre de evidências do SOC | hash registrado na cadeia de custódia',
+      '{data} {hora} {host} Sysmon 10 | SourceImage=C:\\Program Files\\Guarita\\GuaritaCollector.exe | TargetImage=lsass.exe | GrantedAccess amplo',
+      '{data} {hora} {host} Guarita EDR | coleta forense de memória iniciada pelo console | operador: vandeco.csirt | caso IR-{caso}',
+      '{data} {hora} +4m {host} Guarita EDR | imagem de memória enviada ao cofre de evidências do SOC | hash registrado na cadeia de custódia',
     ],
     contexto: [
       '{host} está isolado desde ontem no caso IR-{caso}, aberto pelo Vandeco.',
@@ -132,16 +132,16 @@ export const N3_RUIDO: ModeloAlerta[] = [
   {
     id: 'n3-bp-purple-team-ransomware',
     nivel: 'N3',
-    cliente: 'olhovivo',
+    cliente: 'insonia',
     regra: 'RANSOMWARE_RENOMEACAO_EM_MASSA_EXTENSAO_NOVA',
     fonte: 'EDR',
     severidade: 'crítica',
     mitre: 'T1486',
     titulo: 'Renomeação em massa com extensão .vandeco2003 em {host}',
     logs: [
-      '{data} {hora} {host} Sentinela EDR | 2.000 arquivos renomeados em 1 minuto | extensão nova: .vandeco2003 | pasta C:\\Canario\\',
+      '{data} {hora} {host} Guarita EDR | 2.000 arquivos renomeados em 1 minuto | extensão nova: .vandeco2003 | pasta C:\\Canario\\',
       '{data} {hora} {host} Sysmon 1 | Image=simulador_ransom.exe | assinatura do fornecedor de simulação de ataque | operador vandeco.csirt',
-      '{data} {hora} +1m {host} Sentinela EDR | processo bloqueado e host isolado automaticamente pela política',
+      '{data} {hora} +1m {host} Guarita EDR | processo bloqueado e host isolado automaticamente pela política',
     ],
     contexto: [
       'Exercício de purple team agendado no Chamadão para hoje, em {host}, VM do laboratório sem dado real.',
@@ -153,7 +153,7 @@ export const N3_RUIDO: ModeloAlerta[] = [
     justificativas: js(
       0,
       'Simulação de ransomware agendada pelo purple team, em VM de laboratório com arquivos falsos, e o EDR bloqueou e isolou: benigno verdadeiro e detecção validada.',
-      'Ransomware real, acionar o plano de crise da Olho Vivo.',
+      'Ransomware real, acionar o plano de crise da Insônia.',
       'Falso positivo, porque renomeação não é sinal de ransomware.',
       'Desativar a regra para não atrapalhar o exercício.',
     ),
@@ -179,7 +179,7 @@ export const N3_RUIDO: ModeloAlerta[] = [
       '{host} é a máquina de referência da imagem, fora da produção, sem usuário de enfermagem logado.',
       'Nenhum logon remoto estranho, nenhum serviço novo, nenhuma outra máquina com 1102.',
     ],
-    vars: { host: ['HSJ-IMG-REF01'], gmud: GMUD, data: DATA3, hora: HORA },
+    vars: { host: ['HSP-IMG-REF01'], gmud: GMUD, data: DATA3, hora: HORA },
     veredito: 'bp',
     justificativas: js(
       1,
@@ -235,7 +235,7 @@ export const N3_RUIDO: ModeloAlerta[] = [
     logs: [
       '{data} {hora} proxy src={ip} method=POST url=hxxps://api.cofredigital.example/v2/status bytes_out=512 bytes_in=128',
       'Vigia SIEM: intervalo de 300 s com jitter zero, 24 h por dia, em 41 hosts da cooperativa',
-      'Sentinela EDR: processo de origem BackupAgentSvc.exe, assinado, instalado em todo o parque',
+      'Guarita EDR: processo de origem BackupAgentSvc.exe, assinado, instalado em todo o parque',
     ],
     contexto: [
       'O domínio é do fornecedor de backup contratado, registrado há 9 anos.',
@@ -265,7 +265,7 @@ export const N3_RUIDO: ModeloAlerta[] = [
     titulo: 'Thread remota criada no navegador por {origem} em {host}',
     logs: [
       '{data} {hora} {host} Sysmon 8 | CreateRemoteThread | SourceImage=C:\\Program Files\\GuardaDados DLP\\{origem} | TargetImage=navegador.exe | StartModule=gdhook64.dll (assinada)',
-      'Sentinela EDR: comportamento visto em 1.200 estações, sempre que o navegador abre',
+      'Guarita EDR: comportamento visto em 1.200 estações, sempre que o navegador abre',
     ],
     contexto: [
       'O DLP da Tabajara injeta sua biblioteca nos navegadores para inspecionar uploads de arquivos (é assim que o produto funciona).',
@@ -326,8 +326,8 @@ export const N3_RUIDO: ModeloAlerta[] = [
     mitre: 'T1195.002',
     titulo: 'Atualizador do sistema de cotação com certificado e destino novos em 63 hosts',
     logs: [
-      '{data} {hora} Sentinela EDR | CotaFacilUpdater.exe versão 9.0.0 | assinatura válida com certificado novo do fornecedor | 63 hosts | comportamento novo: conexão para updates.cotafacil.example',
-      '{data} {hora} Sentinela EDR | nenhuma enumeração de domínio, nenhum processo filho novo',
+      '{data} {hora} Guarita EDR | CotaFacilUpdater.exe versão 9.0.0 | assinatura válida com certificado novo do fornecedor | 63 hosts | comportamento novo: conexão para updates.cotafacil.example',
+      '{data} {hora} Guarita EDR | nenhuma enumeração de domínio, nenhum processo filho novo',
     ],
     contexto: [
       'O fornecedor publicou no site oficial, há 15 dias, a troca de certificado e do servidor de atualização para a versão 9, com os hashes.',
@@ -356,7 +356,7 @@ export const N3_RUIDO: ModeloAlerta[] = [
     mitre: 'T1133',
     titulo: 'Ressonância magnética com sessão de acesso remoto externo',
     logs: [
-      'CEF:0|Firewall|NGFW|9.1|vpn|allow|5|src=10.50.4.12 (HSJ-RM-CONSOLE) dst={ip} dpt=443 app=vpn-fabricante start={data} {hora} duration=3600',
+      'CEF:0|Firewall|NGFW|9.1|vpn|allow|5|src=10.50.4.12 (HSP-RM-CONSOLE) dst={ip} dpt=443 app=vpn-fabricante start={data} {hora} duration=3600',
       'Vigia SIEM: única conexão externa do equipamento no mês; nenhuma conexão para outros hosts da rede interna',
     ],
     contexto: [
@@ -384,14 +384,14 @@ export const N3_RUIDO: ModeloAlerta[] = [
     fonte: 'EDR',
     severidade: 'crítica',
     mitre: 'T1486',
-    titulo: 'Renomeação em massa de arquivos em HSJ-DIGIT01',
+    titulo: 'Renomeação em massa de arquivos em HSP-DIGIT01',
     logs: [
-      '{data} {hora} HSJ-DIGIT01 Sentinela EDR | 9.000 arquivos renomeados em 30 minutos | .tif para .pdf | processo DigitalizaProntuario.exe (assinado)',
-      'Sentinela EDR: entropia dos arquivos novos compatível com PDF comprimido, cabeçalho PDF válido, abrem normalmente',
+      '{data} {hora} HSP-DIGIT01 Guarita EDR | 9.000 arquivos renomeados em 30 minutos | .tif para .pdf | processo DigitalizaProntuario.exe (assinado)',
+      'Guarita EDR: entropia dos arquivos novos compatível com PDF comprimido, cabeçalho PDF válido, abrem normalmente',
       'Vigia SIEM: mesmo padrão toda noite desde a implantação, de 22h a 2h',
     ],
     contexto: [
-      'CMDB: HSJ-DIGIT01 é o servidor do projeto de digitalização dos prontuários em papel, com OCR noturno.',
+      'CMDB: HSP-DIGIT01 é o servidor do projeto de digitalização dos prontuários em papel, com OCR noturno.',
       'Nenhuma nota de resgate, nenhuma extensão desconhecida, nenhuma exclusão de cópia de sombra.',
       'A regra conta renomeações sem olhar extensão de destino nem formato do arquivo.',
     ],

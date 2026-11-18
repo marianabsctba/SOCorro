@@ -475,7 +475,7 @@ export function construir(site: Site): Sala {
   g.add(placaG);
 
   // letreiro em neon na parede leste (o marketing insistiu)
-  const neon = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 0.8), new THREE.MeshBasicMaterial({ map: letreiro(bravo ? 'SOC BRAVO' : 'OLHO VIVO · SOC', bravo ? '#ff9a3c' : '#ff6fb5'), transparent: true, toneMapped: false, depthWrite: false }));
+  const neon = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 0.8), new THREE.MeshBasicMaterial({ map: letreiro(bravo ? 'SOC BRAVO' : 'INSÔNIA · SOC', bravo ? '#ff9a3c' : '#ff6fb5'), transparent: true, toneMapped: false, depthWrite: false }));
   neon.position.set(L.x1 - 0.03, 2.55, 0.9);
   neon.rotation.y = -Math.PI / 2;
   g.add(neon);

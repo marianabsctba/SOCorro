@@ -83,7 +83,7 @@ export const FINAIS: Record<string, Final> = {
     texto: [
       'Noventa dias, um ransomware num hospital, um BEC de R$ 380 mil e uma quadrilha que voltou para a prefeitura. Você esteve em todos.',
       'O Vandeco se aposentou e deixou a caneca para você. Por dentro está escrito "eu já vi esse malware em 2003". Agora é seu bordão.',
-      'Você lidera o CSIRT da Olho Vivo. A primeira coisa que fez foi proibir reunião de incidente sem pauta e a segunda foi comprar uma cafeteira para o nobreak não ser mais disputado.',
+      'Você lidera o CSIRT da Insônia. A primeira coisa que fez foi proibir reunião de incidente sem pauta e a segunda foi comprar uma cafeteira para o nobreak não ser mais disputado.',
       'Quando um N1 novo te pergunta como chegou lá, você responde a verdade: "lendo log, perguntando muito e escrevendo ticket direito".',
     ],
   },
@@ -123,7 +123,7 @@ export const FINAIS: Record<string, Final> = {
       'Você aceitou a proposta: R$ 300 a mais, vale-refeição de R$ 32 e "ambiente jovem e descontraído", que na prática é um pufe.',
       'No primeiro dia, abriu o SIEM novo e viu a mesma regra de "Mimikatz" disparando com o mesmo antivírus. Sentiu saudade e déjà vu ao mesmo tempo.',
       'O Gilmar te mandou mensagem: "as portas estão abertas, mas a cadeira gamer já foi pro Kevin". Doeu.',
-      'Seis meses depois, a Olho Vivo comprou o concorrente. Você voltou sem ter saído. O universo do MSSP é pequeno.',
+      'Seis meses depois, a Insônia comprou o concorrente. Você voltou sem ter saído. O universo do MSSP é pequeno.',
     ],
   },
   concurso: {

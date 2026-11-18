@@ -86,7 +86,7 @@ export const DIAS_71_80: Dia[] = [
       'Resposta: inventariar onde a versão afetada está instalada (um **SBOM** e um bom CMDB ajudam muito), isolar ou desligar o serviço do fornecedor, bloquear os indicadores, falar com o fornecedor e com os outros clientes. Para um MSSP, isso é duplo: o mesmo fornecedor pode estar em seis clientes ao mesmo tempo, e o próprio SOC também tem fornecedores.',
     ].join('\n\n'),
     chegada: [
-      { quem: 'chat', texto: 'Alerta do Sentinela EDR na Padaria Pão de Ló Digital: "InventarioFacil.exe criou powershell.exe com -EncodedCommand". O InventarioFacil é o software de estoque que o próprio fornecedor atualizou ontem.' },
+      { quem: 'chat', texto: 'Alerta do Guarita EDR na Panificadora Migalha de Byte: "InventarioFacil.exe criou powershell.exe com -EncodedCommand". O InventarioFacil é o software de estoque que o próprio fornecedor atualizou ontem.' },
       { quem: 'kevin', texto: 'É o software do fornecedor, assinado e tudo. Falso positivo. Vou fechar.', gesto: 'ombros' },
       { quem: 'pamela', texto: 'Espera. O mesmo InventarioFacil está na Tabajara e no hospital. Atualizou nos três ontem à noite.', gesto: 'apontar', expr: 'surpresa' },
       { quem: 'ro', texto: 'Ninguém ouviu a Pâmela de novo. Eu ouvi. Pâmela, você tem razão. Kevin, larga o mouse.' },
@@ -118,7 +118,7 @@ export const DIAS_71_80: Dia[] = [
             explicacao: 'Exclusão por pasta inteira cega o EDR exatamente onde o ataque está. Exclusão aceitável é específica, documentada e com validade, revisada a cada atualização do fornecedor.',
           },
           {
-            p: 'Qual é a primeira providência de escopo para a Olho Vivo como MSSP?',
+            p: 'Qual é a primeira providência de escopo para a Insônia como MSSP?',
             opcoes: ['Levantar em todos os clientes onde a versão afetada está instalada e acionar cada um', 'Tratar só a Padaria, que abriu o alerta', 'Esperar o fornecedor publicar um comunicado', 'Postar no LinkedIn sobre o achado'],
             certa: 0,
             explicacao: 'O mesmo software está em vários clientes. O escopo do incidente é o fornecedor, não o primeiro cliente que gerou alerta. Inventário (CMDB, SBOM) e comunicação com cada cliente vêm antes de qualquer publicação externa, que depende de autorização.',
@@ -292,7 +292,7 @@ export const DIAS_71_80: Dia[] = [
       'A cobertura vira um mapa por técnica, que mostra onde investir. Mas cuidado com o placar: 100% de cobertura no mapa com regras que disparam com tudo é só uma fila maior. Detecção boa é a que dispara no ataque e fica quieta no resto.',
     ].join('\n\n'),
     chegada: [
-      { quem: 'vandeco', texto: 'Hoje eu sou o vilão. Autorizado, com escopo assinado e janela das 9h às 12h no laboratório da Olho Vivo. Vou emular o ransomware do hospital, passo a passo, e vocês me pegam.', gesto: 'apontar', expr: 'sorriso' },
+      { quem: 'vandeco', texto: 'Hoje eu sou o vilão. Autorizado, com escopo assinado e janela das 9h às 12h no laboratório da Insônia. Vou emular o ransomware do hospital, passo a passo, e vocês me pegam.', gesto: 'apontar', expr: 'sorriso' },
       { quem: 'keyla', texto: 'Eu tenho regra para tudo! Vou pegar você em todas as técnicas!', gesto: 'comemorar' },
       { quem: 'vandeco', texto: 'Vamos ver. Em 2003 eu era o vilão de verdade de um banco. Com contrato, calma. Mas eles não sabiam disso no primeiro dia.' },
       { quem: 'ro', texto: 'Esse "com contrato, calma" faz um trabalho enorme nessa frase.' },
@@ -421,7 +421,7 @@ export const DIAS_71_80: Dia[] = [
       'Quando um incidente com dado pessoal pode gerar risco ou dano relevante, o controlador comunica a ANPD **e os titulares** (LGPD, art. 48). A Resolução CD/ANPD nº 15/2024 também fixa **3 dias úteis** para a comunicação ao titular e pede **linguagem simples e clara**, de preferência de forma direta e individual quando for possível identificar as pessoas.',
       'A comunicação ao titular deve dizer, no mínimo: o que aconteceu, quais dados foram afetados, quais são os riscos, o que o controlador já fez, o que a pessoa pode fazer para se proteger e o **contato do encarregado** (DPO). "Ocorreu um incidente sem impacto relevante" não informa nada e, se houver CPF e endereço vazados, também não é verdade.',
       'Detalhe que só quem é de SOC lembra: depois do vazamento, os golpistas usam a notícia. A comunicação **não pode ter link pedindo dados**, nem pedir CPF "para verificar se você foi afetado", porque vira modelo perfeito de phishing. Diga explicitamente que a prefeitura nunca vai pedir senha ou código por mensagem, e indique o canal oficial.',
-      'A Olho Vivo, como operadora, apoia com fatos: quais campos vazaram, quantos registros, desde quando, se o acesso foi encerrado. A decisão de comunicar e o texto final são do controlador, a prefeitura, com o encarregado e o jurídico.',
+      'A Insônia, como operadora, apoia com fatos: quais campos vazaram, quantos registros, desde quando, se o acesso foi encerrado. A decisão de comunicar e o texto final são do controlador, a prefeitura, com o encarregado e o jurídico.',
     ].join('\n\n'),
     chegada: [
       { quem: 'pamela', texto: 'Achei a planilha do IPTU de Pindaíba do Sul num site de vazamentos. 41 mil linhas: nome, CPF, endereço e valor do imposto.', gesto: 'apontar', expr: 'triste' },
@@ -487,7 +487,7 @@ export const DIAS_71_80: Dia[] = [
       { quem: 'chat', texto: 'Brenda compartilhou um link: live do vereador no Instagram. Título: "URGENTE: hackers russos invadiram a prefeitura e roubaram nosso IPTU!!!". 3.200 pessoas assistindo.' },
       { quem: 'brenda', texto: 'Escalei para a Rússia? Não, calma. Escalei para o Gilmar.', expr: 'surpresa' },
       { quem: 'ro', texto: 'Russos. Claro. A senha era Prefeitura@2019, mas a culpa é da geopolítica.', gesto: 'cruzar' },
-      { quem: 'telefone', texto: 'Jornalista da Rádio Norte FM falando. Fiquei sabendo que vocês da Olho Vivo atendem a prefeitura. Só uma palavrinha, em off. Foram os russos mesmo?' },
+      { quem: 'telefone', texto: 'Jornalista da Rádio Norte FM falando. Fiquei sabendo que vocês da Insônia atendem a prefeitura. Só uma palavrinha, em off. Foram os russos mesmo?' },
       { quem: 'gilmar', texto: 'Quem está no turno não fala com imprensa. Nem em off. Principalmente em off.', gesto: 'nao', expr: 'bravo' },
     ],
     fila: { quantidade: 9 },

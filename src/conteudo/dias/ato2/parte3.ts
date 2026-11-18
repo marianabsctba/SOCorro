@@ -65,7 +65,7 @@ function registrosDns(): Registro[] {
   const r = rng(5101);
   const base = '2026-03-22T09:00:00';
   const out: Registro[] = [];
-  const legit = ['outlook.office365.com', 'teams.microsoft.com', 'www.google.com', 'portal.tabajara.exemplo', 'www.gov.br', 'login.microsoftonline.com', 'cdn.jsdelivr.net', 'update.sentinela-edr.exemplo', 'www.bb.com.br', 'api.whatsapp.com'];
+  const legit = ['outlook.office365.com', 'teams.microsoft.com', 'www.google.com', 'portal.tabajara.exemplo', 'www.gov.br', 'login.microsoftonline.com', 'cdn.jsdelivr.net', 'update.guarita-edr.exemplo', 'www.bb.com.br', 'api.whatsapp.com'];
   const ipR = () => `${r.int(13, 200)}.${r.int(1, 254)}.${r.int(1, 254)}.${r.int(1, 254)}`;
   for (let i = 0; i < 200; i++) out.push({ hora: hora(base, r.int(0, 30000)), host: r.um(HOSTS), consulta: r.um(legit), tipo: 'A', resposta: 'NOERROR', ip_resolvido: ipR(), idade_dominio_dias: 3000 });
   for (const h of HOSTS.slice(0, 7)) out.push({ hora: hora(base, r.int(0, 30000)), host: h, consulta: 'wpad.tabajara.local', tipo: 'A', resposta: 'NXDOMAIN', ip_resolvido: '-', idade_dominio_dias: '-' });
@@ -85,7 +85,7 @@ function registrosDns(): Registro[] {
 
 // ---------- dia 52: o que o EDR registrou (texto do alerta, invertido e codificado pelo coletor) ----------
 const NOTA_EDR =
-  'Sentinela EDR | host NB-FIN-014 | pai: powershell.exe | filho: vssadmin.exe | acao: exclusao de copias de sombra | MITRE T1490 | seguidos por wbadmin.exe e bcdedit.exe';
+  'Guarita EDR | host NB-FIN-014 | pai: powershell.exe | filho: vssadmin.exe | acao: exclusao de copias de sombra | MITRE T1490 | seguidos por wbadmin.exe e bcdedit.exe';
 const ENTRADA_EDR = codificarBase64Utf16([...NOTA_EDR].reverse().join(''));
 
 export const DIAS_46_52: Dia[] = [
@@ -319,7 +319,7 @@ export const DIAS_46_52: Dia[] = [
     chegada: [
       { quem: 'brenda', texto: 'Chegou um PDF com QR code dizendo que meu MFA vai expirar. Escaneei pra ver. Escalo eu mesma?', expr: 'surpresa' },
       { quem: 'ro', texto: 'Brenda, era o simulado de phishing da Keyla. Você vai ganhar um certificado de participação. Em forma de treinamento.', gesto: 'cruzar' },
-      { quem: 'keyla', texto: 'Meu simulado pegou 31% da Olho Vivo! Estou feliz e preocupada ao mesmo tempo.', expr: 'sorriso' },
+      { quem: 'keyla', texto: 'Meu simulado pegou 31% da Insônia! Estou feliz e preocupada ao mesmo tempo.', expr: 'sorriso' },
       { quem: 'vandeco', texto: 'O de verdade chegou na Tabajara ontem, igualzinho. A diferença é que esse não dá certificado, dá relatório pra ANPD.', expr: 'neutro' },
     ],
     fila: { quantidade: 8 },
@@ -407,9 +407,9 @@ export const DIAS_46_52: Dia[] = [
       'Antes de cifrar, o ransomware tenta tirar da vítima o caminho de volta. É a técnica `T1490` (Inhibit System Recovery): apagar as **cópias de sombra** do Windows, o **catálogo de backup** local e desligar a **recuperação automática** da inicialização. Nos logs, isso aparece como execução de binários nativos: `vssadmin.exe`, `wmic.exe` (classe `shadowcopy`), `wbadmin.exe` e `bcdedit.exe`.\n\n' +
       'Por serem ferramentas do próprio Windows, o antivírus pode não reclamar. O que denuncia é o **contexto**: processo pai estranho (`powershell.exe` com `-EncodedCommand`, `cmd.exe` saindo de pasta temporária, um binário desconhecido), conta de usuário comum ou de serviço sem relação com backup, vários desses binários em sequência de segundos, em várias máquinas ao mesmo tempo, fora de janela de mudança.\n\n' +
       'Detecção: Sysmon 1 ou `4688` com esses binários e argumentos de exclusão ou de desligar recuperação; o log de aplicação do VSS; e, no EDR, regra de comportamento que já bloqueia a ação. Esse alerta é **P1 automático**: se ele dispara, a criptografia pode estar a minutos. Isolar primeiro e explicar depois é o raro caso em que o playbook manda correr.\n\n' +
-      'E lembre: cópia de sombra não é backup. Backup de verdade fica fora do alcance da máquina infectada (offline ou imutável). A Padaria Pão de Ló tem EDR e não tem backup. Ninguém conta isso pra ela num dia de Black Friday.',
+      'E lembre: cópia de sombra não é backup. Backup de verdade fica fora do alcance da máquina infectada (offline ou imutável). A Padaria Migalha de Byte tem EDR e não tem backup. Ninguém conta isso pra ela num dia de Black Friday.',
     chegada: [
-      { quem: 'gilmar', texto: 'O Sentinela mandou um alerta codificado do NB-FIN-014. Veio de trás para frente e em base64. Até o alerta está com medo.', gesto: 'apontar', expr: 'surpresa' },
+      { quem: 'gilmar', texto: 'O Guarita mandou um alerta codificado do NB-FIN-014. Veio de trás para frente e em base64. Até o alerta está com medo.', gesto: 'apontar', expr: 'surpresa' },
       { quem: 'ro', texto: 'O coletor da Tabajara inverte o texto para "proteger" o log. Proteção criativa, utilidade zero.', gesto: 'cruzar' },
       { quem: 'vandeco', texto: 'Quando aparece gente mexendo em cópia de sombra, a cifragem vem logo atrás. É o trovão antes da chuva.', expr: 'neutro' },
       { quem: 'kevin', texto: 'Ferramenta do Windows... falso positivo?', gesto: 'ombros' },

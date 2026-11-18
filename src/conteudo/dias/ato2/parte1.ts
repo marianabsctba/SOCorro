@@ -66,8 +66,8 @@ function registrosLateral(): Registro[] {
   ['NB-FIN-014', 'NB-RH-007', 'DT-ATEND-031', 'NB-COM-022', 'DT-CAIXA-05', 'DT-TI-002', 'SRV-ARQ-01', 'SRV-SQL-02'].forEach((h, i) => {
     out.push({ hora: hora('2026-03-08T03:00:00', i * 40), evento: 4624, host: h, usuario: 'svc_sccm', logon_tipo: 3, ip_origem: '10.20.1.10', processo: '-' });
   });
-  out.push({ hora: hora(base, 7200), evento: 7045, host: 'DT-TI-002', usuario: 'SYSTEM', logon_tipo: '-', ip_origem: '-', processo: 'Sentinela Update Service', servico: 'SentinelaUpd', imagem: 'C:\\Program Files\\Sentinela\\sentinela-upd.exe' });
-  out.push({ hora: hora(base, 7300), evento: 7045, host: 'NB-FIN-014', usuario: 'SYSTEM', logon_tipo: '-', ip_origem: '-', processo: 'Sentinela Update Service', servico: 'SentinelaUpd', imagem: 'C:\\Program Files\\Sentinela\\sentinela-upd.exe' });
+  out.push({ hora: hora(base, 7200), evento: 7045, host: 'DT-TI-002', usuario: 'SYSTEM', logon_tipo: '-', ip_origem: '-', processo: 'Guarita Update Service', servico: 'GuaritaUpd', imagem: 'C:\\Program Files\\Guarita\\guarita-upd.exe' });
+  out.push({ hora: hora(base, 7300), evento: 7045, host: 'NB-FIN-014', usuario: 'SYSTEM', logon_tipo: '-', ip_origem: '-', processo: 'Guarita Update Service', servico: 'GuaritaUpd', imagem: 'C:\\Program Files\\Guarita\\guarita-upd.exe' });
   ['SRV-ARQ-01', 'SRV-SQL-02', 'DT-TI-002', 'NB-DIR-001', 'NB-RH-007', 'SRV-DC-01'].forEach((h, i) => {
     const t = 22000 + i * 95;
     out.push({ hora: hora(base, t), evento: 4624, host: h, usuario: 'suporte.ti', logon_tipo: 3, ip_origem: '10.20.14.88', processo: '-' });
@@ -166,7 +166,7 @@ export const DIAS_31_38: Dia[] = [
           'Firewall, 11:19:40 UTC: NB-FIN-014 abre conexão TCP para um IP externo na porta 443',
           'Sysmon 11, 08:41 BRT: arquivo `C:\\Users\\Public\\atualiza.exe` criado pelo powershell.exe',
           'AD 4624, 12:05 UTC: logon tipo 3 no SRV-ARQ-01 com a conta ana.oliveira, origem NB-FIN-014',
-          'Sentinela EDR, 09:30 BRT: leitura em massa de arquivos no compartilhamento do SRV-ARQ-01',
+          'Guarita EDR, 09:30 BRT: leitura em massa de arquivos no compartilhamento do SRV-ARQ-01',
         ],
         explicacao: 'Convertendo tudo para UTC: e-mail 11:12, Excel abrindo PowerShell 11:19:05, conexão de saída 11:19:40, arquivo criado 11:41, logon no servidor 12:05, leitura em massa 12:30. É a sequência entrega, execução, comando e controle, persistência, movimento lateral e objetivo. Quem ordenou pelos números sem converter colocou a macro antes do e-mail chegar.',
       },
@@ -388,14 +388,14 @@ export const DIAS_31_38: Dia[] = [
         enunciado: 'O Dr. Leôncio encaminhou o e-mail. Analise o cabeçalho e o corpo.',
         anexo:
           'Received: from mail.agropecas-sul-financeiro.com (191.33.47.120)\n' +
-          '  by mx.boigordo.coop.br; Tue, 10 Mar 2026 14:02:11 +0000\n' +
-          'Authentication-Results: mx.boigordo.coop.br;\n' +
+          '  by mx.pastoralo.coop.br; Tue, 10 Mar 2026 14:02:11 +0000\n' +
+          'Authentication-Results: mx.pastoralo.coop.br;\n' +
           '  spf=pass smtp.mailfrom=agropecas-sul-financeiro.com;\n' +
           '  dkim=pass header.d=agropecas-sul-financeiro.com;\n' +
           '  dmarc=pass header.from=agropecas-sul-financeiro.com\n' +
           'From: "Financeiro Agropeças Sul" <cobranca@agropecas-sul-financeiro.com>\n' +
           'Reply-To: agropecas.financeiro@caixapostal-gratis.top\n' +
-          'To: leoncio@boigordo.coop.br\n' +
+          'To: leoncio@pastoralo.coop.br\n' +
           'Subject: RES: Pedido 4471 ração bovina | ATUALIZAÇÃO CADASTRAL URGENTE\n' +
           '\n' +
           'Prezado Dr. Leôncio,\n' +

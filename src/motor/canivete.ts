@@ -1,4 +1,4 @@
-// Canivete: a ferramenta de decodificação do analista (o "CyberChef de pobre" da Olho Vivo).
+// Canivete: a ferramenta de decodificação do analista (o "CyberChef de pobre" da Insônia).
 // Trabalha com bytes de verdade: base64 de PowerShell -EncodedCommand vira UTF-16LE, XOR é byte a byte.
 import type { OpCanivete } from '../conteudo/tipos';
 

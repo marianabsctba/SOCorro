@@ -8,9 +8,9 @@ export const DIAS_01_07: Dia[] = [
     site: 'alfa',
     turno: 'manhã',
     titulo: 'Crachá, café e cronômetro',
-    resumo: 'Primeiro dia na Olho Vivo: o que é um SOC, quem faz o quê e por que o Gilmar tem um tomate na mesa.',
+    resumo: 'Primeiro dia na Insônia: o que é um SOC, quem faz o quê e por que o Gilmar tem um tomate na mesa.',
     aula: aula(
-      'Um **SOC** (Security Operations Center) é o time que monitora, detecta e responde a eventos de segurança, 24 horas por dia, 7 dias por semana. Quando a empresa não tem um SOC próprio, contrata um **MSSP** (Managed Security Service Provider), que é o que a Olho Vivo é: uma mesma equipe atende vários clientes, cada um com seu contrato, seu escopo, seus contatos de escalonamento e suas manias.',
+      'Um **SOC** (Security Operations Center) é o time que monitora, detecta e responde a eventos de segurança, 24 horas por dia, 7 dias por semana. Quando a empresa não tem um SOC próprio, contrata um **MSSP** (Managed Security Service Provider), que é o que a Insônia é: uma mesma equipe atende vários clientes, cada um com seu contrato, seu escopo, seus contatos de escalonamento e suas manias.',
       'A operação é dividida em níveis. O **N1** faz a triagem: lê o alerta, enriquece com contexto, classifica, abre ticket e escala o que precisa. O **N2** investiga: define escopo, correlaciona fontes, ajusta regras. O **N3/CSIRT** conduz a resposta a incidente, forense e hunting. Escalar não é fracasso, é processo. Fracasso é escalar sem dizer o que viu.',
       'O turno **12x36** significa 12 horas trabalhadas e 36 de descanso. Entre um turno e outro existe a **passagem de turno**, que é onde mora metade dos incidentes perdidos da humanidade. O **SLA** (acordo de nível de serviço) está no contrato e diz, por exemplo, em quantos minutos um alerta crítico precisa ser reconhecido e em quanto tempo o cliente precisa ser avisado. Vale o que está escrito, não o que parece razoável às 4h da manhã.',
       'Você vai assinar um **NDA** (acordo de confidencialidade). O que aparece na fila de um cliente não vai para outro cliente, não vai para o grupo da família e não vira story no Instagram, por mais engraçado que seja o nome da impressora. Em um MSSP, vazar informação de um cliente para outro é o jeito mais rápido de perder os dois.',
@@ -32,7 +32,7 @@ export const DIAS_01_07: Dia[] = [
         enunciado: 'O Gilmar prometeu dispensar o treinamento de 4 horas em slide se você acertar o básico.',
         perguntas: [
           {
-            p: 'A Olho Vivo atende a Tabajara, a prefeitura e o hospital com a mesma equipe. Isso faz da Olho Vivo um:',
+            p: 'A Insônia atende a Tabajara, a prefeitura e o hospital com a mesma equipe. Isso faz da Insônia um:',
             opcoes: ['MSSP, provedor de serviço de segurança gerenciada', 'CSIRT interno da Tabajara', 'NOC, centro de operações de rede', 'Fornecedor de antivírus'],
             certa: 0,
             explicacao: 'MSSP é quem presta monitoramento e resposta como serviço para vários clientes. NOC cuida de disponibilidade de rede (link caiu, switch reiniciou); SOC cuida de segurança. Os dois brigam pelo mesmo videowall.',

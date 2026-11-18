@@ -53,7 +53,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
     contexto: [
       'Carta de autorização de teste de intrusão assinada pelo secretário de administração, vigente de {data} a 7 dias depois.',
       'Escopo inclui "ataques ao Kerberos do domínio prefeitura.local" e a origem {ip} é a máquina do pentester listada na carta.',
-      'A Olho Vivo foi avisada por e-mail formal com a janela e os IPs.',
+      'A Insônia foi avisada por e-mail formal com a janela e os IPs.',
     ],
     vars: { ip: ['10.30.99.10', '10.30.99.11'], data: DATA, hora: HORA },
     veredito: 'bp',
@@ -112,7 +112,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
     logs: [
       '{data} {hora} {host} Sysmon 1 | Image=SuporteJaAgent.exe | ParentImage=services.exe | Resumo do EDR: agente de RMM assinado iniciou sessão de controle remoto',
       '{data} {hora} {host} Sysmon 3 | Image=SuporteJaAgent.exe | DestinationHost=relay.suporteja.example | DestinationPort=443',
-      'Sentinela EDR: agente instalado em todos os 42 PDVs desde 2024',
+      'Guarita EDR: agente instalado em todos os 42 PDVs desde 2024',
     ],
     contexto: [
       'Contrato com a SuporteJá Sistemas para manutenção dos PDVs, com acesso remoto previsto em cláusula.',
@@ -134,15 +134,15 @@ export const N2_RUIDO: ModeloAlerta[] = [
   {
     id: 'n2-fp-keyla-regra-rc4-errada',
     nivel: 'N2',
-    cliente: 'olhovivo',
+    cliente: 'insonia',
     regra: 'KERBEROS_TGS_CRIPTO_FRACA_v1_KEYLA',
     fonte: 'AD',
     severidade: 'alta',
     mitre: 'T1558.003',
     titulo: 'Criptografia fraca em ticket de serviço para {usuario}',
     logs: [
-      '{data} {hora} DC01.olhovivo.local EventID=4769 ServiceName=svc_wiki TicketEncryptionType=0x12 (AES256) Client={ip} Account={usuario}',
-      '{data} {hora} DC01.olhovivo.local EventID=4769 ServiceName=svc_chamadao TicketEncryptionType=0x12 (AES256) Client={ip} Account={usuario}',
+      '{data} {hora} DC01.insonia.local EventID=4769 ServiceName=svc_wiki TicketEncryptionType=0x12 (AES256) Client={ip} Account={usuario}',
+      '{data} {hora} DC01.insonia.local EventID=4769 ServiceName=svc_chamadao TicketEncryptionType=0x12 (AES256) Client={ip} Account={usuario}',
       'Lógica da regra: TicketEncryptionType != 0x11',
     ],
     contexto: [
@@ -167,7 +167,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
   {
     id: 'n2-bp-keyla-teste-regra',
     nivel: 'N2',
-    cliente: 'olhovivo',
+    cliente: 'insonia',
     regra: 'PERSISTENCIA_WMI_CONSUMER_v2',
     fonte: 'EDR',
     severidade: 'crítica',
@@ -267,7 +267,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
     mitre: 'T1528',
     titulo: 'Consentimento administrativo para app "Agenda de Salas Cirúrgicas"',
     logs: [
-      '{"activityDateTime":"{data}T{hora}","activityDisplayName":"Consent to application","initiatedBy":"adm.ti@hsjtadeu.org.br","target":"Agenda de Salas Cirúrgicas","publisherVerified":true,"consentType":"AllPrincipals","scopes":"Calendars.ReadWrite User.Read.All"}',
+      '{"activityDateTime":"{data}T{hora}","activityDisplayName":"Consent to application","initiatedBy":"adm.ti@hsptadeu.org.br","target":"Agenda de Salas Cirúrgicas","publisherVerified":true,"consentType":"AllPrincipals","scopes":"Calendars.ReadWrite User.Read.All"}',
       '{"activityDisplayName":"Add service principal","target":"Agenda de Salas Cirúrgicas","replyUrl":"hxxps://app.agendasalas.example/callback"}',
     ],
     contexto: [
@@ -358,12 +358,12 @@ export const N2_RUIDO: ModeloAlerta[] = [
     mitre: 'T1568.002',
     titulo: 'Consultas DNS de alta entropia a partir de {host}',
     logs: [
-      '{data} {hora} DNS query client={ip} name=a3f9c2e71b0d.e5.reputacao.sentinela-edr.example rcode=NXDOMAIN',
-      '{data} {hora} +1s DNS query client={ip} name=7bd0e44a9c1f.e5.reputacao.sentinela-edr.example rcode=NOERROR',
+      '{data} {hora} DNS query client={ip} name=a3f9c2e71b0d.e5.reputacao.guarita-edr.example rcode=NXDOMAIN',
+      '{data} {hora} +1s DNS query client={ip} name=7bd0e44a9c1f.e5.reputacao.guarita-edr.example rcode=NOERROR',
       'Vigia SIEM: 600 consultas por hora, todas sob o mesmo domínio pai do fornecedor do EDR, de todos os hosts do cliente',
     ],
     contexto: [
-      'O Sentinela EDR consulta reputação de arquivos por DNS, codificando um pedaço do hash no subdomínio.',
+      'O Guarita EDR consulta reputação de arquivos por DNS, codificando um pedaço do hash no subdomínio.',
       'O domínio pai é do fornecedor e tem 11 anos de registro.',
       'O padrão aparece em 100% das estações, não só em {host}.',
     ],
@@ -392,7 +392,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
     logs: [
       '{data} {hora} proxy user={usuario} method=GET url=hxxps://sonhodablackfriday.example/ category=Não categorizado status=200',
       'Vigia SIEM: 38 usuários da padaria acessaram o domínio hoje',
-      'WHOIS: registrante Padaria Pão de Ló Digital Ltda, contato do marketing, criado há 3 dias',
+      'WHOIS: registrante Panificadora Migalha de Byte Ltda, contato do marketing, criado há 3 dias',
     ],
     contexto: [
       'O marketing lançou hoje a campanha "Sonho da Black Friday" e mandou o link no grupo interno.',
@@ -420,13 +420,13 @@ export const N2_RUIDO: ModeloAlerta[] = [
     fonte: 'Firewall',
     severidade: 'alta',
     mitre: 'T1567.002',
-    titulo: 'HSJ-BKP01 enviou 240 GB para a internet',
+    titulo: 'HSP-BKP01 enviou 240 GB para a internet',
     logs: [
       'CEF:0|Firewall|NGFW|9.1|traffic|allow|5|src=10.40.2.10 dst=198.51.100.200 dpt=443 out=257698037760 app=backup-nuvem start={data} {hora}',
       'Vigia SIEM: volume semelhante todo domingo nos últimos 6 meses, destino sempre o mesmo',
     ],
     contexto: [
-      'CMDB: HSJ-BKP01 é o servidor de backup; 198.51.100.200 é o cofre do provedor de backup contratado (cópia offsite da regra 3-2-1).',
+      'CMDB: HSP-BKP01 é o servidor de backup; 198.51.100.200 é o cofre do provedor de backup contratado (cópia offsite da regra 3-2-1).',
       'Janela de backup completo: domingo das 00h às 06h.',
       'Os dados saem cifrados pelo próprio agente de backup antes do envio.',
     ],
@@ -452,8 +452,8 @@ export const N2_RUIDO: ModeloAlerta[] = [
     mitre: 'T1557',
     titulo: 'Mesmo token de sessão de {usuario} usado de duas origens',
     logs: [
-      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@agroboigordo.coop.br","ipAddress":"198.51.100.33","sessionId":"5e2b-90aa-11c7","deviceDetail":"iOS, Outlook, gerenciado, compliant"}',
-      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@agroboigordo.coop.br","ipAddress":"2001:db8:4a:7::21","sessionId":"5e2b-90aa-11c7","deviceDetail":"iOS, Outlook, gerenciado, compliant"}',
+      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@agropastoralo.coop.br","ipAddress":"198.51.100.33","sessionId":"5e2b-90aa-11c7","deviceDetail":"iOS, Outlook, gerenciado, compliant"}',
+      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@agropastoralo.coop.br","ipAddress":"2001:db8:4a:7::21","sessionId":"5e2b-90aa-11c7","deviceDetail":"iOS, Outlook, gerenciado, compliant"}',
       'Enriquecimento: as duas origens pertencem à mesma operadora móvel, na mesma cidade',
     ],
     contexto: [
@@ -481,10 +481,10 @@ export const N2_RUIDO: ModeloAlerta[] = [
     fonte: 'AD',
     severidade: 'alta',
     mitre: 'T1098',
-    titulo: 'Membro adicionado ao grupo Administradores local de HSJ-PACS01',
+    titulo: 'Membro adicionado ao grupo Administradores local de HSP-PACS01',
     logs: [
-      '{data} {hora} HSJ-PACS01 EventID=4732 Group=Administrators Member=HSJTADEU\\fornecedor.pacs SubjectAccount=adm.infra',
-      '{data} {hora} DC01.hsjtadeu.local EventID=4728 Group=GG_PACS_Fornecedor Member=fornecedor.pacs SubjectAccount=adm.infra',
+      '{data} {hora} HSP-PACS01 EventID=4732 Group=Administrators Member=HSPADEU\\fornecedor.pacs SubjectAccount=adm.infra',
+      '{data} {hora} DC01.hsptadeu.local EventID=4728 Group=GG_PACS_Fornecedor Member=fornecedor.pacs SubjectAccount=adm.infra',
     ],
     contexto: [
       'GMUD-{gmud} aprovada: "Acesso temporário do fornecedor do PACS para atualização da versão, válido por 48 h", executor adm.infra.',
@@ -547,7 +547,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
     titulo: 'certutil.exe acessando URL em {host}',
     logs: [
       '{data} {hora} {host} Sysmon 1 | Image=certutil.exe | ParentImage=gpscript.exe | Resumo do EDR: verificação da cadeia de certificado e da lista de revogação na AC interna (hxxp://pki.tabajara.local/crl)',
-      'Sentinela EDR: nenhum arquivo executável gravado, nenhum filho criado',
+      'Guarita EDR: nenhum arquivo executável gravado, nenhum filho criado',
       'Vigia SIEM: o mesmo comportamento em 1.200 estações no logon, há 2 anos',
     ],
     contexto: [
@@ -578,7 +578,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
     titulo: 'mshta.exe executando HTA em {host}',
     logs: [
       '{data} {hora} {host} Sysmon 1 | Image=mshta.exe | ParentImage=explorer.exe | Resumo do EDR: execução de \\\\PREF-APP01\\protocolo\\abrir_protocolo.hta',
-      'Sentinela EDR: sem conexão externa, sem filho de script, hash do HTA igual há 6 anos',
+      'Guarita EDR: sem conexão externa, sem filho de script, hash do HTA igual há 6 anos',
       'Vigia SIEM: 160 estações executam o mesmo arquivo todo dia de manhã',
     ],
     contexto: [
@@ -610,7 +610,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
     titulo: 'rundll32.exe executado em {host}',
     logs: [
       '{data} {hora} {host} Sysmon 1 | Image=rundll32.exe | ParentImage=explorer.exe | Resumo do EDR: abertura das propriedades de impressora (printui.dll, função padrão do Windows)',
-      'Sentinela EDR: DLL assinada pela Microsoft em System32, sem rede, sem filho',
+      'Guarita EDR: DLL assinada pela Microsoft em System32, sem rede, sem filho',
     ],
     contexto: [
       '{usuario} abriu chamado "impressora do silo imprime tudo torto" às {hora}.',
@@ -639,7 +639,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
     titulo: 'Tarefa agendada criada em {host}',
     logs: [
       '{data} {hora} {host} EventID=4698 TaskName=\\NavegadorCorporativoUpdateTaskMachineUA Author=SYSTEM Action=C:\\Program Files (x86)\\NavegadorCorp\\Update\\NavUpdate.exe',
-      'Sentinela EDR: NavUpdate.exe assinado pelo fabricante do navegador homologado, prevalência 100%',
+      'Guarita EDR: NavUpdate.exe assinado pelo fabricante do navegador homologado, prevalência 100%',
     ],
     contexto: [
       'O navegador corporativo foi atualizado ontem para a nova versão, que recria a tarefa de atualização.',
@@ -703,14 +703,14 @@ export const N2_RUIDO: ModeloAlerta[] = [
     logs: [
       '{data} {hora} {host} Sysmon 19 | WmiEventFilter criado | Name=InventarioHW_Agente | Namespace=root\\cimv2',
       '{data} {hora} {host} Sysmon 20 | WmiEventConsumer criado | Type=LogFileEventConsumer | Resumo do EDR: grava inventário de hardware em arquivo local',
-      'Sentinela EDR: criado por InvAgent.exe, assinado pelo fornecedor de gestão de ativos do hospital',
+      'Guarita EDR: criado por InvAgent.exe, assinado pelo fornecedor de gestão de ativos do hospital',
     ],
     contexto: [
       'O agente de inventário foi implantado ontem em 300 estações pela GMUD-{gmud}.',
       'O consumidor só grava em arquivo de log; não executa comando.',
       '{usuario} nem sabe o que é WMI e está ocupada com a escala do plantão.',
     ],
-    vars: { host: ['HSJ-ENF-07', 'HSJ-UTI-02', 'HSJ-FAT-05'], usuario: U_HOSP, gmud: GMUD, data: DATA, hora: HORA },
+    vars: { host: ['HSP-ENF-07', 'HSP-UTI-02', 'HSP-FAT-05'], usuario: U_HOSP, gmud: GMUD, data: DATA, hora: HORA },
     veredito: 'fp',
     justificativas: js(
       1,
@@ -733,7 +733,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
     titulo: 'Valor novo na chave Run apontando para AppData em {host}',
     logs: [
       '{data} {hora} {host} Sysmon 13 | TargetObject=HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\OneDrive | Details=C:\\Users\\{usuario}\\AppData\\Local\\Microsoft\\OneDrive\\OneDrive.exe',
-      'Sentinela EDR: binário assinado pela Microsoft, versão igual à do resto do parque, gravado pelo instalador do OneDrive',
+      'Guarita EDR: binário assinado pela Microsoft, versão igual à do resto do parque, gravado pelo instalador do OneDrive',
     ],
     contexto: [
       'O OneDrive corporativo é instalado por usuário, em AppData, por padrão.',

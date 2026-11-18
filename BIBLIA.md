@@ -18,20 +18,20 @@ Guia de tom, mundo e elenco para quem escreve conteúdo. O contrato técnico est
 
 ## O mundo
 
-**Olho Vivo Segurança Gerenciada Ltda.**, um SOC terceirizado (MSSP). Lema no crachá: "Olho Vivo: a gente não dorme (não é escolha)".
+**Insônia Segurança Gerenciada Ltda.**, um SOC terceirizado (MSSP). Lema no crachá: "Insônia: a gente não dorme (não é escolha)".
 
 - **SOC Alfa, Curitiba.** O principal. Videowall com mapa de ataques que é só animação, ar-condicionado a 16 °C, cadeira gamer com assento rasgado, cafeteira que é o ativo mais crítico do prédio, placa "Dias sem incidente: 0" que ninguém atualiza porque é sempre zero. Garoa na janela.
 - **SOC Bravo, Recife.** O site de contingência, ativo-ativo. Calor, ventilador de teto, bolo de rolo na copa, Dona Socorro no comando. Lenda interna: o SOC Bravo é só um print do Alfa (é um final secreto).
-- Ferramentas (nomes inventados): **Vigia SIEM** (o SIEM, com mini-linguagem de consulta), **Sentinela EDR**, **Canivete** (decodificador), **Chamadão** (sistema de tickets, que cai toda segunda), **Bate-Papo Corporativo** (o chat), **Wiki do SOC** (desatualizada desde 2019).
+- Ferramentas (nomes inventados): **Vigia SIEM** (o SIEM, com mini-linguagem de consulta), **Guarita EDR**, **Canivete** (decodificador), **Chamadão** (sistema de tickets, que cai toda segunda), **Bate-Papo Corporativo** (o chat), **Wiki do SOC** (desatualizada desde 2019).
 
 ### Clientes (ids em `ClienteId`)
 
 - `tabajara`: **Tabajara Seguros S.A.**, seguradora de Curitiba. Impressora de 2009, estagiária que saiu de lá (piada interna com o jogo Crachá Provisório), RH que manda planilha com CPF por e-mail.
 - `prefeitura`: **Prefeitura de Pindaíba do Sul**. Windows 7 no protocolo, vereador que posta tudo no Instagram, senha `Prefeitura@2019` reaproveitada.
-- `hospital`: **Hospital São Judas Tadeu das Causas Perdidas**. Equipamento médico que não pode reiniciar, plantão 24h, prontuário que não pode parar. Alvo do ransomware no ato 3.
-- `cooperativa`: **Cooperativa Agro Boi Gordo**, interior do Paraná. Diretor Dr. Leôncio, que clica em tudo, liga às 3h e transfere R$ 380 mil num golpe de BEC.
-- `padaria`: **Padaria Pão de Ló Digital**, rede de padarias com e-commerce. Tem EDR e não tem backup. Black Friday do sonho.
-- `olhovivo`: a própria Olho Vivo (o SOC também é atacado e também gera falso positivo).
+- `hospital`: **Hospital Santa Paciência das Causas Perdidas**. Equipamento médico que não pode reiniciar, plantão 24h, prontuário que não pode parar. Alvo do ransomware no ato 3.
+- `cooperativa`: **Cooperativa Agro Pasto Ralo**, interior do Paraná. Diretor Dr. Leôncio, que clica em tudo, liga às 3h e transfere R$ 380 mil num golpe de BEC.
+- `padaria`: **Panificadora Migalha de Byte**, rede de padarias com e-commerce. Tem EDR e não tem backup. Black Friday do sonho.
+- `insonia`: a própria Insônia (o SOC também é atacado e também gera falso positivo).
 
 ## Elenco (ids em `PersonagemId`)
 
@@ -41,7 +41,7 @@ Guia de tom, mundo e elenco para quem escreve conteúdo. O contrato técnico est
 - `thiaguinho`: **Thiaguinho**, turno da noite, 24 anos. Entrega a fila com 400 alertas e uma coxinha mordida, fecha alerta em lote, dorme de olho aberto. Bom coração, péssimo ticket.
 - `keyla`: **Keyla**, engenharia de detecção. Escreve regra que dispara com tudo, defende cada uma como filha. Aprende tuning com você ao longo do jogo.
 - `neide`: **Dona Neide**, da limpeza. Sabe a senha do Wi-Fi de todos os andares, já desligou o nobreak para ligar o aspirador, dá os melhores conselhos de vida do prédio.
-- `leoncio`: **Dr. Leôncio**, diretor da Cooperativa Agro Boi Gordo. Clica em tudo, liga às 3h, chama todo mundo de "meu jovem", acha que antivírus é seguro de vida.
+- `leoncio`: **Dr. Leôncio**, diretor da Cooperativa Agro Pasto Ralo. Clica em tudo, liga às 3h, chama todo mundo de "meu jovem", acha que antivírus é seguro de vida.
 - `socorro`: **Dona Socorro**, coordenadora do SOC Bravo (Recife). Calma, firme, resolve. "Aqui a gente não grita com incidente, a gente conversa com ele."
 - `nildo`: **Josenildo, o Nildo**, N2 do SOC Bravo. Rápido, engraçado, rivalidade amistosa com Curitiba.
 - `kevin`, `brenda`, `jefferson`, `pamela`: colegas N1. Kevin fecha tudo como falso positivo, Brenda escala tudo, Jefferson estuda para concurso no turno, Pâmela é a mais competente e ninguém percebe.

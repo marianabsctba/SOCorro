@@ -4,13 +4,13 @@ import type { Registro } from '../../tipos';
 import { rng, ipInterno, ipExterno, hora, porHora, USUARIOS } from '../../util';
 
 // ---------------------------------------------------------------------------
-// Dia 62: ransomware no Hospital São Judas Tadeu, achar o paciente zero
+// Dia 62: ransomware no Hospital Santa Paciência, achar o paciente zero
 // ---------------------------------------------------------------------------
 export function registrosDia62(): Registro[] {
   const r = rng(6201);
   const base = '2026-03-14T00:00:00';
-  const estacoes = ['DT-RECEP-04', 'DT-UTI-02', 'NB-ENF-11', 'DT-FARM-03', 'DT-LAB-07', 'DT-FAT-05', 'NB-DIR-HSJT', 'DT-PS-01'];
-  const servidores = ['SRV-ARQ-HSJT', 'SRV-PRONT-01', 'SRV-PACS-01'];
+  const estacoes = ['DT-RECEP-04', 'DT-UTI-02', 'NB-ENF-11', 'DT-FARM-03', 'DT-LAB-07', 'DT-FAT-05', 'NB-DIR-HSP', 'DT-PS-01'];
+  const servidores = ['SRV-ARQ-HSP', 'SRV-PRONT-01', 'SRV-PACS-01'];
   const normais: [string, string, string][] = [
     ['chrome.exe', 'explorer.exe', '"chrome.exe" --type=renderer'],
     ['ProntuarioPlus.exe', 'explorer.exe', 'ProntuarioPlus.exe /unidade=PS'],
@@ -21,14 +21,14 @@ export function registrosDia62(): Registro[] {
     ['PacsViewer.exe', 'explorer.exe', 'PacsViewer.exe --estudo=TC-CRANIO'],
     ['svchost.exe', 'services.exe', 'svchost.exe -k netsvcs -p'],
     ['Teams.exe', 'explorer.exe', 'Teams.exe --system-initiated'],
-    ['SentinelaAgent.exe', 'services.exe', 'SentinelaAgent.exe --heartbeat'],
+    ['GuaritaAgent.exe', 'services.exe', 'GuaritaAgent.exe --heartbeat'],
   ];
   const destinosOk = ['10.40.1.10:443', '10.40.1.20:1433', '10.40.1.30:104', '13.107.6.152:443', '200.160.2.3:443'];
   const out: Registro[] = [];
 
   for (let i = 0; i < 150; i++) {
     const [processo, pai, cmd] = r.um(normais);
-    const servidor = processo === 'svchost.exe' || processo === 'SentinelaAgent.exe';
+    const servidor = processo === 'svchost.exe' || processo === 'GuaritaAgent.exe';
     out.push({
       hora: hora(base, r.int(0, 6 * 3600)),
       host: servidor && r.chance(0.5) ? r.um(servidores) : r.um(estacoes),
@@ -57,14 +57,14 @@ export function registrosDia62(): Registro[] {
   const mal: Registro[] = [
     { hora: hora(base, 2 * 3600 + 13 * 60 + 7), host: 'DT-RECEP-04', usuario: 'aline.martins', evento: 1, processo: 'laudo_exame_0931.pdf.exe', processo_pai: 'OUTLOOK.EXE', linha_comando: '"C:\\Users\\aline.martins\\AppData\\Local\\Microsoft\\Windows\\INetCache\\Content.Outlook\\X7K2\\laudo_exame_0931.pdf.exe"', destino: '-' },
     { hora: hora(base, 2 * 3600 + 13 * 60 + 41), host: 'DT-RECEP-04', usuario: 'aline.martins', evento: 3, processo: 'laudo_exame_0931.pdf.exe', processo_pai: 'OUTLOOK.EXE', linha_comando: '-', destino: '179.61.204.33:443' },
-    { hora: hora(base, 2 * 3600 + 41 * 60 + 2), host: 'DT-RECEP-04', usuario: 'aline.martins', evento: 1, processo: 'rundll32.exe', processo_pai: 'laudo_exame_0931.pdf.exe', linha_comando: 'rundll32.exe C:\\ProgramData\\cachehsjt\\upd.dll,Iniciar', destino: '-' },
+    { hora: hora(base, 2 * 3600 + 41 * 60 + 2), host: 'DT-RECEP-04', usuario: 'aline.martins', evento: 1, processo: 'rundll32.exe', processo_pai: 'laudo_exame_0931.pdf.exe', linha_comando: 'rundll32.exe C:\\ProgramData\\cachehspt\\upd.dll,Iniciar', destino: '-' },
     { hora: hora(base, 3 * 3600 + 5 * 60 + 30), host: 'DT-RECEP-04', usuario: 'aline.martins', evento: 1, processo: 'net.exe', processo_pai: 'cmd.exe', linha_comando: 'net group "Domain Admins" /domain', destino: '-' },
     { hora: hora(base, 4 * 3600 + 10 * 60 + 12), host: 'NB-ENF-11', usuario: 'vanessa.rocha', evento: 1, processo: 'laudo_exame_0931.pdf.exe', processo_pai: 'OUTLOOK.EXE', linha_comando: '"C:\\Users\\vanessa.rocha\\AppData\\Local\\Microsoft\\Windows\\INetCache\\Content.Outlook\\Q1M9\\laudo_exame_0931.pdf.exe"', destino: '-' },
-    { hora: hora(base, 4 * 3600 + 52 * 60 + 3), host: 'SRV-ARQ-HSJT', usuario: 'adm.ti', evento: 1, processo: 'vssadmin.exe', processo_pai: 'cmd.exe', linha_comando: 'vssadmin delete shadows /all /quiet', destino: '-' },
+    { hora: hora(base, 4 * 3600 + 52 * 60 + 3), host: 'SRV-ARQ-HSP', usuario: 'adm.ti', evento: 1, processo: 'vssadmin.exe', processo_pai: 'cmd.exe', linha_comando: 'vssadmin delete shadows /all /quiet', destino: '-' },
   ];
   out.push(...mal);
 
-  const alvos = ['SRV-ARQ-HSJT', 'SRV-ARQ-HSJT', 'SRV-ARQ-HSJT', 'DT-FAT-05', 'DT-UTI-02', 'DT-FARM-03', 'DT-LAB-07'];
+  const alvos = ['SRV-ARQ-HSP', 'SRV-ARQ-HSP', 'SRV-ARQ-HSP', 'DT-FAT-05', 'DT-UTI-02', 'DT-FARM-03', 'DT-LAB-07'];
   const pastas = ['Faturamento', 'Escalas', 'Laudos', 'Compras', 'RH', 'Qualidade'];
   for (let i = 0; i < 22; i++) {
     out.push({
@@ -76,7 +76,7 @@ export function registrosDia62(): Registro[] {
       processo_pai: 'cmd.exe',
       linha_comando: '-',
       destino: '-',
-      arquivo: `\\\\SRV-ARQ-HSJT\\${r.um(pastas)}\\documento_${r.int(100, 999)}.xlsx.sjt`,
+      arquivo: `\\\\SRV-ARQ-HSP\\${r.um(pastas)}\\documento_${r.int(100, 999)}.xlsx.sjt`,
     });
   }
   return porHora(out);
@@ -88,7 +88,7 @@ export function registrosDia62(): Registro[] {
 export function registrosDia65(): Registro[] {
   const r = rng(6502);
   const base = '2026-03-13T18:00:00';
-  const hosts = ['SRV-PRONT-01', 'SRV-PACS-01', 'SRV-ARQ-HSJT', 'SRV-LAB-01', 'SRV-FARM-01', 'SRV-DC-HSJT'];
+  const hosts = ['SRV-PRONT-01', 'SRV-PACS-01', 'SRV-ARQ-HSP', 'SRV-LAB-01', 'SRV-FARM-01', 'SRV-DC-HSP'];
   const out: Registro[] = [];
   for (let i = 0; i < 110; i++) {
     const h = r.um(hosts);
@@ -106,7 +106,7 @@ export function registrosDia65(): Registro[] {
   const procs: [string, string][] = [
     ['C:\\Windows\\System32\\svchost.exe', 'svchost.exe -k netsvcs -p'],
     ['C:\\Program Files\\ProntuarioPlus\\pp_sync.exe', 'pp_sync.exe --fila=laudos'],
-    ['C:\\Program Files\\Sentinela\\SentinelaAgent.exe', 'SentinelaAgent.exe --heartbeat'],
+    ['C:\\Program Files\\Guarita\\GuaritaAgent.exe', 'GuaritaAgent.exe --heartbeat'],
     ['C:\\Windows\\System32\\taskhostw.exe', 'taskhostw.exe'],
     ['C:\\Program Files\\Veeam\\Backup\\VeeamAgent.exe', 'VeeamAgent.exe -job diario'],
   ];
@@ -115,8 +115,8 @@ export function registrosDia65(): Registro[] {
     out.push({ hora: hora(base, r.int(0, 12 * 3600)), host: r.um(hosts), canal: 'Security', evento: 4688, usuario: 'SYSTEM', processo: proc, linha_comando: cmd });
   }
   // serviços legítimos (atualização do agente do EDR, com GMUD)
-  for (const h of ['SRV-PRONT-01', 'SRV-PACS-01', 'SRV-ARQ-HSJT', 'SRV-FARM-01']) {
-    out.push({ hora: hora(base, 3600 + r.int(0, 900)), host: h, canal: 'System', evento: 7045, usuario: 'SYSTEM', servico: 'SentinelaUpdater', imagem: 'C:\\Program Files\\Sentinela\\updater.exe', tipo_inicio: 'automático' });
+  for (const h of ['SRV-PRONT-01', 'SRV-PACS-01', 'SRV-ARQ-HSP', 'SRV-FARM-01']) {
+    out.push({ hora: hora(base, 3600 + r.int(0, 900)), host: h, canal: 'System', evento: 7045, usuario: 'SYSTEM', servico: 'GuaritaUpdater', imagem: 'C:\\Program Files\\Guarita\\updater.exe', tipo_inicio: 'automático' });
   }
   // o que importa, em SRV-LAB-01
   out.push(
@@ -130,7 +130,7 @@ export function registrosDia65(): Registro[] {
 }
 
 // ---------------------------------------------------------------------------
-// Dia 69: BEC na Cooperativa Agro Boi Gordo
+// Dia 69: BEC na Cooperativa Agro Pasto Ralo
 // ---------------------------------------------------------------------------
 export function registrosDia69(): Registro[] {
   const r = rng(6903);
@@ -142,9 +142,9 @@ export function registrosDia69(): Registro[] {
     ['comercial@pevermelho-fert.com.br', 'pevermelho-fert.com.br', 'Tabela de preços safra 26/27'],
     ['avisos@sicooperativo.com.br', 'sicooperativo.com.br', 'Extrato mensal disponível'],
     ['noreply@agrotempo.com.br', 'agrotempo.com.br', 'Previsão: geada no norte do Paraná'],
-    ['contato@revistaboigordo.com.br', 'revistaboigordo.com.br', 'Newsletter: o preço da arroba hoje'],
-    ['rh@agroboigordo.coop.br', 'agroboigordo.coop.br', 'Escala de colheita'],
-    ['ti@agroboigordo.coop.br', 'agroboigordo.coop.br', 'Lembrete: não clique em link de boleto'],
+    ['contato@revistapastoralo.com.br', 'revistapastoralo.com.br', 'Newsletter: o preço da arroba hoje'],
+    ['rh@agropastoralo.coop.br', 'agropastoralo.coop.br', 'Escala de colheita'],
+    ['ti@agropastoralo.coop.br', 'agropastoralo.coop.br', 'Lembrete: não clique em link de boleto'],
   ];
   for (let i = 0; i < 110; i++) {
     const [rem, dom, assunto] = r.um(legit);
@@ -152,13 +152,13 @@ export function registrosDia69(): Registro[] {
       hora: hora(base, r.int(0, 3 * 24 * 3600)),
       remetente: rem,
       dominio_remetente: dom,
-      destinatario: `${r.um(internos)}@agroboigordo.coop.br`,
+      destinatario: `${r.um(internos)}@agropastoralo.coop.br`,
       assunto,
       spf: 'pass',
       dkim: 'pass',
       dmarc: 'pass',
       reply_to: '-',
-      idade_dominio_dias: dom === 'pevermelho-fert.com.br' ? 4410 : dom === 'agroboigordo.coop.br' ? 3650 : r.int(900, 6000),
+      idade_dominio_dias: dom === 'pevermelho-fert.com.br' ? 4410 : dom === 'agropastoralo.coop.br' ? 3650 : r.int(900, 6000),
       ip_origem: ipExterno(r),
     });
   }
@@ -168,7 +168,7 @@ export function registrosDia69(): Registro[] {
       hora: hora(base, r.int(0, 3 * 24 * 3600)),
       remetente: `promo${r.int(10, 99)}@ofertas-trator-barato.biz`,
       dominio_remetente: 'ofertas-trator-barato.biz',
-      destinatario: `${r.um(internos)}@agroboigordo.coop.br`,
+      destinatario: `${r.um(internos)}@agropastoralo.coop.br`,
       assunto: 'Trator 0 km por R$ 99 (sério)',
       spf: 'fail',
       dkim: 'none',
@@ -181,9 +181,9 @@ export function registrosDia69(): Registro[] {
   // o golpe: domínio parecido, registrado há poucos dias, com SPF/DKIM/DMARC passando
   const golpe = { remetente: 'financeiro@pevermeiho-fert.com.br', dominio_remetente: 'pevermeiho-fert.com.br', spf: 'pass', dkim: 'pass', dmarc: 'pass', reply_to: 'financeiro.pevermelho@caixapostal-segura.net', idade_dominio_dias: 6, ip_origem: '91.214.63.18' };
   out.push(
-    { hora: hora(base, 26 * 3600 + 14 * 60), destinatario: 'leoncio@agroboigordo.coop.br', assunto: 'RE: NF-e 4471 emitida: Fertilizantes Pé Vermelho', ...golpe },
-    { hora: hora(base, 26 * 3600 + 52 * 60), destinatario: 'leoncio@agroboigordo.coop.br', assunto: 'URGENTE: atualização de dados bancários para pagamento', ...golpe },
-    { hora: hora(base, 27 * 3600 + 30 * 60), destinatario: 'financeiro@agroboigordo.coop.br', assunto: 'RE: URGENTE: atualização de dados bancários para pagamento', ...golpe },
+    { hora: hora(base, 26 * 3600 + 14 * 60), destinatario: 'leoncio@agropastoralo.coop.br', assunto: 'RE: NF-e 4471 emitida: Fertilizantes Pé Vermelho', ...golpe },
+    { hora: hora(base, 26 * 3600 + 52 * 60), destinatario: 'leoncio@agropastoralo.coop.br', assunto: 'URGENTE: atualização de dados bancários para pagamento', ...golpe },
+    { hora: hora(base, 27 * 3600 + 30 * 60), destinatario: 'financeiro@agropastoralo.coop.br', assunto: 'RE: URGENTE: atualização de dados bancários para pagamento', ...golpe },
   );
   return porHora(out);
 }
@@ -217,7 +217,7 @@ export function registrosDia73(): Registro[] {
   // telemetria do EDR: periódica, mas em todos os hosts e conhecida
   for (const h of hosts) {
     for (let k = 0; k < 4; k++) {
-      out.push({ hora: hora(base, k * 1800 + r.int(0, 20)), host: h, destino: 'telemetria.sentinela-edr.exemplo', porta: 443, categoria: 'Segurança', bytes_enviados: r.int(1500, 2500), bytes_recebidos: r.int(300, 800) });
+      out.push({ hora: hora(base, k * 1800 + r.int(0, 20)), host: h, destino: 'telemetria.guarita-edr.exemplo', porta: 443, categoria: 'Segurança', bytes_enviados: r.int(1500, 2500), bytes_recebidos: r.int(300, 800) });
     }
   }
   // rádio online no atendimento: muita conexão, tamanho variável, categoria conhecida

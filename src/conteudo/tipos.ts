@@ -17,7 +17,7 @@ export type PersonagemId =
   | 'thiaguinho' // turno da noite, entrega a fila com 400 alertas e uma coxinha mordida
   | 'keyla' // engenharia de detecção, escreve regra que dispara com tudo
   | 'neide' // limpeza, sabe a senha do Wi-Fi de todos os andares
-  | 'leoncio' // Dr. Leôncio, diretor da Cooperativa Agro Boi Gordo, clica em tudo e liga às 3h
+  | 'leoncio' // Dr. Leôncio, diretor da Cooperativa Agro Pasto Ralo, clica em tudo e liga às 3h
   | 'socorro' // Dona Socorro, coordenadora do SOC Bravo (Recife)
   | 'nildo' // Josenildo, N2 do SOC Bravo
   | 'kevin' // colega N1
@@ -37,8 +37,8 @@ export interface Fala {
   expr?: Expressao;
 }
 
-/** clientes atendidos pela Olho Vivo Segurança Gerenciada */
-export type ClienteId = 'tabajara' | 'prefeitura' | 'hospital' | 'cooperativa' | 'padaria' | 'olhovivo';
+/** clientes atendidos pela Insônia Segurança Gerenciada */
+export type ClienteId = 'tabajara' | 'prefeitura' | 'hospital' | 'cooperativa' | 'padaria' | 'insonia';
 
 export type Fonte = 'EDR' | 'SIEM' | 'Firewall' | 'Proxy' | 'E-mail' | 'M365' | 'IDS' | 'AD' | 'DNS' | 'Nuvem' | 'WAF' | 'VPN' | 'DLP' | 'Antivírus';
 export type Severidade = 'baixa' | 'média' | 'alta' | 'crítica';

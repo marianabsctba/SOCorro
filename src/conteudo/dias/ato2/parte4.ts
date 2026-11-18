@@ -222,7 +222,7 @@ export const DIAS_53_60: Dia[] = [
       'Retenção de log vem de contrato, de norma e de lei. No Brasil, o **Marco Civil da Internet** (Lei 12.965/2014) manda o provedor de conexão guardar registros por 1 ano (art. 13) e o provedor de aplicação por 6 meses (art. 15). O contrato do MSSP costuma pedir mais. Log que não existe mais não ajuda investigação nenhuma, e log guardado demais com dado pessoal sem motivo também é problema de LGPD.\n\n' +
       '**Cadeia de custódia** é o registro de quem coletou, quando, como, onde guardou e quem manipulou cada evidência. No processo penal brasileiro ela está nos arts. 158-A a 158-F do Código de Processo Penal (incluídos pela Lei 13.964/2019). Na prática do SOC: calcular **hash** (SHA-256) na coleta, guardar cópia de trabalho separada da original e anotar cada passo. Evidência sem cadeia vira opinião com anexo.',
     chegada: [
-      { quem: 'gilmar', texto: 'Atenção: hoje tem auditoria. E o CEO da Olho Vivo vai passar pelo corredor. Escondam a cadeira rasgada.', gesto: 'apontar', expr: 'surpresa' },
+      { quem: 'gilmar', texto: 'Atenção: hoje tem auditoria. E o CEO da Insônia vai passar pelo corredor. Escondam a cadeira rasgada.', gesto: 'apontar', expr: 'surpresa' },
       { quem: 'ro', texto: 'E a placa de "Dias sem incidente: 0"? Viramos para a parede ou atualizamos para zero de novo?', gesto: 'cruzar' },
       { quem: 'jefferson', texto: 'ISO 27001 cai em concurso! Finalmente meu estudo serve para o trabalho.', gesto: 'comemorar', expr: 'sorriso' },
       { quem: 'neide', texto: 'O CEO pediu a senha do Wi-Fi. Eu dei a dos visitantes. Ele ficou ofendido.', gesto: 'ombros' },

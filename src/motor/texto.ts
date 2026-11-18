@@ -29,7 +29,7 @@ export const PAPEIS: Record<string, string> = {
   thiaguinho: 'N1, turno da noite',
   keyla: 'Engenharia de detecção',
   neide: 'Limpeza e sabedoria',
-  leoncio: 'Diretor, Cooperativa Agro Boi Gordo',
+  leoncio: 'Diretor, Cooperativa Agro Pasto Ralo',
   socorro: 'Coordenadora do SOC Bravo',
   nildo: 'Analista N2, SOC Bravo',
   kevin: 'Analista N1',

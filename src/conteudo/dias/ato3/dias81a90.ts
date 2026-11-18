@@ -1,5 +1,5 @@
 // Ato 3, dias 81 a 90: relatório executivo, as tentações da carreira, tabletop, XOR,
-// a quadrilha que volta na prefeitura e o aniversário da Olho Vivo.
+// a quadrilha que volta na prefeitura e o aniversário da Insônia.
 import type { Dia } from '../../tipos';
 import { xorHex } from '../../../motor/canivete';
 import { registrosDia87 } from './registros';
@@ -32,7 +32,7 @@ export const DIAS_81_90: Dia[] = [
       {
         tipo: 'quiz',
         titulo: 'Reescrevendo para quem decide',
-        enunciado: 'Ajude a transformar o relatório de 23 páginas do Gilmar numa página para a diretoria do Hospital São Judas Tadeu.',
+        enunciado: 'Ajude a transformar o relatório de 23 páginas do Gilmar numa página para a diretoria do Hospital Santa Paciência.',
         perguntas: [
           {
             p: 'Qual é a melhor primeira frase do relatório?',
@@ -435,7 +435,7 @@ export const DIAS_81_90: Dia[] = [
         enunciado: 'Feche o caso da quadrilha que voltou. Responda sobre o relatório final e o compartilhamento de indicadores.',
         perguntas: [
           {
-            p: 'A Olho Vivo quer compartilhar os indicadores da NORTE-IPTU com o grupo de segurança de prefeituras da região, sem publicação aberta. Qual TLP?',
+            p: 'A Insônia quer compartilhar os indicadores da NORTE-IPTU com o grupo de segurança de prefeituras da região, sem publicação aberta. Qual TLP?',
             opcoes: ['TLP:GREEN', 'TLP:RED', 'TLP:CLEAR', 'TLP:AMBER+STRICT'],
             certa: 0,
             explicacao: 'TLP:GREEN permite circular pela comunidade, sem publicação aberta. RED fica entre os presentes, AMBER+STRICT fica só dentro da organização que recebeu, e CLEAR é público. A decisão de compartilhar é do cliente, com o SOC sugerindo o nível.',
@@ -472,7 +472,7 @@ export const DIAS_81_90: Dia[] = [
     n: 90,
     site: 'alfa',
     turno: 'tarde',
-    titulo: 'Olho Vivo faz aniversário',
+    titulo: 'Insônia faz aniversário',
     resumo: 'Último dia: avaliação, festa e o que vem depois. A fila continua, a gente também.',
     evento: 'aniversario',
     aula: [
@@ -481,12 +481,12 @@ export const DIAS_81_90: Dia[] = [
       'E cuide de quem está do lado. SOC é trabalho de equipe: a passagem de turno bem feita, o colega que pergunta "você está bem?" às 4h, a Dona Neide que sabe a senha do Wi-Fi e a solução da vida. Ferramenta muda todo ano; gente boa por perto é o que segura o turno.',
     ].join('\n\n'),
     chegada: [
-      { quem: 'narrador', texto: 'O SOC Alfa amanhece com bexigas pretas e laranjas, uma faixa "Olho Vivo: 15 anos sem dormir" e um bolo em forma de cafeteira. O videowall mostra o mapa de ataques, que segue sendo só animação, agora com confete.' },
+      { quem: 'narrador', texto: 'O SOC Alfa amanhece com bexigas pretas e laranjas, uma faixa "Insônia: 15 anos sem dormir" e um bolo em forma de cafeteira. O videowall mostra o mapa de ataques, que segue sendo só animação, agora com confete.' },
       { quem: 'gilmar', texto: 'Hoje é dia de festa e de avaliação. Mas a avaliação eu já fiz. Está na planilha. Com borda dupla.', gesto: 'comemorar', expr: 'sorriso' },
       { quem: 'thiaguinho', texto: 'Eu trouxe coxinha para todo mundo. Inteiras. Nenhuma mordida. Foi difícil.', gesto: 'apontar', expr: 'sorriso' },
       { quem: 'ro', texto: 'Noventa dias. Falso positivo continua igual a boleto, sempre tem mais um. Mas hoje eu deixo a fila esperar dez minutos.', expr: 'sorriso' },
       { quem: 'vandeco', texto: 'Em 2003 eu não tinha uma equipe assim. Tinha um caderno e um ramal. Prefiro vocês. Não contem para o caderno.', gesto: 'pensar' },
-      { quem: 'chat', texto: 'Dona Socorro, do Bravo: "Parabéns à Olho Vivo! Mandamos bolo de rolo. Chegou igualzinho ao daí, né? Coincidência."' },
+      { quem: 'chat', texto: 'Dona Socorro, do Bravo: "Parabéns à Insônia! Mandamos bolo de rolo. Chegou igualzinho ao daí, né? Coincidência."' },
       { quem: 'neide', texto: 'Já liguei o som. Desliguei o nobreak antes, não. Brincadeira. Aprendi.', gesto: 'cintura', expr: 'sorriso' },
     ],
     fila: { quantidade: 6 },

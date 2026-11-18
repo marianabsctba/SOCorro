@@ -81,16 +81,16 @@ export const N1_BP: ModeloAlerta[] = [
     mitre: 'T1078.002',
     titulo: 'Logon de administrador às {hora} em {servidor}',
     logs: [
-      '{data} {hora} {servidor}.hsj.local 4624 Logon bem-sucedido. Tipo de logon: 10 Conta: adm.{admin} Endereço de rede de origem: 10.30.1.50',
-      '{data} {hora} {servidor}.hsj.local 4672 Privilégios especiais atribuídos ao novo logon. Conta: adm.{admin} SeDebugPrivilege SeBackupPrivilege',
-      '{data} {hora} {servidor}.hsj.local 1074 O processo C:\\Windows\\servicing\\TrustedInstaller.exe iniciou a reinicialização. Motivo: Atualização do sistema operacional (planejada)',
+      '{data} {hora} {servidor}.hsp.local 4624 Logon bem-sucedido. Tipo de logon: 10 Conta: adm.{admin} Endereço de rede de origem: 10.30.1.50',
+      '{data} {hora} {servidor}.hsp.local 4672 Privilégios especiais atribuídos ao novo logon. Conta: adm.{admin} SeDebugPrivilege SeBackupPrivilege',
+      '{data} {hora} {servidor}.hsp.local 1074 O processo C:\\Windows\\servicing\\TrustedInstaller.exe iniciou a reinicialização. Motivo: Atualização do sistema operacional (planejada)',
     ],
     contexto: [
       'GMUD-{gmud} aprovada: aplicação de patches em {servidor}, hoje das 02h às 04h, executor adm.{admin}.',
       '10.30.1.50 é o servidor de salto (jump server) do TI, origem obrigatória para administração.',
       '{servidor}: servidor de laboratório, janela combinada com a equipe clínica.',
     ],
-    vars: { servidor: ['HSJ-LAB01', 'HSJ-APP03', 'HSJ-FS-FAT01'], admin: ['ricardo', 'silvana', 'wellington'], gmud: ['2026-0211', '2026-0388', '2026-0420'], hora: ['02:04:18', '02:11:52', '02:26:07'], data: DATA },
+    vars: { servidor: ['HSP-LAB01', 'HSP-APP03', 'HSP-FS-FAT01'], admin: ['ricardo', 'silvana', 'wellington'], gmud: ['2026-0211', '2026-0388', '2026-0420'], hora: ['02:04:18', '02:11:52', '02:26:07'], data: DATA },
     veredito: 'bp',
     justificativas: js(
       3,
@@ -114,7 +114,7 @@ export const N1_BP: ModeloAlerta[] = [
     mitre: 'T1078.004',
     titulo: 'Login do diretor a partir de Orlando, EUA',
     logs: [
-      '{"CreationTime":"{data}T{hora}","Operation":"UserLoggedIn","UserId":"leoncio@boigordo.coop.br","ClientIP":"{ip}","Geo":"Orlando, FL, US","ResultStatus":"Success","MfaDetail":"Microsoft Authenticator (número correspondente)"}',
+      '{"CreationTime":"{data}T{hora}","Operation":"UserLoggedIn","UserId":"leoncio@pastoralo.coop.br","ClientIP":"{ip}","Geo":"Orlando, FL, US","ResultStatus":"Success","MfaDetail":"Microsoft Authenticator (número correspondente)"}',
       '{"CreationTime":"{data}T{hora}","DeviceDetail":{"deviceId":"iPhone do Leôncio","isCompliant":true},"UserAgent":"Outlook-iOS/2.0"}',
       'Histórico: último login no Brasil há 2 dias, aeroporto de Guarulhos às 21h',
     ],
@@ -265,7 +265,7 @@ export const N1_BP: ModeloAlerta[] = [
   {
     id: 'n1-bp-simulado-phishing',
     nivel: 'N1',
-    cliente: 'olhovivo',
+    cliente: 'insonia',
     regra: 'PHISH_DOMINIO_RECENTE_LINK',
     fonte: 'E-mail',
     severidade: 'alta',
@@ -273,13 +273,13 @@ export const N1_BP: ModeloAlerta[] = [
     titulo: 'Phishing: "Seu vale-refeição foi bloqueado" para {n} colaboradores',
     logs: [
       'Return-Path: <rh@beneficios-ovseg[.]example>',
-      'Received: from sim01.plataforma-conscientizacao.example ([198.51.100.33]) by mx.olhovivo.com.br; {data} {hora} -0300',
+      'Received: from sim01.plataforma-conscientizacao.example ([198.51.100.33]) by mx.insonia.com.br; {data} {hora} -0300',
       'X-Simulacao-Id: CAMP-2026-{camp}',
       'Subject: Seu vale-refeição foi bloqueado. Regularize em 24 horas',
       'link: hxxps://beneficios-ovseg[.]example/login?t=8f2a',
     ],
     contexto: [
-      'A segurança corporativa da Olho Vivo agendou a campanha de simulação CAMP-2026-{camp} para hoje (comunicado ao SOC na passagem de turno).',
+      'A segurança corporativa da Insônia agendou a campanha de simulação CAMP-2026-{camp} para hoje (comunicado ao SOC na passagem de turno).',
       'O IP de origem é da plataforma de conscientização contratada e está na lista de exceção do gateway.',
       '{reportes} pessoas já reportaram pelo botão "Reportar phishing".',
     ],
@@ -338,7 +338,7 @@ export const N1_BP: ModeloAlerta[] = [
     mitre: 'T1114.003',
     titulo: 'Regra de caixa de correio criada na conta do diretor',
     logs: [
-      '{"CreationTime":"{data}T{hora}","Operation":"New-InboxRule","UserId":"leoncio@boigordo.coop.br","ClientIP":"10.40.1.15","Parameters":[{"Name":"ForwardTo","Value":"secretaria.diretoria@boigordo.coop.br"},{"Name":"SubjectContainsWords","Value":"Agenda;Convite"}]}',
+      '{"CreationTime":"{data}T{hora}","Operation":"New-InboxRule","UserId":"leoncio@pastoralo.coop.br","ClientIP":"10.40.1.15","Parameters":[{"Name":"ForwardTo","Value":"secretaria.diretoria@pastoralo.coop.br"},{"Name":"SubjectContainsWords","Value":"Agenda;Convite"}]}',
       'Origem: estação da secretaria da diretoria, sessão delegada (SendOnBehalf já existente)',
     ],
     contexto: [
@@ -464,14 +464,14 @@ export const N1_BP: ModeloAlerta[] = [
     logs: [
       '{data} {hora} {host} Microsoft-Windows-Partition/Diagnostic 1006 Fabricante=Kingston Modelo=DataTraveler Serial=AA00{serial} Capacidade=32 GB',
       'Sysmon EventID=1 Image=E:\\update\\fw_installer.exe Signature="Fabricante do Tomógrafo GmbH" SignatureStatus=Valid User={host}\\servico',
-      'Sentinela EDR: varredura do volume E: concluída, 0 ameaças',
+      'Guarita EDR: varredura do volume E: concluída, 0 ameaças',
     ],
     contexto: [
       'CMDB: {host} é a estação de controle do tomógrafo da sala 3.',
       'OS de manutenção MNT-{os}: técnico credenciado do fabricante atualizando firmware hoje, acompanhado pela engenharia clínica.',
       'Pendrive cadastrado na OS pelo número de série.',
     ],
-    vars: { host: ['HSJ-TOMO-S3', 'HSJ-RM-S1'], serial: ['7731', '9012'], os: ['0912', '1044'], hora: HORA_COMERCIAL, data: DATA },
+    vars: { host: ['HSP-TOMO-S3', 'HSP-RM-S1'], serial: ['7731', '9012'], os: ['0912', '1044'], hora: HORA_COMERCIAL, data: DATA },
     veredito: 'bp',
     justificativas: js(
       0,
@@ -493,8 +493,8 @@ export const N1_BP: ModeloAlerta[] = [
     mitre: 'T1133',
     titulo: 'Login na VPN às {hora}: {usuario}',
     logs: [
-      '{data} {hora} vpn-hsj: user={usuario} src={ip} geo=BR result=SUCCESS mfa=push_numero_ok device=HSJ-NB-{nb} posture=compliant',
-      '{data} {hora} vpn-hsj: user={usuario} access=PACS-WEB apps=1 bytes_in=84MB',
+      '{data} {hora} vpn-hsp: user={usuario} src={ip} geo=BR result=SUCCESS mfa=push_numero_ok device=HSP-NB-{nb} posture=compliant',
+      '{data} {hora} vpn-hsp: user={usuario} access=PACS-WEB apps=1 bytes_in=84MB',
       'Escala de sobreaviso: {usuario} de plantão remoto da radiologia hoje',
     ],
     contexto: [
@@ -610,7 +610,7 @@ export const N1_BP: ModeloAlerta[] = [
   {
     id: 'n1-bp-hacktool-lab-soc',
     nivel: 'N1',
-    cliente: 'olhovivo',
+    cliente: 'insonia',
     regra: 'AV_HACKTOOL_DETECTADO',
     fonte: 'Antivírus',
     severidade: 'alta',

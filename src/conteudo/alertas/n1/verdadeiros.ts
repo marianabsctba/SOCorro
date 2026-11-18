@@ -118,10 +118,10 @@ export const N1_TP: ModeloAlerta[] = [
     mitre: 'T1621',
     titulo: '{n} pedidos de MFA negados e depois um aprovado para leoncio@',
     logs: [
-      '{"CreationTime":"{data}T{hora}","Operation":"UserLoginFailed","UserId":"leoncio@boigordo.coop.br","ClientIP":"{ip}","ResultStatusDetail":"MFA denied; user declined the authentication"}',
+      '{"CreationTime":"{data}T{hora}","Operation":"UserLoginFailed","UserId":"leoncio@pastoralo.coop.br","ClientIP":"{ip}","ResultStatusDetail":"MFA denied; user declined the authentication"}',
       'Vigia SIEM: {n} eventos "MFA denied" entre 02:51 e 03:14 vindos de {ip}',
-      '{"CreationTime":"{data}T03:15:02","Operation":"UserLoggedIn","UserId":"leoncio@boigordo.coop.br","ClientIP":"{ip}","ResultStatus":"Success","MfaDetail":"Notificação push aprovada"}',
-      '{"CreationTime":"{data}T03:17:40","Operation":"Add-MailboxPermission","UserId":"leoncio@boigordo.coop.br","ClientIP":"{ip}"}',
+      '{"CreationTime":"{data}T03:15:02","Operation":"UserLoggedIn","UserId":"leoncio@pastoralo.coop.br","ClientIP":"{ip}","ResultStatus":"Success","MfaDetail":"Notificação push aprovada"}',
+      '{"CreationTime":"{data}T03:17:40","Operation":"Add-MailboxPermission","UserId":"leoncio@pastoralo.coop.br","ClientIP":"{ip}"}',
     ],
     contexto: [
       '{ip}: hospedagem em nuvem estrangeira, nunca visto na conta.',
@@ -152,8 +152,8 @@ export const N1_TP: ModeloAlerta[] = [
     mitre: 'T1114.003',
     titulo: 'Regra de caixa encaminha e-mails de pagamento para endereço externo em {usuario}',
     logs: [
-      '{"CreationTime":"{data}T{hora}","Operation":"New-InboxRule","UserId":"{usuario}@boigordo.coop.br","ClientIP":"{ip}","Parameters":[{"Name":"Name","Value":"."},{"Name":"SubjectOrBodyContainsWords","Value":"boleto;pagamento;transferência;PIX"},{"Name":"ForwardTo","Value":"financeiro.boigordo@caixapostal-gratis[.]example"},{"Name":"MoveToFolder","Value":"RSS Feeds"},{"Name":"MarkAsRead","Value":"True"}]}',
-      '{"CreationTime":"{data}T{hora}-12min","Operation":"UserLoggedIn","UserId":"{usuario}@boigordo.coop.br","ClientIP":"{ip}","UserAgent":"Mozilla/5.0 (X11; Linux x86_64)"}',
+      '{"CreationTime":"{data}T{hora}","Operation":"New-InboxRule","UserId":"{usuario}@pastoralo.coop.br","ClientIP":"{ip}","Parameters":[{"Name":"Name","Value":"."},{"Name":"SubjectOrBodyContainsWords","Value":"boleto;pagamento;transferência;PIX"},{"Name":"ForwardTo","Value":"financeiro.pastoralo@caixapostal-gratis[.]example"},{"Name":"MoveToFolder","Value":"RSS Feeds"},{"Name":"MarkAsRead","Value":"True"}]}',
+      '{"CreationTime":"{data}T{hora}-12min","Operation":"UserLoggedIn","UserId":"{usuario}@pastoralo.coop.br","ClientIP":"{ip}","UserAgent":"Mozilla/5.0 (X11; Linux x86_64)"}',
     ],
     contexto: [
       '{ip}: provedor de VPN comercial no exterior, primeira vez na conta.',
@@ -226,7 +226,7 @@ export const N1_TP: ModeloAlerta[] = [
       'O processo segue rodando, com persistência na chave Run e conexão de saída ativa.',
       '{ipx} sem reputação, porta incomum.',
     ],
-    vars: { host: ['HSJ-PS-REC01', 'HSJ-PS-REC02'], ipx: IP_EXTERNO, hora: HORA_COMERCIAL, data: DATA },
+    vars: { host: ['HSP-PS-REC01', 'HSP-PS-REC02'], ipx: IP_EXTERNO, hora: HORA_COMERCIAL, data: DATA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -250,16 +250,16 @@ export const N1_TP: ModeloAlerta[] = [
     titulo: 'Logon RDP bem-sucedido de IP estrangeiro em {servidor}',
     logs: [
       'CEF:0|Firewall|NGFW|9.1|allow|Tráfego permitido|3|src={ipx} dst=203.0.113.250 dpt=3389 proto=TCP nat_dst=10.30.2.15 rt={data} {hora}',
-      '{data} {hora} {servidor}.hsj.local 4625 Tipo de logon: 10 Conta: administrador Origem: {ipx} (1.912 ocorrências nas últimas 6 h)',
-      '{data} {hora} {servidor}.hsj.local 4624 Tipo de logon: 10 Conta: suporte.ti Endereço de rede de origem: {ipx}',
-      '{data} {hora} {servidor}.hsj.local 4672 Privilégios especiais atribuídos ao novo logon. Conta: suporte.ti',
+      '{data} {hora} {servidor}.hsp.local 4625 Tipo de logon: 10 Conta: administrador Origem: {ipx} (1.912 ocorrências nas últimas 6 h)',
+      '{data} {hora} {servidor}.hsp.local 4624 Tipo de logon: 10 Conta: suporte.ti Endereço de rede de origem: {ipx}',
+      '{data} {hora} {servidor}.hsp.local 4672 Privilégios especiais atribuídos ao novo logon. Conta: suporte.ti',
     ],
     contexto: [
       'Regra NAT antiga publica a porta 3389 de {servidor} direto na internet ("liberado para o fornecedor em 2021").',
       '{ipx}: hospedagem no exterior, listado em várias fontes por varredura de RDP.',
       'A conta suporte.ti é genérica, compartilhada e sem MFA.',
     ],
-    vars: { servidor: ['HSJ-APP02', 'HSJ-FAT03'], ipx: IP_EXTERNO, hora: HORA_MADRUGADA, data: DATA },
+    vars: { servidor: ['HSP-APP02', 'HSP-FAT03'], ipx: IP_EXTERNO, hora: HORA_MADRUGADA, data: DATA },
     veredito: 'tp',
     acao: 'incidente',
     justificativas: js(
@@ -284,8 +284,8 @@ export const N1_TP: ModeloAlerta[] = [
     titulo: 'Processo desconhecido leu o cofre de senhas do navegador em {host}',
     logs: [
       'Sysmon EventID=1 Image=C:\\Users\\{usuario}\\AppData\\Local\\Temp\\crack_planilha_pro.exe ParentImage=C:\\Windows\\explorer.exe Signature=nenhuma',
-      'Sentinela EDR: crack_planilha_pro.exe abriu C:\\Users\\{usuario}\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Login Data',
-      'Sentinela EDR: crack_planilha_pro.exe abriu ...\\Microsoft\\Edge\\User Data\\Default\\Cookies',
+      'Guarita EDR: crack_planilha_pro.exe abriu C:\\Users\\{usuario}\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Login Data',
+      'Guarita EDR: crack_planilha_pro.exe abriu ...\\Microsoft\\Edge\\User Data\\Default\\Cookies',
       'Sysmon EventID=3 Image=crack_planilha_pro.exe DestinationHostname=api.telegram.org DestinationPort=443',
     ],
     contexto: [
@@ -416,8 +416,8 @@ export const N1_TP: ModeloAlerta[] = [
     mitre: 'T1566.002',
     titulo: 'Consulta DNS a domínio de campanha ativa a partir de {host}',
     logs: [
-      '{data} {hora} client {ip} query: portal-convenio-hsj[.]online IN A + -> 203.0.113.81',
-      'Proxy {data} {hora} {ip} TCP_MISS/200 GET hxxps://portal-convenio-hsj[.]online/autorizacao {usuario}',
+      '{data} {hora} client {ip} query: portal-convenio-hsp[.]online IN A + -> 203.0.113.81',
+      'Proxy {data} {hora} {ip} TCP_MISS/200 GET hxxps://portal-convenio-hsp[.]online/autorizacao {usuario}',
       'Threat intel: domínio em campanha de phishing contra hospitais brasileiros, confiança alta, publicado hoje',
     ],
     contexto: [
@@ -425,7 +425,7 @@ export const N1_TP: ModeloAlerta[] = [
       'Domínio imita o portal de autorização de convênios; registrado há 5 dias.',
       'Ainda não há POST para o domínio; outras 2 estações receberam o mesmo e-mail.',
     ],
-    vars: { host: ['HSJ-FAT-PC04', 'HSJ-FAT-PC09'], ip: ['10.30.6.4', '10.30.6.9'], usuario: USU_HOSPITAL, hora: HORA_COMERCIAL, data: DATA },
+    vars: { host: ['HSP-FAT-PC04', 'HSP-FAT-PC09'], ip: ['10.30.6.4', '10.30.6.9'], usuario: USU_HOSPITAL, hora: HORA_COMERCIAL, data: DATA },
     veredito: 'tp',
     acao: 'bloquear',
     justificativas: js(
@@ -550,7 +550,7 @@ export const N1_TP: ModeloAlerta[] = [
       'Sysmon EventID=1 Image=C:\\Users\\Public\\pd64.exe CommandLine="pd64.exe -accepteula -ma lsass.exe C:\\Users\\Public\\l.dmp" User=PMI\\{usuario}',
       'Sysmon EventID=10 SourceImage=C:\\Users\\Public\\pd64.exe TargetImage=C:\\Windows\\system32\\lsass.exe GrantedAccess=0x1FFFFF',
       'Sysmon EventID=11 TargetFilename=C:\\Users\\Public\\l.dmp',
-      'Sentinela EDR: pd64.exe é o ProcDump (Sysinternals) renomeado, executado fora de qualquer GMUD',
+      'Guarita EDR: pd64.exe é o ProcDump (Sysinternals) renomeado, executado fora de qualquer GMUD',
     ],
     contexto: [
       'CMDB: {host} é servidor de aplicação da secretaria de finanças.',
@@ -616,9 +616,9 @@ export const N1_TP: ModeloAlerta[] = [
     logs: [
       'From: "Financeiro Sementes Paraná" <financeiro@sementes-parana[.]co> Reply-To: <cobranca.sementesparana@caixapostal-gratis[.]example>',
       'Return-Path: <bounce@envios-baratos[.]example>',
-      'Authentication-Results: mx.boigordo.coop.br; spf=pass smtp.mailfrom=envios-baratos.example; dkim=none; dmarc=none (sementes-parana.co sem registro DMARC)',
+      'Authentication-Results: mx.pastoralo.coop.br; spf=pass smtp.mailfrom=envios-baratos.example; dkim=none; dmarc=none (sementes-parana.co sem registro DMARC)',
       'Subject: Atualização cadastral URGENTE: nova conta para pagamento da NF {nf}',
-      'To: {usuario}@boigordo.coop.br',
+      'To: {usuario}@pastoralo.coop.br',
     ],
     contexto: [
       'O fornecedor verdadeiro usa sementesparana.com.br (sem hífen, .com.br), com DMARC p=reject.',
@@ -648,9 +648,9 @@ export const N1_TP: ModeloAlerta[] = [
     mitre: 'T1098',
     titulo: 'Conta nova adicionada ao Domain Admins às {hora}',
     logs: [
-      '{data} {hora} DC01.hsj.local 4720 Uma conta de usuário foi criada. Conta criadora: suporte.ti Nova conta: {conta}',
-      '{data} {hora} DC01.hsj.local 4728 Membro adicionado a grupo global com segurança habilitada. Grupo: Domain Admins Membro: {conta} Conta que alterou: suporte.ti',
-      '{data} {hora} DC01.hsj.local 4624 Tipo de logon: 3 Conta: {conta} Origem: 10.30.2.15',
+      '{data} {hora} DC01.hsp.local 4720 Uma conta de usuário foi criada. Conta criadora: suporte.ti Nova conta: {conta}',
+      '{data} {hora} DC01.hsp.local 4728 Membro adicionado a grupo global com segurança habilitada. Grupo: Domain Admins Membro: {conta} Conta que alterou: suporte.ti',
+      '{data} {hora} DC01.hsp.local 4624 Tipo de logon: 3 Conta: {conta} Origem: 10.30.2.15',
     ],
     contexto: [
       'Nenhuma GMUD, nenhum chamado. O nome imita conta de sistema.',
@@ -715,7 +715,7 @@ export const N1_TP: ModeloAlerta[] = [
     logs: [
       'Sysmon EventID=1 Image=C:\\Users\\{usuario}\\Downloads\\AnyDesk.exe ParentImage=C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe Signature="philandro Software GmbH" válida',
       'Sysmon EventID=3 Image=AnyDesk.exe DestinationPort=443 sessão de entrada iniciada {hora}',
-      'Sentinela EDR: durante a sessão, abertura do internet banking da empresa e do token no navegador',
+      'Guarita EDR: durante a sessão, abertura do internet banking da empresa e do token no navegador',
     ],
     contexto: [
       'CMDB: {host} é a estação do financeiro da padaria; a ferramenta de suporte aprovada é outra.',
