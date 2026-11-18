@@ -15,6 +15,7 @@ import { fecharDia, honrar, tirarNovas } from './motor/carreira';
 import { carregar, estado, limitar, novo, salvar, somar, temPartida, apagar } from './motor/estado';
 import { NOMES, PAPEIS, esc, fmt } from './motor/texto';
 import * as Som from './motor/som';
+import { filtro } from './motor/siem';
 import { aviso, avisarNovas } from './ui/avisos';
 import { cartaoDia, cracha, fechamento, menuInicial, pausa, telaFinal, comoSeJoga } from './ui/telas';
 
@@ -61,6 +62,8 @@ export async function iniciar() {
       b?.click();
       return b ? b.innerText : 'nada';
     },
+    // o robô de teste usa o mesmo filtro do Vigia para escolher exclusões seguras
+    filtro: (txt: string, r: Record<string, string | number>) => filtro(txt)(r),
     // segura a câmera onde o teste colocar (o menu gira a câmera sozinho)
     posar: () => {
       modo = 'tela';

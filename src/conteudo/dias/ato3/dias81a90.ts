@@ -16,7 +16,7 @@ export const DIAS_81_90: Dia[] = [
     resumo: 'Relatório executivo: conclusão primeiro, impacto em negócio, decisões pedidas e zero jargão.',
     aula: [
       'Diretoria não lê PCAP. O relatório executivo responde a quatro perguntas em uma página: **o que aconteceu**, **qual foi o impacto no negócio**, **o que já foi feito** e **o que precisamos que vocês decidam**. Comece pela conclusão (o famoso BLUF, bottom line up front): quem só ler o primeiro parágrafo precisa sair sabendo o essencial.',
-      'Impacto se mede na língua de quem lê: horas de atendimento paradas, pacientes remarcados, valor financeiro em risco, quantidade de titulares afetados, prazo regulatório (os 3 dias úteis da ANPD). "Comprometimento de 14 endpoints via T1021.002" vira "14 computadores da recepção e do faturamento foram afetados; o atendimento ficou 6 horas em papel".',
+      'Impacto se mede na língua de quem lê: horas de atendimento paradas, pacientes remarcados, valor financeiro em risco, quantidade de titulares afetados, prazo regulatório (os 3 dias úteis da ANPD). "Comprometimento de 14 endpoints via T1021.002" vira "14 computadores da recepção e do faturamento foram afetados; o atendimento ficou quase sete horas em papel".',
       'Seja honesto sobre a incerteza: separe **confirmado**, **provável** e **em investigação**. Não encha de adjetivo ("ataque altamente sofisticado de nível estatal") sem evidência; a diretoria vai repetir isso para a imprensa. E não esconda o que não funcionou: o relatório executivo é onde se consegue orçamento para consertar.',
       'O detalhe técnico vai em anexo: linha do tempo completa, IOCs, técnicas do ATT&CK, evidências. Termine com **decisões pedidas**, cada uma com custo, prazo e risco de não fazer. Diretor gosta de escolher entre opções claras, não de decifrar um tratado sobre Kerberos.',
     ].join('\n\n'),
@@ -36,7 +36,7 @@ export const DIAS_81_90: Dia[] = [
         perguntas: [
           {
             p: 'Qual é a melhor primeira frase do relatório?',
-            opcoes: ['Em 14 de março, um ransomware parou o prontuário por 6 horas; o atendimento seguiu em papel, os dados foram restaurados do backup e há indício de cópia de dados de pacientes, já comunicado à ANPD.', 'O presente documento tem por objetivo descrever o incidente.', 'Um ator de ameaça altamente sofisticado utilizou as técnicas T1566.001, T1204.002 e T1486.', 'Agradecemos a oportunidade de atender o hospital.'],
+            opcoes: ['Em 14 de março, um ransomware parou o prontuário por quase sete horas; o atendimento seguiu em papel, os dados foram restaurados do backup e há indício de cópia de dados de pacientes, já comunicado à ANPD.', 'O presente documento tem por objetivo descrever o incidente.', 'Um ator de ameaça altamente sofisticado utilizou as técnicas T1566.001, T1204.002 e T1486.', 'Agradecemos a oportunidade de atender o hospital.'],
             certa: 0,
             explicacao: 'A primeira frase já entrega o que aconteceu, o impacto, o que foi feito e o ponto regulatório. As outras opções gastam a única frase que todo mundo lê com formalidade, jargão ou cortesia.',
           },
@@ -83,7 +83,7 @@ export const DIAS_81_90: Dia[] = [
       { quem: 'kevin', texto: 'Noventa por cento pra você? Que proposta boa!', gesto: 'comemorar' },
       { quem: 'ro', texto: 'Noventa pra ele, Kevin. Noventa pra ele.', gesto: 'cruzar' },
       { quem: 'thiaguinho', texto: 'Eu já tenho um TikTok. Tem 14 seguidores. Doze são bots e dois são a minha mãe em dois celulares.', gesto: 'ombros' },
-      { quem: 'vandeco', texto: 'Em 2003 o coach de carreira era o seu chefe dizendo "aprende aí". Funcionava, e era de graça.' },
+      { quem: 'vandeco', texto: 'Coach que promete CISO em sete dias nunca passou uma madrugada com o Dr. Leôncio no telefone.' },
     ],
     fila: { quantidade: 9 },
     missoes: [
@@ -197,7 +197,7 @@ export const DIAS_81_90: Dia[] = [
           {
             texto: 'Topar. Cronograma, flashcards e grupo das 5h. A estabilidade chama.',
             reacao: [
-              { quem: 'jefferson', texto: 'Bem-vindo ao grupo! Primeira tarefa: a Lei 8.112 inteira até sexta. Depois a gente vê LGPD, que essa você já sabe de cor.', gesto: 'comemorar', expr: 'sorriso' },
+              { quem: 'jefferson', texto: 'Agora você está no grupo! Primeira tarefa: a Lei 8.112 inteira até sexta. Depois a gente vê LGPD, que essa você já sabe de cor.', gesto: 'comemorar', expr: 'sorriso' },
               { quem: 'ro', texto: 'Só não estuda no turno. Se o ransomware chegar e você estiver no artigo 117, eu conto para a banca.', gesto: 'apontar' },
             ],
             efeitos: { flag: 'concurso', energia: -10 },
@@ -263,7 +263,7 @@ export const DIAS_81_90: Dia[] = [
           {
             texto: 'Recusar e pedir uma trilha técnica: quero continuar caçando, investigando e ensinando.',
             reacao: [
-              { quem: 'vandeco', texto: 'Bem-vindo ao clube de quem prefere PCAP a planilha. A gente tem café sem açúcar e histórias de 2003.', gesto: 'sim', expr: 'sorriso' },
+              { quem: 'vandeco', texto: 'Agora você é do clube de quem prefere PCAP a planilha. A gente tem café sem açúcar e histórias de 2003.', gesto: 'sim', expr: 'sorriso' },
               { quem: 'gilmar', texto: 'Vou levar a ideia da carreira em Y para a diretoria. Sem tomate, porque esse é o meu.' },
             ],
             efeitos: { sanidade: 10 },
@@ -272,7 +272,7 @@ export const DIAS_81_90: Dia[] = [
             texto: 'Recusar e indicar a Pâmela, que faz o trabalho de três pessoas e ninguém percebe.',
             reacao: [
               { quem: 'pamela', texto: 'Eu? Sério? Alguém percebeu?', expr: 'surpresa' },
-              { quem: 'ro', texto: 'Finalmente alguém percebeu. Eu percebia, mas fico quieta por ironia.', gesto: 'comemorar', expr: 'sorriso' },
+              { quem: 'ro', texto: 'Finalmente alguém percebeu. Eu percebia, mas achei que era óbvio demais para precisar dizer. Erro meu.', gesto: 'comemorar', expr: 'sorriso' },
             ],
             efeitos: { reputacao: 10, sanidade: 5 },
           },
@@ -298,7 +298,7 @@ export const DIAS_81_90: Dia[] = [
       'Regra de ouro: amostra só em ambiente isolado, nada de rodar no notebook do SOC, e nada de subir arquivo de cliente em serviço público de análise sem autorização (consultar o hash pode; enviar o arquivo, não).',
     ].join('\n\n'),
     chegada: [
-      { quem: 'vandeco', texto: 'O implante do NB-COM-022 tem um bloco de bytes estranho no fim. E uma rotina de seis instruções que faz XOR com 0x5A. Já vi isso em 2003. E em 2009. E semana passada.', gesto: 'pensar' },
+      { quem: 'vandeco', texto: 'O implante do NB-COM-022, aquele do beacon da Tabajara, tem um bloco de bytes estranho no fim. E uma rotina de seis instruções que faz XOR com 0x5A. Já vi isso em 2003. E em 2009. E semana passada.', gesto: 'pensar' },
       { quem: 'thiaguinho', texto: '0x5A é 90 em decimal. Eu sei porque é o número do meu ônibus.', gesto: 'comemorar', expr: 'sorriso' },
       { quem: 'vandeco', texto: 'Finalmente o seu ônibus serviu para alguma coisa além de atrasar.' },
       { quem: 'keyla', texto: 'Se a configuração tiver o intervalo e o jitter, eu ajusto a regra de beacon. Ela vai disparar só com o que importa. Dessa vez é sério.', expr: 'sorriso' },
@@ -313,7 +313,7 @@ export const DIAS_81_90: Dia[] = [
         receita: ['hex', 'xor:90'],
         pergunta: 'Qual é o domínio do C2 na configuração?',
         resposta: 'painel-iptu-cobranca.top',
-        explicacao: 'Primeiro transforme o texto hexadecimal em bytes, depois faça XOR de cada byte com 90 (0x5A). Sai a configuração: C2 `painel-iptu-cobranca.top` na porta 8443, beacon de 300 segundos com 15% de jitter, campanha NORTE-IPTU. O domínio vai para bloqueio e para hunting em todos os clientes, e o nome da campanha acende uma luz: IPTU, norte... a Prefeitura de Pindaíba do Sul precisa ser avisada.',
+        explicacao: 'Primeiro transforme o texto hexadecimal em bytes, depois faça XOR de cada byte com 90 (0x5A). Sai a configuração: C2 `painel-iptu-cobranca.top` na porta 8443, beacon de 300 segundos com jitter de 15, campanha NORTE-IPTU. Repare que não é o `cdn.planilha-segura.top` do beacon da Tabajara: é um segundo C2, guardado no implante e ainda não visto na rede. O domínio vai para bloqueio e para hunting em todos os clientes, e o nome da campanha acende uma luz: IPTU, norte... a Prefeitura de Pindaíba do Sul precisa ser avisada.',
       },
     ],
     saida: [
@@ -393,16 +393,16 @@ export const DIAS_81_90: Dia[] = [
           'Abrir uma ponte única fora de banda entre Alfa e Bravo, com um líder do incidente',
           'Dividir as frentes: Alfa com identidade e VPN, Bravo com endpoints e rede',
           'Combinar a hora H para conter tudo ao mesmo tempo, sem alertar a quadrilha aos poucos',
-          'Na hora H, desabilitar a conta comprometida, derrubar as sessões de VPN e bloquear IPs e o domínio do C2',
-          'Isolar pelo EDR os hosts com o implante, sem desligar, e coletar memória',
+          'Na hora H, ao mesmo tempo: Alfa desabilita a conta e derruba as sessões de VPN, Bravo bloqueia IPs e domínios do C2 e isola pelo EDR os hosts com o implante, sem desligar',
+          'Coletar a memória dos hosts isolados, com hash e cadeia de custódia',
           'Trocar as credenciais privilegiadas e exigir MFA na VPN',
           'Caçar persistência nos dois sites antes de declarar a erradicação',
         ],
-        explicacao: 'Primeiro a estrutura (canal seguro e líder), depois a divisão de trabalho, depois o planejamento da hora H. Na hora H, identidade e rede caem junto com o isolamento dos hosts, preservando memória. Só então a troca de credenciais (de máquina limpa) e o MFA, e a caça à persistência garante que ninguém ficou com uma chave escondida debaixo do tapete.',
+        explicacao: 'Primeiro a estrutura (canal seguro e líder), depois a divisão de trabalho, depois o planejamento da hora H. Na hora H, identidade, rede e hosts caem juntos, com os hosts isolados e ligados; logo depois, a memória deles é coletada. Só então a troca de credenciais (de máquina limpa) e o MFA, e a caça à persistência garante que ninguém ficou com uma chave escondida debaixo do tapete.',
       },
     ],
     saida: [
-      { quem: 'socorro', texto: 'Hora H cumprida dos dois lados. Recife manda um abraço e um pedaço de bolo por Sedex.', gesto: 'comemorar', expr: 'sorriso' },
+      { quem: 'socorro', texto: 'Hora H cumprida dos dois lados. Recife manda um abraço e um pedaço de bolo de rolo no malote.', gesto: 'comemorar', expr: 'sorriso' },
       { quem: 'nildo', texto: 'Curitiba, vocês desligaram o microfone no mesmo milissegundo que a gente. Estranho, né? Deixa pra lá.', gesto: 'ombros' },
     ],
   },
@@ -422,8 +422,8 @@ export const DIAS_81_90: Dia[] = [
     ].join('\n\n'),
     chegada: [
       { quem: 'gilmar', texto: 'A prefeitura quer o relatório final. O tribunal de contas também. E o vereador quer um resumo para o Instagram.', gesto: 'ombros' },
-      { quem: 'ro', texto: 'Para o vereador a gente manda TLP:RED. Ele vai achar que é a cor do partido e não vai postar.', gesto: 'cruzar' },
-      { quem: 'vandeco', texto: 'Escrevi a linha do tempo à mão primeiro. Depois digitei. Em 2003 era só à mão. A letra era pior, o relatório era melhor.' },
+      { quem: 'ro', texto: 'Para o vereador a gente manda TLP:RED. Ele vai postar do mesmo jeito, mas pelo menos fica registrado que a gente avisou.', gesto: 'cruzar' },
+      { quem: 'vandeco', texto: 'Escrevi a linha do tempo à mão primeiro, depois digitei. A letra é horrível, mas a linha do tempo não tem um buraco.' },
       { quem: 'pamela', texto: 'Separei os indicadores: domínio do C2, os dois IPs da VPN, o hash do implante e o nome da campanha. Nenhum dado de contribuinte.', gesto: 'sim' },
       { quem: 'keyla', texto: 'E a regra de beacon nova pegou o mesmo C2 em mais um cliente hoje cedo. Ela disparou só uma vez. Só uma! Eu estou orgulhosa dela.', expr: 'sorriso', gesto: 'comemorar' },
     ],
@@ -487,7 +487,7 @@ export const DIAS_81_90: Dia[] = [
       { quem: 'ro', texto: 'Noventa dias. Falso positivo continua igual a boleto, sempre tem mais um. Mas hoje eu deixo a fila esperar dez minutos.', expr: 'sorriso' },
       { quem: 'vandeco', texto: 'Em 2003 eu não tinha uma equipe assim. Tinha um caderno e um ramal. Prefiro vocês. Não contem para o caderno.', gesto: 'pensar' },
       { quem: 'chat', texto: 'Dona Socorro, do Bravo: "Parabéns à Insônia! Mandamos bolo de rolo. Chegou igualzinho ao daí, né? Coincidência."' },
-      { quem: 'neide', texto: 'Já liguei o som. Desliguei o nobreak antes, não. Brincadeira. Aprendi.', gesto: 'cintura', expr: 'sorriso' },
+      { quem: 'neide', texto: 'Já liguei o som. Na tomada da copa, viu? No nobreak eu nem encostei. Aprendi.', gesto: 'cintura', expr: 'sorriso' },
     ],
     fila: { quantidade: 6 },
     missoes: [
@@ -524,7 +524,7 @@ export const DIAS_81_90: Dia[] = [
             texto: 'Puxar a Dona Neide para dançar no meio do SOC, ao som da rádio sertaneja do atendimento.',
             reacao: [
               { quem: 'neide', texto: 'Finalmente alguém com juízo nesse prédio! Gilmar, larga esse tomate e vem!', gesto: 'comemorar', expr: 'sorriso' },
-              { quem: 'gilmar', texto: 'Vou. Mas vou cronometrar. Seis minutos de dança, MTTD excelente.', gesto: 'ombros', expr: 'sorriso' },
+              { quem: 'gilmar', texto: 'Vou. Mas vou cronometrar. Seis minutos de dança, registrados como pausa programada.', gesto: 'ombros', expr: 'sorriso' },
             ],
             efeitos: { sanidade: 20, energia: -5 },
           },

@@ -61,7 +61,7 @@ function registrosW3C(): Registro[] {
   for (let i = 0; i < 30; i++) reg(r.int(0, 30000), 'POST', '/login.aspx', '-', r.um(clientes), r.um(navegadores), r.chance(0.85) ? 302 : 200, r.int(80, 600));
   for (let i = 0; i < 20; i++) reg(r.int(0, 30000), 'POST', '/cotacao.aspx', '-', r.um(clientes), r.um(navegadores), 200, r.int(100, 900));
   for (let i = 0; i < 8; i++) reg(r.int(0, 30000), 'POST', '/upload.aspx', '-', clientes[i * 3], r.um(navegadores), 200, r.int(400, 3000));
-  const atacante = '91.214.33.17';
+  const atacante = '203.0.113.17';
   const ua = 'Mozilla/5.0+(compatible;+MSIE+9.0;+Windows+NT+6.1)';
   ['/admin', '/.env', '/wp-login.php', '/backup.zip', '/web.config', '/phpmyadmin/'].forEach((p, i) => reg(18000 + i * 2, 'GET', p, '-', atacante, ua, 404, 3));
   reg(18100, 'POST', '/upload.aspx', '-', atacante, ua, 200, 812);
@@ -80,7 +80,7 @@ export const DIAS_39_45: Dia[] = [
     aula:
       'O EDR mostra a **árvore de processos**: quem criou quem, com que linha de comando, como qual usuário, e que conexões e arquivos cada processo fez. É ali que o alerta deixa de ser "tem um PowerShell" e vira história: `OUTLOOK.EXE` abriu `WINWORD.EXE`, que abriu `cmd.exe`, que abriu `powershell.exe`, que carregou uma DLL de `C:\\Users\\Public` e conectou num domínio de dois dias de idade.\n\n' +
       'Relações pai e filho que quase nunca são boas: Office criando shell (`T1204.002` execução pelo usuário, seguida de `T1059`), `rundll32.exe` carregando DLL de pasta de usuário (`T1218.011`), `w3wp.exe` criando `cmd.exe` (webshell), `services.exe` criando binário de pasta temporária. O processo pai explica mais que o nome do filho.\n\n' +
-      '**Isolar** no EDR corta a rede da máquina, menos a comunicação com o console, e mantém o host ligado: a memória fica preservada para forense e o atacante perde o canal. Isolar estação de recepção com macro ativa é decisão fácil. Isolar o servidor do prontuário do hospital, o PDV da padaria em Black Friday ou o controlador de domínio **não é decisão do analista sozinho**: siga o playbook, que define quem aprova e o que fazer enquanto a aprovação não vem (bloquear o IOC, matar o processo, desabilitar a conta).\n\n' +
+      '**Isolar** no EDR corta a rede da máquina, menos a comunicação com o console, e mantém o host ligado: a memória fica preservada para forense e o atacante perde o canal. Isolar estação de recepção com macro ativa é decisão fácil. Isolar o servidor do prontuário do hospital, o PDV da padaria em Black Friday ou o controlador de domínio **não se decide no turno sem aprovação**: siga o playbook, que define quem aprova e o que fazer enquanto a aprovação não vem (bloquear o IOC, matar o processo, desabilitar a conta).\n\n' +
       'Antes ou logo depois de isolar, registre os IOCs (hash, domínio, IP, caminho), procure os mesmos IOCs em outras máquinas e anote no ticket o horário da contenção. Desligar da tomada não é contenção, é apagar a memória com pressa.',
     chegada: [
       { quem: 'brenda', texto: 'O EDR tem um botão vermelho escrito "Isolar". Eu posso apertar? Eu quero muito apertar.', gesto: 'apontar', expr: 'surpresa' },
@@ -102,7 +102,7 @@ export const DIAS_39_45: Dia[] = [
           '            |-- cmd.exe (PID 7912) /c powershell -nop -w hidden -enc SQBFAFgAIAAo...\n' +
           '                 |-- powershell.exe (PID 8020)\n' +
           '                      |-- rundll32.exe (PID 8144) C:\\Users\\Public\\cache.dll,Iniciar\n' +
-          '[09:14:40] rundll32.exe (PID 8144) conecta em 77.83.12.204:443\n' +
+          '[09:14:40] rundll32.exe (PID 8144) conecta em 198.51.100.204:443\n' +
           '           SNI: atualiza-cdn-office.top (domínio registrado há 2 dias)\n' +
           '[09:15:10] rundll32.exe cria chave HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\CacheSvc',
         perguntas: [
@@ -135,7 +135,7 @@ export const DIAS_39_45: Dia[] = [
     ],
     saida: [
       { quem: 'brenda', texto: 'Apertei o botão vermelho com justificativa no ticket. Foi o momento mais feliz da minha semana.', gesto: 'comemorar', expr: 'sorriso' },
-      { quem: 'gilmar', texto: 'Isolamento com horário anotado. O tomate aprova.', gesto: 'sim' },
+      { quem: 'gilmar', texto: 'Isolamento com horário anotado. Isso vira gráfico na reunião de segunda.', gesto: 'sim' },
     ],
   },
   {
@@ -150,7 +150,7 @@ export const DIAS_39_45: Dia[] = [
       'Exclusão boa usa **caminho completo** e, se a fonte tiver, **assinatura** ou hash. Exclusão ruim usa o nome do arquivo: qualquer atacante pode chamar o binário de `MsMpEng.exe` e jogar em `C:\\Users\\Public`. Também fique de olho em binário legítimo do sistema usado para o mal: `rundll32.exe` é assinado pela Microsoft e aparece em dump de LSASS via `comsvcs.dll`. Assinatura válida diz quem fez o arquivo, não quem está usando.\n\n' +
       'Proteções que reduzem o problema: **LSA Protection** (RunAsPPL), Credential Guard e a regra de ASR do Defender que bloqueia roubo de credencial do LSASS. Proteger o LSASS é como esconder o pote de biscoito: não acaba com a fome, mas atrasa bastante.',
     chegada: [
-      { quem: 'keyla', texto: 'Minha regra de LSASS pegou 56 tentativas de Mimikatz ontem! O antivírus é o maior hacker da Tabajara!', gesto: 'comemorar', expr: 'sorriso' },
+      { quem: 'keyla', texto: 'Minha regra de LSASS pegou 58 tentativas de Mimikatz ontem! O antivírus é o maior hacker da Tabajara!', gesto: 'comemorar', expr: 'sorriso' },
       { quem: 'ro', texto: 'O antivírus olhando a memória do LSASS é o porteiro olhando a portaria. Ele é pago pra isso.', gesto: 'cintura' },
       { quem: 'kevin', texto: 'Então exclui tudo que chama MsMpEng.exe e pronto.', gesto: 'ombros' },
       { quem: 'vandeco', texto: 'Em 2008 vi um malware chamado `svchost.exe` morando na pasta do Messenger. Nome de arquivo não é RG, Kevin.', expr: 'neutro' },
@@ -176,7 +176,7 @@ export const DIAS_39_45: Dia[] = [
       },
     ],
     saida: [
-      { quem: 'keyla', texto: 'De 56 para 8, e dois deles são ataque de verdade. Minha regra virou adulta.', expr: 'sorriso' },
+      { quem: 'keyla', texto: 'De 58 para 8, e dois deles são ataque de verdade. Minha regra virou adulta.', expr: 'sorriso' },
       { quem: 'ro', texto: 'E as outras seis são WMI. Semana que vem a gente conversa com ele também.', gesto: 'sim' },
     ],
   },
@@ -208,7 +208,7 @@ export const DIAS_39_45: Dia[] = [
           'Domínio: rastreio-correio-entrega.top\n' +
           'Criação (RDAP): 2026-03-15 | Hoje: 2026-03-17\n' +
           'Registrador: privacidade ativada\n' +
-          'Resolve para: 103.77.41.9 (ASN de VPS, outro país)\n' +
+          'Resolve para: 203.0.113.9 (ASN de VPS, outro país)\n' +
           'Certificado TLS: emitido em 2026-03-15 22:41 UTC\n' +
           'Reputação: 0 de 70 serviços marcam como malicioso\n' +
           'DNS passivo do IP: 38 domínios nos últimos 10 dias, ex.: segunda-via-boleto-agora.top, entrega-pendente-taxa.top',
@@ -294,7 +294,7 @@ export const DIAS_39_45: Dia[] = [
       'O que denuncia persistência maliciosa: binário em pasta de usuário ou temporária (`AppData`, `Public`, `Temp`), nome imitando o sistema (`svch0st.exe`, `WindowsUpdater`), comando com PowerShell codificado, tarefa criada por usuário comum fora de janela de mudança e autor estranho no XML.\n\n' +
       'Na resposta, remover a persistência é parte do trabalho, mas só depois de **documentar** (chave, valor, caminho, hash, horário). Apagar antes de registrar é limpar a cena do crime para a perícia chegar e achar o chão brilhando.',
     chegada: [
-      { quem: 'ro', texto: 'Limparam a máquina da recepção ontem. Hoje o malware voltou. Deve ter gostado do café.', gesto: 'cintura' },
+      { quem: 'ro', texto: 'Limparam a máquina da recepção na semana passada. Hoje o malware voltou. Deve ter gostado do café.', gesto: 'cintura' },
       { quem: 'keyla', texto: 'Será que tem uma tarefa agendada? Eu tenho uma regra pra 4698! Ela dispara toda vez que o Windows Update cria tarefa.', expr: 'sorriso' },
       { quem: 'vandeco', texto: 'Malware que volta tem chave. Procura no registro, nas tarefas, nos serviços e no WMI. Nessa ordem, que é a ordem da preguiça do atacante.', expr: 'neutro' },
       { quem: 'neide', texto: 'Inquilino que não sai a gente resolve trocando a fechadura, {nome}.', gesto: 'apontar' },
@@ -336,7 +336,7 @@ export const DIAS_39_45: Dia[] = [
             explicacao: 'Sysmon 19 é o filtro, 20 é o consumidor e 21 é a ligação. Juntos, executam comando quando a condição do filtro acontece.',
           },
           {
-            p: 'A limpeza de ontem falhou. Qual é a lição para a próxima resposta?',
+            p: 'A limpeza falhou. Qual é a lição para a próxima resposta?',
             opcoes: ['Rodar o antivírus duas vezes', 'Procurar todos os mecanismos de persistência (registro, tarefas, serviços, WMI) e documentar cada um antes de remover; na dúvida, reinstalar a máquina', 'Trocar só a senha do usuário', 'Desligar o Sysmon para não gerar mais alerta'],
             certa: 1,
             explicacao: 'Atacante raramente deixa uma porta só. Remover um mecanismo e esquecer os outros é o motivo mais comum de "o malware voltou".',
@@ -357,7 +357,7 @@ export const DIAS_39_45: Dia[] = [
     resumo: 'Webshell: logs W3C do IIS, POST em .aspx estranho e o w3wp.exe criando cmd.exe.',
     aula:
       '**Webshell** (`T1505.003`) é um arquivo de script colocado no servidor web que recebe comandos por HTTP. Em IIS costuma ser `.aspx`; em Apache e Nginx, `.php` ou `.jsp`. Entra por upload sem validação, vulnerabilidade da aplicação ou credencial de FTP vazada.\n\n' +
-      'O log **W3C** do IIS tem os campos que você precisa: `date`, `time`, `s-ip`, `cs-method`, `cs-uri-stem` (o caminho), `cs-uri-query`, `s-port`, `c-ip` (o cliente), `cs(User-Agent)`, `sc-status` e `time-taken`. O **corpo do POST não aparece**, então o comando não está no log: o que aparece é o padrão.\n\n' +
+      'O log **W3C** do IIS tem os campos que você precisa: `date`, `time`, `s-ip`, `cs-method`, `cs-uri-stem` (o caminho), `cs-uri-query`, `s-port`, `c-ip` (o cliente), `cs(User-Agent)`, `sc-status` e `time-taken`. O IIS grava `date` e `time` em UTC por padrão. O **corpo do POST não aparece**, então o comando não está no log: o que aparece é o padrão.\n\n' +
       'Sinais: arquivo `.aspx` que não faz parte do sistema, numa pasta de upload ou de imagens; recebendo **POST de um único IP**, que antes fez varredura (vários 404 para `/.env`, `/wp-login.php`, `/backup.zip`); `User-Agent` antigo ou estranho; `time-taken` variável (cada comando demora o seu tempo). No EDR, o processo `w3wp.exe` criando `cmd.exe`, `powershell.exe` ou `whoami.exe` fecha o caso.\n\n' +
       'Uma pergunta que resolve muita coisa: **quantos clientes diferentes acessam esse arquivo?** Página legítima é usada por muita gente. Webshell é usada por uma pessoa só, que não quer companhia.',
     chegada: [
@@ -377,7 +377,7 @@ export const DIAS_39_45: Dia[] = [
         resposta: '/uploads/ajuda.aspx',
         gabarito: 'cs_method=POST cs_uri_stem=*.aspx | distintos c_ip por cs_uri_stem | ordenar distintos',
         dica: 'Conte quantos clientes diferentes fazem POST em cada página: `cs_method=POST cs_uri_stem=*.aspx | distintos c_ip por cs_uri_stem | ordenar distintos`. Sem o `-`, ordena do menor para o maior.',
-        explicacao: 'A `/uploads/ajuda.aspx` recebe POST de um único IP (91.214.33.17), que antes varreu o servidor com vários 404 e fez um POST em `/upload.aspx` (a provável porta de entrada). Página de ajuda em pasta de uploads, com um cliente só e `User-Agent` de navegador de 2011, é webshell. Próximos passos: preservar o arquivo e os logs, tirar o servidor de exposição conforme o playbook, revisar o que o `w3wp.exe` executou no EDR e corrigir a validação do upload.',
+        explicacao: 'A `/uploads/ajuda.aspx` recebe POST de um único IP (203.0.113.17), que antes varreu o servidor com vários 404 e fez um POST em `/upload.aspx` (a provável porta de entrada). Página de ajuda em pasta de uploads, com um cliente só e `User-Agent` de navegador de 2011, é webshell. Próximos passos: preservar o arquivo e os logs, tirar o servidor de exposição conforme o playbook, revisar o que o `w3wp.exe` executou no EDR e corrigir a validação do upload.',
       },
     ],
     saida: [
@@ -399,7 +399,7 @@ export const DIAS_39_45: Dia[] = [
     chegada: [
       { quem: 'gilmar', texto: 'Bom dia, equipe! Trouxe a cafeteira nova pro SOC. Italiana, quinze bar de pressão, a gente merece.', gesto: 'comemorar', expr: 'sorriso' },
       { quem: 'narrador', texto: 'Um clique seco. O videowall apaga, os monitores apagam, o ar-condicionado suspira pela primeira vez em anos. Só a cafeteira continua acesa, feliz.' },
-      { quem: 'ro', texto: 'Alguém tirou o nobreak da tomada para ligar a cafeteira. Eu não vou dizer quem. Mas ele tem um timer de tomate.', gesto: 'cruzar', expr: 'bravo' },
+      { quem: 'ro', texto: 'Alguém ligou a cafeteira na tomada do nobreak. O nobreak, com a bateria vencida desde 2021, não aguentou e desistiu de viver. Eu não vou dizer quem foi. Mas ele tem um timer de tomate.', gesto: 'cruzar', expr: 'bravo' },
       { quem: 'neide', texto: 'Dessa vez não fui eu. Eu juro pelo meu aspirador.', gesto: 'nao', expr: 'surpresa' },
       { quem: 'vandeco', texto: 'O Vigia caiu junto, o chat caiu junto. Alguém tem o telefone da Dona Socorro anotado em papel?', gesto: 'pensar' },
       { quem: 'pamela', texto: 'Eu tenho. Está no plano de continuidade impresso, na gaveta que ninguém abre desde 2022.', gesto: 'apontar' },

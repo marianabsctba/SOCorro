@@ -94,6 +94,7 @@ export function limitar(v: number) {
 }
 
 export function media(): number {
-  const n = estado().notas;
+  // só os dias de fato fechados contam (um save antigo ou um teste pode ter buracos na lista)
+  const n = estado().notas.filter((x) => typeof x === 'number');
   return n.length ? Math.round(n.reduce((a, b) => a + b, 0) / n.length) : 0;
 }

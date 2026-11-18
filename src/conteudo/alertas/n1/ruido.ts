@@ -1,6 +1,6 @@
 // Falsos positivos de N1: a regra viu uma coisa e achou que era outra.
 import type { ModeloAlerta } from '../../tipos';
-import { js, HORA_COMERCIAL, HORA_MADRUGADA, DATA, IP_EXTERNO, USU_TABAJARA, USU_PREFEITURA, USU_HOSPITAL, USU_COOPERATIVA, USU_PADARIA, USU_OLHOVIVO } from './comum';
+import { js, HORA_COMERCIAL, HORA_MADRUGADA, DATA, IP_EXTERNO, USU_TABAJARA, USU_PREFEITURA, USU_HOSPITAL, USU_COOPERATIVA, USU_PADARIA, USU_INSONIA } from './comum';
 
 export const N1_FP: ModeloAlerta[] = [
   {
@@ -20,7 +20,7 @@ export const N1_FP: ModeloAlerta[] = [
       'Guarita EDR: assinatura do processo de origem "Microsoft Windows Publisher" VÁLIDA, prevalência 100% dos hosts',
     ],
     contexto: [
-      'CMDB: {host} é estação do setor de Sinistros, dona {usuario}.',
+      'CMDB: {host} é estação do setor de Sinistros, usada por {usuario}.',
       'Esta regra disparou 3.412 vezes este mês, 3.409 delas com origem MsMpEng.exe.',
       'Agenda do antivírus: varredura completa toda terça às {hora}.',
     ],
@@ -98,7 +98,7 @@ export const N1_FP: ModeloAlerta[] = [
     justificativas: js(
       3,
       'Túnel DNS: subdomínio longo com cara de aleatório é exfiltração.',
-      'Verdadeiro positivo porque o domínio não é .com.br.',
+      'Exfiltração de hashes de arquivos do faturamento para fora do hospital: bloquear o domínio.',
       'Benigno, mas precisa bloquear o domínio por precaução.',
       'Os rótulos são hashes de 32 hex consultados no domínio de reputação do próprio antivírus, com resposta de loopback, que é o protocolo documentado do fabricante.',
     ),
@@ -161,7 +161,7 @@ export const N1_FP: ModeloAlerta[] = [
       'O padrão se repete em toda estação com Chrome, sempre 3 nomes de 7 a 15 letras, sem domínio (rótulo único), na abertura do navegador ou troca de rede.',
       'Nenhuma conexão posterior para IP resolvido; todas as respostas são NXDOMAIN.',
     ],
-    vars: { host: ['PMI-PROT-014', 'PMI-PROT-022', 'PMI-GAB-003'], ip: ['10.20.1.14', '10.20.1.22', '10.20.3.3'], usuario: USU_PREFEITURA, hora: HORA_COMERCIAL, data: DATA },
+    vars: { host: ['PREF-PROT-014', 'PREF-PROT-022', 'PREF-GAB-003'], ip: ['10.20.1.14', '10.20.1.22', '10.20.3.3'], usuario: USU_PREFEITURA, hora: HORA_COMERCIAL, data: DATA },
     veredito: 'fp',
     justificativas: js(
       2,
@@ -172,7 +172,7 @@ export const N1_FP: ModeloAlerta[] = [
     ),
     explicacao:
       'O Chrome e outros navegadores baseados em Chromium consultam três nomes aleatórios sem domínio para saber se o provedor responde NXDOMAIN honestamente. DGA de verdade gera nomes com domínio de topo (.com, .top, .xyz), muitos por minuto, e algum acaba resolvendo e recebendo conexão. O Sysmon 22 mostra quem fez a consulta: sempre confira o processo.',
-    piada: 'O protocolo da prefeitura tem Windows 7 em metade das mesas, mas o alerta foi justo no Chrome atualizado. Ironia é isso.',
+    piada: 'O Chrome faz três perguntas sem sentido ao DNS toda vez que abre. A regra respondeu às três com severidade alta.',
     peso: 2,
   },
   {
@@ -193,7 +193,7 @@ export const N1_FP: ModeloAlerta[] = [
       'O blog é de pesquisa de ameaças, com artigos de análise de malware e detecção; a categoria "Hacking" vem do fornecedor do filtro web.',
       'Nenhum download de arquivo, só páginas HTML e imagens.',
     ],
-    vars: { usuario: USU_OLHOVIVO, ip: ['10.60.1.21', '10.60.1.22', '10.60.1.35'], hora: HORA_COMERCIAL, data: DATA },
+    vars: { usuario: USU_INSONIA, ip: ['10.60.1.21', '10.60.1.22', '10.60.1.35'], hora: HORA_COMERCIAL, data: DATA },
     veredito: 'fp',
     justificativas: js(
       1,
@@ -219,11 +219,12 @@ export const N1_FP: ModeloAlerta[] = [
       '{data} {hora} {ip} TCP_TUNNEL/200 1204 CONNECT spclient.wg.spotify.com:443 {usuario} categoria="Streaming de áudio"',
       '{data} {hora} +{intervalo}s {ip} TCP_TUNNEL/200 1187 CONNECT spclient.wg.spotify.com:443 {usuario}',
       '{data} {hora} +{intervalo}s {ip} TCP_TUNNEL/200 1211 CONNECT spclient.wg.spotify.com:443 {usuario}',
-      'Sysmon EventID=3 Image=C:\\Users\\{usuario}\\AppData\\Roaming\\Spotify\\Spotify.exe DestinationPort=443 Signature="Spotify AB" válida',
+      'Sysmon EventID=3 Image=C:\\Users\\{usuario}\\AppData\\Roaming\\Spotify\\Spotify.exe DestinationHostname=spclient.wg.spotify.com DestinationPort=443',
+      'Guarita EDR: Spotify.exe com assinatura válida de "Spotify AB", prevalência de 214 estações',
     ],
     contexto: [
-      'CMDB: {host} é estação do atendimento, dono {usuario}.',
-      'Política de uso aceitável da Tabajara permite streaming de áudio fora de horário de pico.',
+      'CMDB: {host} é estação do atendimento, usada por {usuario}.',
+      'Reputação do destino: domínio do próprio serviço de streaming, antigo e visto em todos os clientes da Insônia.',
       'O mesmo padrão aparece em 214 estações.',
     ],
     vars: { host: ['TAB-ATD-0312', 'TAB-ATD-0455', 'TAB-COM-0101'], ip: ['10.10.3.12', '10.10.3.55', '10.10.5.1'], usuario: USU_TABAJARA, intervalo: ['30', '60'], hora: HORA_COMERCIAL, data: DATA },
@@ -281,7 +282,7 @@ export const N1_FP: ModeloAlerta[] = [
     mitre: 'T1557',
     titulo: 'Possível ataque de intermediário: certificado inválido em portal.hsp.local',
     logs: [
-      '{data} {hora} {ip} NONE/503 0 CONNECT portal.hsp.local:443 {usuario} - ssl_error="certificate has expired" notAfter="{vencimento} 23:59:59 GMT"',
+      '{data} {hora} {ip} NONE/503 0 CONNECT portal.hsp.local:443 {usuario} - ssl_error="certificate has expired" notAfter="{data} 02:59:59 GMT" (23:59:59 de ontem, horário de Brasília)',
       'issuer="CN=HSP-AC-Interna, O=Hospital Santa Paciencia" subject="CN=portal.hsp.local" serial=4F:1A:00:7C sha256=igual ao certificado de ontem',
       'Vigia SIEM: 1.327 ocorrências desde 00:00, de 412 estações distintas, mesmo serial',
     ],
@@ -290,7 +291,7 @@ export const N1_FP: ModeloAlerta[] = [
       'Ticket do service desk aberto às 07h: "portal de escalas dá erro de segurança".',
       'Nenhuma mudança de rota ou de DNS registrada.',
     ],
-    vars: { ip: ['10.30.12.40', '10.30.15.8', '10.30.20.77'], usuario: USU_HOSPITAL, vencimento: ['Mar 08 2026', 'Abr 05 2026', 'Mai 10 2026'], hora: HORA_COMERCIAL, data: DATA },
+    vars: { ip: ['10.30.12.40', '10.30.15.8', '10.30.20.77'], usuario: USU_HOSPITAL, hora: HORA_COMERCIAL, data: DATA },
     veredito: 'fp',
     justificativas: js(
       3,
@@ -313,8 +314,8 @@ export const N1_FP: ModeloAlerta[] = [
     mitre: 'T1078.004',
     titulo: 'Viagem impossível: {usuario} em Cascavel e em São Paulo em 4 minutos',
     logs: [
-      '{"CreationTime":"{data}T{hora}","Operation":"UserLoggedIn","UserId":"{usuario}@pastoralo.coop.br","ClientIP":"198.51.100.61","Geo":"Cascavel, PR","ResultStatus":"Success","DeviceTrust":"Hybrid Azure AD joined"}',
-      '{"CreationTime":"{data}T{hora}+4min","Operation":"UserLoggedIn","UserId":"{usuario}@pastoralo.coop.br","ClientIP":"198.51.100.200","Geo":"São Paulo, SP","ResultStatus":"Success","DeviceTrust":"Hybrid Azure AD joined"}',
+      '{"CreationTime":"{data}T{hora}","Operation":"UserLoggedIn","UserId":"{usuario}@pastoralo.exemplo","ClientIP":"198.51.100.61","Geo":"Cascavel, PR","ResultStatus":"Success","DeviceTrust":"Hybrid Azure AD joined"}',
+      '{"CreationTime":"{data}T{hora}+4min","Operation":"UserLoggedIn","UserId":"{usuario}@pastoralo.exemplo","ClientIP":"198.51.100.200","Geo":"São Paulo, SP","ResultStatus":"Success","DeviceTrust":"Hybrid Azure AD joined"}',
       'VPN: {data} {hora} vpn-gw01 user={usuario} assigned=10.40.200.17 tunnel=full egress=198.51.100.200',
     ],
     contexto: [
@@ -346,12 +347,12 @@ export const N1_FP: ModeloAlerta[] = [
     mitre: 'T1078.004',
     titulo: 'Viagem impossível: {usuario} em Curitiba e em Frankfurt no mesmo minuto',
     logs: [
-      '{"CreationTime":"{data}T{hora}","Operation":"UserLoggedIn","UserId":"{usuario}@migalhadebytedigital.com.br","ClientIP":"203.0.113.90","Geo":"Curitiba, PR","UserAgent":"Outlook-Windows/16.0"}',
-      '{"CreationTime":"{data}T{hora}","Operation":"MailItemsAccessed","UserId":"{usuario}@migalhadebytedigital.com.br","ClientIP":"192.0.2.150","Geo":"Frankfurt, DE","AppId":"conector-erp-pedidos","ClientInfoString":"Client=REST;"}',
+      '{"CreationTime":"{data}T{hora}","Operation":"UserLoggedIn","UserId":"{usuario}@migalhadebyte.exemplo","ClientIP":"203.0.113.90","Geo":"Curitiba, PR","UserAgent":"Outlook-Windows/16.0"}',
+      '{"CreationTime":"{data}T{hora}","Operation":"MailItemsAccessed","UserId":"conector-erp-pedidos","AppId":"conector-erp-pedidos","MailboxOwnerUPN":"{usuario}@migalhadebyte.exemplo","ClientIPAddress":"192.0.2.150","Geo":"Frankfurt, DE","ClientInfoString":"Client=REST;"}',
       'Detalhe: o segundo evento é acesso por aplicativo registrado (service principal), não login interativo',
     ],
     contexto: [
-      '192.0.2.150 pertence à faixa de saída do provedor de nuvem onde roda o conector do ERP, que lê a caixa pedidos@ para importar pedidos.',
+      '192.0.2.150 pertence à faixa de saída do provedor de nuvem onde roda o conector do ERP, que lê a caixa de {usuario}, onde chegam os pedidos do site, para importá-los.',
       'O conector foi autorizado pelo TI da padaria (consentimento de administrador registrado).',
       'Nenhum login interativo vindo da Alemanha nos últimos 90 dias.',
     ],
@@ -360,12 +361,12 @@ export const N1_FP: ModeloAlerta[] = [
     justificativas: js(
       2,
       'Conta comprometida a partir da Alemanha, resetar a senha.',
-      'Benigno: a usuária está de férias na Europa.',
+      'Benigno: a pessoa está de férias na Europa.',
       'O acesso da Alemanha é do aplicativo conector do ERP rodando na nuvem, não da pessoa; a regra misturou login interativo com acesso por aplicativo.',
     ),
     explicacao:
-      'Muita viagem impossível nasce de comparar coisas diferentes: login de gente com acesso de aplicativo, sincronização de celular, serviços de nuvem. Olhe Operation, AppId e ClientInfoString antes do mapa. O ajuste certo na regra é considerar só logins interativos.',
-    piada: 'A padaria não tem backup, mas tem conector de ERP em Frankfurt. Tem gente que começa a casa pelo telhado.',
+      'Muita viagem impossível nasce de comparar coisas diferentes: login de gente com acesso de aplicativo, sincronização de celular, serviços de nuvem. Olhe Operation, UserId, AppId e ClientInfoString antes do mapa. O ajuste certo na regra é considerar só logins interativos.',
+    piada: 'O conector do ERP lê pedidos de Frankfurt e nunca tirou férias. É o funcionário mais viajado da padaria.',
     peso: 2,
   },
   {
@@ -411,8 +412,8 @@ export const N1_FP: ModeloAlerta[] = [
     mitre: 'T1203',
     titulo: 'Shellcode detectado no tráfego entre {origem} e o PACS',
     logs: [
-      '{data} {hora} [**] [1:2101424:9] SHELLCODE x86 NOOP [**] [Classification: Executable Code was Detected] [Priority: 1] {proto} {origem}:49822 -> 10.30.8.5:104',
-      '{data} {hora} [**] [1:2101424:9] SHELLCODE x86 NOOP [**] {proto} {origem}:49822 -> 10.30.8.5:104 payload contém sequência longa de 0x90',
+      '{data} {hora} [**] [1:2101394:9] GPL SHELLCODE x86 NOOP [**] [Classification: Executable Code was Detected] [Priority: 1] {proto} {origem}:49822 -> 10.30.8.5:104',
+      '{data} {hora} [**] [1:2101394:9] GPL SHELLCODE x86 NOOP [**] {proto} {origem}:49822 -> 10.30.8.5:104 payload contém sequência longa de 0x90',
       'fluxo: protocolo DICOM (porta 104), C-STORE, 312 MB, AE Title origem "TOMOGRAFO_SALA3"',
     ],
     contexto: [
@@ -426,7 +427,7 @@ export const N1_FP: ModeloAlerta[] = [
       3,
       'Exploração do PACS: shellcode é sempre ataque.',
       'Isolar o tomógrafo imediatamente.',
-      'Benigno porque o tomógrafo é autorizado a mandar shellcode.',
+      'Benigno: o tomógrafo tem regra liberada no firewall para falar com o PACS, então o tráfego é autorizado.',
       'É a imagem da tomografia trafegando em DICOM; bytes repetidos nos pixels casam com a assinatura genérica de NOP sled.',
     ),
     explicacao:
@@ -442,26 +443,26 @@ export const N1_FP: ModeloAlerta[] = [
     severidade: 'alta',
     titulo: 'DLP: e-mail externo com {n} números de CPF enviado por {usuario}',
     logs: [
-      '{data} {hora} dlp policy="CPF em massa" action=AUDIT from={usuario}@migalhadebytedigital.com.br to=logistica@transportadora-parceira.example subject="Pedidos para entrega amanhã"',
+      '{data} {hora} dlp policy="CPF em massa" action=AUDIT from={usuario}@migalhadebyte.exemplo to=logistica@transportadora-parceira.example subject="Pedidos para entrega amanhã"',
       'anexo=pedidos_entrega.csv matches={n} padrao="11 dígitos com ou sem pontuação" validacao_digito_verificador=DESLIGADA',
       'amostra (mascarada): 2026041***** ; 2026041***** ; 2026041*****',
     ],
     contexto: [
       'Os "CPFs" são números de pedido de 11 dígitos no formato AAAAMMDD + sequencial.',
-      'Rodando o dígito verificador do CPF, 0 de {n} números são CPFs válidos.',
+      'Rodando o dígito verificador, só cerca de 1 em cada 100 números passa, a mesma taxa de qualquer sequência de 11 dígitos ao acaso; todos batem com pedidos reais no ERP.',
       'O envio diário para a transportadora está previsto no contrato.',
     ],
     vars: { usuario: USU_PADARIA, n: ['212', '347', '588'], hora: HORA_COMERCIAL, data: DATA },
     veredito: 'fp',
     justificativas: js(
       0,
-      'Os números são códigos de pedido de 11 dígitos; nenhum passa no dígito verificador do CPF, e a regra está com a validação desligada.',
+      'Os números são códigos de pedido de 11 dígitos (data mais sequencial) que batem com o ERP; a regra só conta 11 dígitos, com a validação do CPF desligada.',
       'Vazamento de dados pessoais, tem que comunicar a ANPD.',
       'Benigno: CPF pode ser enviado para transportadora.',
     ),
     explicacao:
-      'CPF tem dois dígitos verificadores, e regra de DLP que procura "11 números" sem validar dispara com pedido, protocolo e telefone. Confira a amostra mascarada e o algoritmo. O fechamento bom recomenda ligar a validação do dígito na política.',
-    piada: 'A padaria tem DLP para CPF e nenhum backup. Pelo menos quando perder tudo, vai perder sem vazar.',
+      'CPF tem dois dígitos verificadores, e regra de DLP que procura "11 números" sem validar dispara com pedido, protocolo e telefone. Confira a amostra mascarada e o algoritmo. Ligar a validação corta quase todo o ruído (só 1 em cada 100 números ao acaso passa), e o fechamento bom recomenda isso na política.',
+    piada: 'Com a validação desligada, o DLP da padaria enxerga CPF até no código de barras do sonho.',
   },
   {
     id: 'n1-fp-firewall-netbios',
@@ -479,7 +480,7 @@ export const N1_FP: ModeloAlerta[] = [
     ],
     contexto: [
       'CMDB: {ip} é estação Windows 7 do protocolo, sem atualização desde 2020.',
-      'Após a segmentação da rede em setembro, broadcast NetBIOS entre VLANs passou a ser negado e registrado.',
+      'Desde a segmentação da rede em setembro, o firewall interno é o gateway da VLAN do protocolo e registra como negado todo broadcast NetBIOS que chega nele.',
       'O mesmo padrão aparece em 37 estações antigas.',
     ],
     vars: { ip: ['10.20.1.31', '10.20.1.44', '10.20.2.9'], hora: HORA_COMERCIAL, data: DATA },
@@ -506,15 +507,15 @@ export const N1_FP: ModeloAlerta[] = [
     titulo: 'Executável em AppData executado por {usuario} em {host}',
     logs: [
       'Sysmon EventID=1 UtcTime={data} {hora} Image=C:\\Users\\{usuario}\\AppData\\Local\\Microsoft\\Teams\\Update.exe CommandLine="Update.exe --processStart Teams.exe" ParentImage=C:\\Windows\\explorer.exe',
-      'Hashes=SHA256=8C41F0E29A7D5B36E1C04F9A2B7D6E3C5A18F07B92D4E6C1A3F5B8D0E2C4A6F81',
-      'Signature="Microsoft Corporation" SignatureStatus=Valid',
+      'Hashes=SHA256=8C41F0E29A7D5B36E1C04F9A2B7D6E3C5A18F07B92D4E6C1A3F5B8D0E2C4A6F8',
+      'Guarita EDR: Update.exe com assinatura válida de "Microsoft Corporation"',
       'Guarita EDR: prevalência do hash na base: 1.208 hosts do cliente',
     ],
     contexto: [
-      'CMDB: {host} é notebook do financeiro, dono {usuario}.',
+      'CMDB: {host} é máquina da cooperativa usada por {usuario}.',
       'A regra considera "raro" qualquer executável em AppData, sem olhar assinatura nem prevalência.',
     ],
-    vars: { host: ['ABG-FIN-NB07', 'ABG-SILO-NB02', 'ABG-COMP-PC11'], usuario: USU_COOPERATIVA, hora: HORA_COMERCIAL, data: DATA },
+    vars: { host: ['COOP-FIN-NB07', 'COOP-SILO-NB02', 'COOP-COMP-PC11'], usuario: USU_COOPERATIVA, hora: HORA_COMERCIAL, data: DATA },
     veredito: 'fp',
     justificativas: js(
       1,
@@ -536,14 +537,14 @@ export const N1_FP: ModeloAlerta[] = [
     mitre: 'T1566.002',
     titulo: 'Phishing: "URGENTE: campanha de vacinação" com link encurtado para {n} destinatários',
     logs: [
-      'Return-Path: <bounce@mkt.hsp.org.br>',
-      'Received: from mta12.plataforma-mkt.example (mta12.plataforma-mkt.example [198.51.100.12]) by mx.hsp.org.br; {data} {hora} -0300',
-      'Authentication-Results: mx.hsp.org.br; spf=pass smtp.mailfrom=mkt.hsp.org.br; dkim=pass header.d=hsp.org.br; dmarc=pass',
-      'From: Comunicação HSP <comunicacao@hsp.org.br> Subject: URGENTE: campanha de vacinação da gripe começa amanhã',
-      'link: hxxps://mkt.hsp.org[.]br/r/vacina2026 -> hxxps://intranet.hsp.org[.]br/campanhas/gripe',
+      'Return-Path: <bounce@mkt.santapaciencia.exemplo>',
+      'Received: from mta12.plataforma-mkt.example (mta12.plataforma-mkt.example [198.51.100.12]) by mx.santapaciencia.exemplo; {data} {hora} -0300',
+      'Authentication-Results: mx.santapaciencia.exemplo; spf=pass smtp.mailfrom=mkt.santapaciencia.exemplo; dkim=pass header.d=santapaciencia.exemplo; dmarc=pass',
+      'From: Comunicação HSP <comunicacao@santapaciencia.exemplo> Subject: URGENTE: campanha de vacinação da gripe começa amanhã',
+      'link: hxxps://mkt.santapaciencia.org[.]br/r/vacina2026 -> hxxps://intranet.santapaciencia.org[.]br/campanhas/gripe',
     ],
     contexto: [
-      'mkt.hsp.org.br é o subdomínio de marketing do hospital, delegado à plataforma de disparo contratada.',
+      'mkt.santapaciencia.exemplo é o subdomínio de marketing do hospital, delegado à plataforma de disparo contratada.',
       'O link de rastreio redireciona para a própria intranet.',
       'A comunicação interna confirma o disparo no canal oficial.',
     ],
@@ -564,16 +565,16 @@ export const N1_FP: ModeloAlerta[] = [
     id: 'n1-fp-ad-celular-senha-velha',
     nivel: 'N1',
     cliente: 'prefeitura',
-    regra: 'CONTA_BLOQUEADA_REPETIDA',
+    regra: 'BRUTE_FORCE_BLOQUEIO_REPETIDO',
     fonte: 'AD',
     severidade: 'alta',
     mitre: 'T1110',
-    titulo: 'Conta {usuario} bloqueada 6 vezes em 2 horas',
+    titulo: 'Força bruta: conta {usuario} bloqueada 6 vezes em 2 horas',
     logs: [
-      '{data} {hora} DC01.pmi.local 4740 Uma conta de usuário foi bloqueada. Conta: {usuario} Nome do computador chamador: EXCH01',
+      '{data} {hora} DC01.prefeitura.local 4740 Uma conta de usuário foi bloqueada. Conta: {usuario} Nome do computador chamador: EXCH01',
       '{data} {hora} EXCH01 IIS: POST /Microsoft-Server-ActiveSync/default.eas User={usuario} DeviceType=Android 401',
-      '{data} {hora} DC01.pmi.local 4625 Conta: {usuario} Estação: EXCH01 Origem: 10.20.0.25 Sub Status: 0xC000006A',
-      '{data} {hora} DC01.pmi.local 4723 Tentativa de alterar a senha da conta: {usuario} (ontem 17:42)',
+      '{data} {hora} DC01.prefeitura.local 4625 Conta: {usuario} Estação: EXCH01 Origem: 10.20.0.25 Sub Status: 0xC000006A',
+      'DC01.prefeitura.local 4723 (ontem, 17:42:05) Tentativa de alterar a senha da conta: {usuario}',
     ],
     contexto: [
       'A senha de {usuario} foi trocada ontem às 17:42 (evento 4723).',
@@ -623,7 +624,7 @@ export const N1_FP: ModeloAlerta[] = [
     ),
     explicacao:
       'IP é o indicador que mais envelhece na pirâmide da dor: ele troca de dono, de provedor e de uso. Todo indicador precisa de data de validade e fonte. Antes de bloquear, confira se o IP não é do próprio cliente e se ainda está na fonte original.',
-    piada: 'Quase bloquearam o servidor da vitrine por causa de um feed de 2023. Na véspera da promoção. A padaria agradece.',
+    piada: 'Quase bloquearam o servidor da própria vitrine por causa de um feed de 2023. Indicador também tem prazo de validade, igual ao sonho de creme.',
   },
   {
     id: 'n1-fp-vpn-geoip-errado',
@@ -640,7 +641,7 @@ export const N1_FP: ModeloAlerta[] = [
       'base GeoIP do concentrador: atualizada pela última vez há 19 meses',
     ],
     contexto: [
-      'A pessoa é médica plantonista de sobreaviso e acessa o PACS de casa pelo notebook do hospital.',
+      'A pessoa é do corpo clínico, está de sobreaviso e acessa o PACS de casa pelo notebook do hospital.',
       'Mesmo notebook gerenciado e mesma operadora dos acessos dos últimos 3 meses, que eram geolocalizados como BR.',
       'O bloco foi reatribuído pela operadora; bases GeoIP desatualizadas erram nesse caso.',
     ],
@@ -650,11 +651,11 @@ export const N1_FP: ModeloAlerta[] = [
       0,
       'O whois mostra operadora brasileira; é geolocalização errada de base desatualizada, com o mesmo notebook gerenciado e MFA aprovado.',
       'Conta comprometida: derrubar a sessão e resetar.',
-      'Benigno: a médica está de férias na Holanda.',
+      'Benigno: a pessoa está de férias na Holanda e avisou antes de viajar.',
     ),
     explicacao:
       'Geolocalização de IP é estimativa de base comercial, e CGNAT de operadora móvel é onde ela mais erra. Compare com whois, histórico da própria conta, dispositivo e postura. Registre no ticket que a base GeoIP do concentrador precisa de atualização.',
-    piada: 'Às 3h, de sobreaviso, a doutora estava em Amsterdã segundo o GeoIP e no sofá de casa segundo a realidade.',
+    piada: 'Às 3h, segundo o GeoIP, o sobreaviso estava em Amsterdã. Segundo a realidade, no sofá de casa.',
   },
   {
     id: 'n1-fp-kerberos-relogio',
@@ -739,7 +740,7 @@ export const N1_FP: ModeloAlerta[] = [
       'CMDB: {host} é o notebook novo entregue hoje para {usuario}.',
       'Primeira sincronização da biblioteca "Relatórios" do SharePoint (log do cliente OneDrive confirma).',
     ],
-    vars: { host: ['OV-NB-112', 'OV-NB-118', 'OV-NB-121'], usuario: USU_OLHOVIVO, n: ['4.310', '7.882', '12.455'], hora: HORA_COMERCIAL, data: DATA },
+    vars: { host: ['INS-NB-112', 'INS-NB-118', 'INS-NB-121'], usuario: USU_INSONIA, n: ['4.310', '7.882', '12.455'], hora: HORA_COMERCIAL, data: DATA },
     veredito: 'fp',
     justificativas: js(
       0,
@@ -762,8 +763,8 @@ export const N1_FP: ModeloAlerta[] = [
     mitre: 'T1204.002',
     titulo: 'Trojan detectado em {n} estações: prontuario_core.dll',
     logs: [
-      '{data} {hora} AV host={host} detection="Trojan:Win32/Genérico.ML" file="C:\\Program Files\\ProntuarioMax\\bin\\prontuario_core.dll" action=QUARANTINE_PENDING_APPROVAL',
-      'sha256=1F0C3E5A7B9D2F4E6A8C0B1D3F5E7A9C2B4D6F8E0A1C3E5B7D9F2A4C6E8B0D13 assinatura="ProntuarioMax Sistemas Ltda" válida',
+      '{data} {hora} AV host={host} detection="Trojan:Win32/Generico.ML" file="C:\\Program Files\\ProntuarioSemFim\\bin\\prontuario_core.dll" action=QUARANTINE_PENDING_APPROVAL',
+      'sha256=1F0C3E5A7B9D2F4E6A8C0B1D3F5E7A9C2B4D6F8E0A1C3E5B7D9F2A4C6E8B0D13 assinatura="Prontuario Sem Fim Sistemas Ltda" válida',
       'pacote de vacinas aplicado às {hora}: versão 1.421.300.0',
       'Vigia SIEM: mesma detecção em {n} estações nos 20 minutos seguintes à atualização de vacinas',
     ],
@@ -802,14 +803,14 @@ export const N1_FP: ModeloAlerta[] = [
     contexto: [
       'Validação dupla de DNS (reverso e direto) confirma que é o robô do buscador, não alguém fingindo o User-Agent.',
       'Só GET em páginas públicas, respeitando o robots.txt.',
-      'O marketing da padaria pediu reindexação do catálogo novo ontem.',
+      'O catálogo novo foi publicado ontem, e o buscador costuma reindexar logo depois de mudança grande.',
     ],
     vars: { ip: ['192.0.2.66', '192.0.2.67'], ipt: ['192-0-2-66', '192-0-2-67'], n: ['220', '310'], hora: HORA_COMERCIAL, data: DATA },
     veredito: 'fp',
     justificativas: js(
       1,
       'Bot malicioso raspando preços, bloquear o IP.',
-      'É o robô do buscador de verdade, confirmado por DNS reverso e direto, reindexando o catálogo que o marketing pediu.',
+      'É o robô do buscador de verdade, confirmado por DNS reverso e direto, reindexando o catálogo publicado ontem.',
       'Verdadeiro positivo, porque qualquer um pode escrever Googlebot no User-Agent.',
     ),
     explicacao:

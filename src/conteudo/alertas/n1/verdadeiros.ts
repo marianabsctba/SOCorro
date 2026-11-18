@@ -14,10 +14,10 @@ export const N1_TP: ModeloAlerta[] = [
     titulo: '{usuario} enviou formulário para domínio recém-registrado',
     logs: [
       'E-mail {data} {hora}: From: "Microsoft 365" <no-reply@m365-verificacao-conta[.]top> Subject: Sua caixa atingiu 99% do limite',
-      'Authentication-Results: mx.tabajara.com.br; spf=pass smtp.mailfrom=m365-verificacao-conta.top; dkim=none; dmarc=fail (From desalinhado)',
+      'Authentication-Results: mx.tabajara.exemplo; spf=pass smtp.mailfrom=m365-verificacao-conta[.]top; dkim=none; dmarc=fail (From desalinhado)',
       '{data} {hora} +2min {ip} TCP_MISS/200 GET hxxps://m365-verificacao-conta[.]top/login.php {usuario} categoria="Sem categoria"',
       '{data} {hora} +3min {ip} TCP_MISS/302 POST hxxps://m365-verificacao-conta[.]top/login.php {usuario} bytes_out=412 -> redirect https://www.office.com',
-      '{"CreationTime":"{data}T{hora}+9min","Operation":"UserLoggedIn","UserId":"{usuario}@tabajara.com.br","ClientIP":"{ipx}","ResultStatus":"Success","UserAgent":"python-requests/2.31"}',
+      '{"CreationTime":"{data}T{hora}+9min","Operation":"UserLoggedIn","UserId":"{usuario}@tabajara.exemplo","ClientIP":"{ipx}","ResultStatus":"Success","UserAgent":"python-requests/2.31"}',
     ],
     contexto: [
       'Domínio registrado há 2 dias, sem reputação, hospedagem barata no exterior.',
@@ -48,19 +48,19 @@ export const N1_TP: ModeloAlerta[] = [
     mitre: 'T1204.002',
     titulo: 'WINWORD.EXE iniciou powershell.exe em {host}',
     logs: [
-      'Sysmon EventID=1 UtcTime={data} {hora} Computer={host} User=BOIGORDO\\{usuario}',
+      'Sysmon EventID=1 UtcTime={data} {hora} Computer={host} User=PASTORALO\\{usuario}',
       'ParentImage=C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE ParentCommandLine="WINWORD.EXE /n C:\\Users\\{usuario}\\Downloads\\Boleto_Vencido_{nf}.docm"',
       'Image=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe CommandLine="powershell.exe -nop -w hidden -EncodedCommand SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkA..."',
       'Sysmon EventID=3 Image=powershell.exe DestinationHostname=cdn-boletos-agro[.]xyz DestinationPort=443',
       'Sysmon EventID=11 TargetFilename=C:\\Users\\{usuario}\\AppData\\Roaming\\svch0st.exe',
     ],
     contexto: [
-      'CMDB: {host} é estação do financeiro, dono {usuario}.',
+      'CMDB: {host} é estação do financeiro, usada por {usuario}.',
       'O anexo .docm chegou por e-mail externo 4 minutos antes, "boleto vencido".',
       'O Canivete decodifica o início do base64 (UTF-16LE) como `IEX (New-Object Net.WebClient)`: baixar e executar.',
       'svch0st.exe (com zero) não tem assinatura e prevalência de 1 host.',
     ],
-    vars: { host: ['ABG-FIN-NB07', 'ABG-FIN-PC03'], usuario: USU_COOPERATIVA, nf: ['88213', '90412'], hora: HORA_COMERCIAL, data: DATA },
+    vars: { host: ['COOP-FIN-NB07', 'COOP-FIN-PC03'], usuario: USU_COOPERATIVA, nf: ['88213', '90412'], hora: HORA_COMERCIAL, data: DATA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -84,17 +84,17 @@ export const N1_TP: ModeloAlerta[] = [
     mitre: 'T1110.003',
     titulo: 'Password spraying: {n} contas distintas a partir de {ip}, com sucesso',
     logs: [
-      '{data} {hora} DC01.pmi.local 4625 Tipo de logon: 3 Conta: {usuario} Origem: {ip} Sub Status: 0xC000006A Pacote: NTLM',
-      '{data} {hora} DC01.pmi.local 4625 Tipo de logon: 3 Conta: {usuario2} Origem: {ip} Sub Status: 0xC000006A',
+      '{data} {hora} DC01.prefeitura.local 4625 Tipo de logon: 3 Conta: {usuario} Origem: {ip} Sub Status: 0xC000006A Pacote: NTLM',
+      '{data} {hora} DC01.prefeitura.local 4625 Tipo de logon: 3 Conta: {usuario2} Origem: {ip} Sub Status: 0xC000006A',
       'Vigia SIEM: {ip} gerou 4625 para {n} contas distintas em 20 min, 1 tentativa por conta',
-      '{data} {hora} DC01.pmi.local 4624 Tipo de logon: 3 Conta: {alvo} Origem: {ip} Pacote: NTLM',
+      '{data} {hora} DC01.prefeitura.local 4624 Tipo de logon: 3 Conta: {alvo} Origem: {ip} Pacote: NTLM',
     ],
     contexto: [
       '{ip} é o servidor de webmail da prefeitura, exposto na internet; o log do webmail mostra a origem real das tentativas: {ipx}, hospedagem no exterior.',
       'Uma tentativa por conta, em rodadas espaçadas para não bloquear ninguém: padrão de spraying.',
       'A conta {alvo} usa a senha padrão Prefeitura@2019 desde a admissão (histórico de reset).',
     ],
-    vars: { ip: ['10.20.0.25'], ipx: IP_EXTERNO, usuario: USU_PREFEITURA, usuario2: ['joana.saude', 'mauro.obras', 'lia.educacao'], alvo: ['rosimeire.lopes', 'adalberto.n', 'gleice.amorim'], n: ['214', '388', '512'], hora: HORA_MADRUGADA, data: DATA },
+    vars: { ip: ['10.20.0.25'], ipx: IP_EXTERNO, usuario: USU_PREFEITURA, usuario2: ['joana.saude', 'mauro.obras', 'lia.educacao'], alvo: ['cleusa.tributos', 'norberto.rh', 'ivone.educacao'], n: ['214', '388', '512'], hora: HORA_MADRUGADA, data: DATA },
     veredito: 'tp',
     acao: 'resetar',
     justificativas: js(
@@ -118,15 +118,15 @@ export const N1_TP: ModeloAlerta[] = [
     mitre: 'T1621',
     titulo: '{n} pedidos de MFA negados e depois um aprovado para leoncio@',
     logs: [
-      '{"CreationTime":"{data}T{hora}","Operation":"UserLoginFailed","UserId":"leoncio@pastoralo.coop.br","ClientIP":"{ip}","ResultStatusDetail":"MFA denied; user declined the authentication"}',
+      '{"CreationTime":"{data}T{hora}","Operation":"UserLoginFailed","UserId":"leoncio@pastoralo.exemplo","ClientIP":"{ip}","ResultStatusDetail":"MFA denied; user declined the authentication"}',
       'Vigia SIEM: {n} eventos "MFA denied" entre 02:51 e 03:14 vindos de {ip}',
-      '{"CreationTime":"{data}T03:15:02","Operation":"UserLoggedIn","UserId":"leoncio@pastoralo.coop.br","ClientIP":"{ip}","ResultStatus":"Success","MfaDetail":"Notificação push aprovada"}',
-      '{"CreationTime":"{data}T03:17:40","Operation":"Add-MailboxPermission","UserId":"leoncio@pastoralo.coop.br","ClientIP":"{ip}"}',
+      '{"CreationTime":"{data}T03:15:02","Operation":"UserLoggedIn","UserId":"leoncio@pastoralo.exemplo","ClientIP":"{ip}","ResultStatus":"Success","MfaDetail":"Notificação push aprovada"}',
+      '{"CreationTime":"{data}T03:17:40","Operation":"Add-MailboxPermission","UserId":"leoncio@pastoralo.exemplo","ClientIP":"{ip}"}',
     ],
     contexto: [
       '{ip}: hospedagem em nuvem estrangeira, nunca visto na conta.',
       'O Dr. Leôncio está no Paraná (ligou para o SOC às 03h20 reclamando que "o celular não parava de apitar e ele apertou sim para parar").',
-      'O MFA da cooperativa ainda usa push simples, sem número correspondente.',
+      'A conta do diretor ainda usa o MFA antigo, de push simples sem número correspondente (a migração ficou "para depois da safra").',
     ],
     vars: { ip: IP_EXTERNO, n: ['18', '20', '27'], hora: ['02:51:10', '02:58:33'], data: DATA },
     veredito: 'tp',
@@ -152,8 +152,8 @@ export const N1_TP: ModeloAlerta[] = [
     mitre: 'T1114.003',
     titulo: 'Regra de caixa encaminha e-mails de pagamento para endereço externo em {usuario}',
     logs: [
-      '{"CreationTime":"{data}T{hora}","Operation":"New-InboxRule","UserId":"{usuario}@pastoralo.coop.br","ClientIP":"{ip}","Parameters":[{"Name":"Name","Value":"."},{"Name":"SubjectOrBodyContainsWords","Value":"boleto;pagamento;transferência;PIX"},{"Name":"ForwardTo","Value":"financeiro.pastoralo@caixapostal-gratis[.]example"},{"Name":"MoveToFolder","Value":"RSS Feeds"},{"Name":"MarkAsRead","Value":"True"}]}',
-      '{"CreationTime":"{data}T{hora}-12min","Operation":"UserLoggedIn","UserId":"{usuario}@pastoralo.coop.br","ClientIP":"{ip}","UserAgent":"Mozilla/5.0 (X11; Linux x86_64)"}',
+      '{"CreationTime":"{data}T{hora}","Operation":"New-InboxRule","UserId":"{usuario}@pastoralo.exemplo","ClientIP":"{ip}","Parameters":[{"Name":"Name","Value":"."},{"Name":"SubjectOrBodyContainsWords","Value":"boleto;pagamento;transferência;PIX"},{"Name":"ForwardTo","Value":"financeiro.pastoralo@caixapostal-gratis[.]example"},{"Name":"MoveToFolder","Value":"RSS Feeds"},{"Name":"MarkAsRead","Value":"True"}]}',
+      '{"CreationTime":"{data}T{hora}-12min","Operation":"UserLoggedIn","UserId":"{usuario}@pastoralo.exemplo","ClientIP":"{ip}","UserAgent":"Mozilla/5.0 (X11; Linux x86_64)"}',
     ],
     contexto: [
       '{ip}: provedor de VPN comercial no exterior, primeira vez na conta.',
@@ -183,16 +183,16 @@ export const N1_TP: ModeloAlerta[] = [
     mitre: 'T1204.002',
     titulo: 'Arquivo malicioso colocado em quarentena em {host}',
     logs: [
-      '{data} {hora} AV host={host} user=PAODELO\\{usuario} detection="Trojan:Win32/Stealer.Gen" file="C:\\Users\\{usuario}\\Downloads\\NotaFiscal_{nf}.pdf.exe" action=QUARANTINED result=SUCCESS',
+      '{data} {hora} AV host={host} user=MIGALHA\\{usuario} detection="Trojan:Win32/Stealer.Gen" file="C:\\Users\\{usuario}\\Downloads\\NotaFiscal_{nf}.pdf.exe" action=QUARANTINED result=SUCCESS',
       'sha256=6D2E8F0A1B3C5D7E9F1A2B4C6D8E0F1A3B5C7D9E1F2A4B6C8D0E2F3A5B7C9D1E origem=Outlook (anexo)',
       'Sysmon: nenhum EventID=1 para NotaFiscal_{nf}.pdf.exe (o arquivo não chegou a executar)',
     ],
     contexto: [
-      'CMDB: {host} é estação administrativa de loja, dona {usuario}.',
+      'CMDB: {host} é estação administrativa da padaria, usada por {usuario}.',
       'Hash conhecido em base pública de reputação como ladrão de senhas (consultado pelo hash, sem subir o arquivo do cliente).',
       'Mesmo e-mail entregue em outras 4 caixas da padaria.',
     ],
-    vars: { host: ['PDL-LOJA04-ADM', 'PDL-LOJA07-ADM', 'PDL-ESCRIT-FIN01'], usuario: USU_PADARIA, nf: ['77812', '80231'], hora: HORA_COMERCIAL, data: DATA },
+    vars: { host: ['PAD-LOJA04-ADM', 'PAD-LOJA07-ADM', 'PAD-ESCRIT-FIN01'], usuario: USU_PADARIA, nf: ['77812', '80231'], hora: HORA_COMERCIAL, data: DATA },
     veredito: 'tp',
     acao: 'escalar',
     justificativas: js(
@@ -204,7 +204,7 @@ export const N1_TP: ModeloAlerta[] = [
     ),
     explicacao:
       'Quarentena com sucesso e sem execução é verdadeiro positivo contido: a ameaça era real, o controle funcionou. A severidade baixa é correta para a máquina, mas o trabalho não acabou: o mesmo e-mail está em outras caixas e alguém pode abrir no celular ou em outro computador. Consulte reputação pelo hash, nunca subindo o arquivo do cliente para site público.',
-    piada: 'Nota fiscal com extensão .pdf.exe: o único documento da padaria que veio com dois formatos e nenhum backup.',
+    piada: 'Nota fiscal com extensão .pdf.exe. O financeiro da padaria quase lançou na contabilidade.',
   },
   {
     id: 'n1-tp-av-falhou-remover',
@@ -250,7 +250,7 @@ export const N1_TP: ModeloAlerta[] = [
     titulo: 'Logon RDP bem-sucedido de IP estrangeiro em {servidor}',
     logs: [
       'CEF:0|Firewall|NGFW|9.1|allow|Tráfego permitido|3|src={ipx} dst=203.0.113.250 dpt=3389 proto=TCP nat_dst=10.30.2.15 rt={data} {hora}',
-      '{data} {hora} {servidor}.hsp.local 4625 Tipo de logon: 10 Conta: administrador Origem: {ipx} (1.912 ocorrências nas últimas 6 h)',
+      '{data} {hora} {servidor}.hsp.local 4625 Tipo de logon: 3 Conta: administrador Origem: {ipx} (1.912 ocorrências nas últimas 6 h)',
       '{data} {hora} {servidor}.hsp.local 4624 Tipo de logon: 10 Conta: suporte.ti Endereço de rede de origem: {ipx}',
       '{data} {hora} {servidor}.hsp.local 4672 Privilégios especiais atribuídos ao novo logon. Conta: suporte.ti',
     ],
@@ -270,8 +270,8 @@ export const N1_TP: ModeloAlerta[] = [
       'Verdadeiro positivo, basta trocar a senha da suporte.ti.',
     ),
     explicacao:
-      'Logon tipo 10 é RemoteInteractive (RDP). RDP publicado na internet, com conta genérica sem MFA, é uma das portas de entrada mais comuns de ransomware. Com sucesso e 4672 depois de força bruta, é incidente: acionar o N2 e o CSIRT, fechar a regra NAT, derrubar a sessão e preservar evidência. Num hospital, a contenção precisa ser combinada com quem opera o sistema.',
-    piada: 'A regra de NAT de 2021 era "temporária". Em TI, temporário é o sinônimo técnico de eterno.',
+      'Logon tipo 10 é RemoteInteractive (RDP). Com NLA ligado, as tentativas que falham aparecem como 4625 tipo 3, porque a autenticação acontece antes da sessão gráfica; o sucesso aparece como tipo 10. RDP publicado na internet, com conta genérica sem MFA, é uma das portas de entrada mais comuns de ransomware. Com sucesso e 4672 depois de força bruta, é incidente: acionar o N2 e o CSIRT, fechar a regra NAT, derrubar a sessão e preservar evidência. Num hospital, a contenção precisa ser combinada com quem opera o sistema.',
+    piada: 'A porta foi "liberada para o fornecedor em 2021". O fornecedor foi embora em 2022; a porta ficou para os próximos.',
   },
   {
     id: 'n1-tp-infostealer',
@@ -283,13 +283,14 @@ export const N1_TP: ModeloAlerta[] = [
     mitre: 'T1555.003',
     titulo: 'Processo desconhecido leu o cofre de senhas do navegador em {host}',
     logs: [
-      'Sysmon EventID=1 Image=C:\\Users\\{usuario}\\AppData\\Local\\Temp\\crack_planilha_pro.exe ParentImage=C:\\Windows\\explorer.exe Signature=nenhuma',
+      'Sysmon EventID=1 Image=C:\\Users\\{usuario}\\AppData\\Local\\Temp\\crack_planilha_pro.exe ParentImage=C:\\Windows\\explorer.exe',
+      'Guarita EDR: crack_planilha_pro.exe sem assinatura digital',
       'Guarita EDR: crack_planilha_pro.exe abriu C:\\Users\\{usuario}\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Login Data',
       'Guarita EDR: crack_planilha_pro.exe abriu ...\\Microsoft\\Edge\\User Data\\Default\\Cookies',
       'Sysmon EventID=3 Image=crack_planilha_pro.exe DestinationHostname=api.telegram.org DestinationPort=443',
     ],
     contexto: [
-      'CMDB: {host} é estação do comercial, dono {usuario}.',
+      'CMDB: {host} é estação do comercial, usada por {usuario}.',
       'O arquivo veio de download em site de "programas grátis" 10 minutos antes (proxy).',
       'Hash com prevalência de 1 host e reputação de ladrão de senhas commodity.',
     ],
@@ -315,7 +316,7 @@ export const N1_TP: ModeloAlerta[] = [
     severidade: 'média',
     titulo: 'DLP: planilha com {n} CPFs enviada do RH para e-mail pessoal',
     logs: [
-      '{data} {hora} dlp policy="CPF em massa" action=AUDIT from=rh.{rh}@tabajara.com.br to={rh}.casa@webmail-gratis.example subject="pra terminar em casa"',
+      '{data} {hora} dlp policy="CPF em massa" action=AUDIT from=rh.{rh}@tabajara.exemplo to={rh}.casa@webmail-gratis.example subject="pra terminar em casa"',
       'anexo=folha_colaboradores_completa.xlsx matches={n} validacao_digito_verificador=OK tipos="nome, CPF, salário, conta bancária, dependentes"',
       'Bate-Papo Corporativo: nenhum pedido de exceção registrado',
     ],
@@ -329,7 +330,7 @@ export const N1_TP: ModeloAlerta[] = [
     acao: 'escalar',
     justificativas: js(
       3,
-      'Benigno: é funcionária do RH, ela pode acessar esses dados.',
+      'Benigno: a pessoa é do RH e pode acessar esses dados.',
       'Falso positivo: os números não são CPF.',
       'Verdadeiro positivo, mas o N1 deve comunicar a ANPD diretamente.',
       'Dados pessoais (inclusive financeiros) de 800+ colaboradores saíram para e-mail pessoal fora da política: possível incidente de segurança com dado pessoal, para escalar ao N2 e ao encarregado do cliente.',
@@ -393,7 +394,7 @@ export const N1_TP: ModeloAlerta[] = [
       'winupd.exe sem assinatura, em pasta pública, prevalência de 1 host.',
       'User-Agent de navegador de 2009, que não existe na estação.',
     ],
-    vars: { host: ['PMI-TRIB-005', 'PMI-TRIB-011'], ip: ['10.20.5.5', '10.20.5.11'], hora: HORA_COMERCIAL, data: DATA },
+    vars: { host: ['PREF-TRIB-005', 'PREF-TRIB-011'], ip: ['10.20.5.5', '10.20.5.11'], hora: HORA_COMERCIAL, data: DATA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -448,8 +449,8 @@ export const N1_TP: ModeloAlerta[] = [
     mitre: 'T1530',
     titulo: 'Bucket com notas fiscais de clientes ficou público',
     logs: [
+      '{"eventTime":"{data}T{hora}Z","eventName":"DeletePublicAccessBlock","userIdentity":{"type":"IAMUser","userName":"{usuario}"},"requestParameters":{"bucketName":"padaria-notas-fiscais"}}',
       '{"eventTime":"{data}T{hora}Z","eventName":"PutBucketPolicy","userIdentity":{"type":"IAMUser","userName":"{usuario}"},"requestParameters":{"bucketName":"padaria-notas-fiscais","bucketPolicy":{"Statement":[{"Effect":"Allow","Principal":"*","Action":"s3:GetObject"}]}}}',
-      '{"eventTime":"{data}T{hora}Z","eventName":"DeletePublicAccessBlock","requestParameters":{"bucketName":"padaria-notas-fiscais"}}',
       'Inventário: padaria-notas-fiscais contém 41.208 PDFs de notas com nome, CPF e endereço de clientes',
     ],
     contexto: [
@@ -502,7 +503,7 @@ export const N1_TP: ModeloAlerta[] = [
     ),
     explicacao:
       'Compare com o benigno do pipeline: lá o IP era de executor de CI, havia execução registrada e as ações cabiam na permissão. Aqui o primeiro passo é `GetCallerIdentity` (quem tem a chave conferindo de quem ela é) e depois máquinas caras em região que o cliente não usa. Revogue a chave (o "reset" de credencial em nuvem), encerre as instâncias e escale: cada hora custa dinheiro de verdade.',
-    piada: 'A padaria não tem backup, mas agora tem 20 máquinas com GPU em Singapura. Prioridades.',
+    piada: 'A padaria não tem backup, mas agora tem uma frota de máquinas com GPU em Singapura. Prioridades.',
   },
   {
     id: 'n1-tp-conta-ex-estagiaria',
@@ -547,17 +548,17 @@ export const N1_TP: ModeloAlerta[] = [
     mitre: 'T1003.001',
     titulo: 'Mimikatz detectado: acesso à memória do lsass.exe em {host}',
     logs: [
-      'Sysmon EventID=1 Image=C:\\Users\\Public\\pd64.exe CommandLine="pd64.exe -accepteula -ma lsass.exe C:\\Users\\Public\\l.dmp" User=PMI\\{usuario}',
+      'Sysmon EventID=1 Image=C:\\Users\\Public\\pd64.exe OriginalFileName=procdump User=PREFEITURA\\{usuario}',
       'Sysmon EventID=10 SourceImage=C:\\Users\\Public\\pd64.exe TargetImage=C:\\Windows\\system32\\lsass.exe GrantedAccess=0x1FFFFF',
       'Sysmon EventID=11 TargetFilename=C:\\Users\\Public\\l.dmp',
-      'Guarita EDR: pd64.exe é o ProcDump (Sysinternals) renomeado, executado fora de qualquer GMUD',
+      'Guarita EDR: pd64.exe é o ProcDump (Sysinternals) renomeado, pedindo despejo completo da memória do lsass.exe para arquivo, fora de qualquer GMUD',
     ],
     contexto: [
       'CMDB: {host} é servidor de aplicação da secretaria de finanças.',
       'A conta {usuario} não é do TI; fez logon tipo 10 no servidor 20 minutos antes, de outra estação interna.',
       'Nenhum chamado de suporte do fabricante pedindo dump de memória.',
     ],
-    vars: { host: ['PMI-APP-FIN01', 'PMI-APP-TRIB02'], usuario: USU_PREFEITURA, hora: HORA_COMERCIAL, data: DATA },
+    vars: { host: ['PREF-APP-FIN01', 'PREF-APP-TRIB02'], usuario: USU_PREFEITURA, hora: HORA_COMERCIAL, data: DATA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -568,7 +569,7 @@ export const N1_TP: ModeloAlerta[] = [
       'É o antivírus escaneando a memória, como sempre.',
     ),
     explicacao:
-      'Compare com o falso positivo do antivírus: lá a origem era o MsMpEng.exe no caminho do Defender. Aqui é o ProcDump renomeado em `C:\\Users\\Public`, com `-ma lsass.exe` gerando arquivo de dump, por conta sem motivo para isso. Todas as credenciais que estavam na memória do servidor devem ser consideradas vazadas: isole e escale já.',
+      'Compare com o falso positivo do antivírus: lá a origem era o MsMpEng.exe no caminho do Defender. Aqui é o ProcDump renomeado em `C:\\Users\\Public` (o campo **OriginalFileName** do Sysmon 1 entrega o nome original mesmo depois de renomeado), pedindo despejo completo do lsass e gravando o arquivo .dmp, por conta sem motivo para isso. Todas as credenciais que estavam na memória do servidor devem ser consideradas vazadas: isole e escale já.',
     piada: 'Mesmo título de alerta que o falso positivo do antivírus. Por isso a Rô diz que título não é veredito.',
   },
   {
@@ -614,15 +615,15 @@ export const N1_TP: ModeloAlerta[] = [
     mitre: 'T1566',
     titulo: 'E-mail de fornecedor pedindo troca de conta bancária, de domínio parecido',
     logs: [
-      'From: "Financeiro Sementes Paraná" <financeiro@sementes-parana[.]co> Reply-To: <cobranca.sementesparana@caixapostal-gratis[.]example>',
+      'From: "Financeiro Sementes Grão Teimoso" <financeiro@graoteimoso-sementes[.]co> Reply-To: <cobranca.graoteimoso@caixapostal-gratis[.]example>',
       'Return-Path: <bounce@envios-baratos[.]example>',
-      'Authentication-Results: mx.pastoralo.coop.br; spf=pass smtp.mailfrom=envios-baratos.example; dkim=none; dmarc=none (sementes-parana.co sem registro DMARC)',
+      'Authentication-Results: mx.pastoralo.exemplo; spf=pass smtp.mailfrom=envios-baratos.example; dkim=none; dmarc=none (graoteimoso-sementes[.]co sem registro DMARC)',
       'Subject: Atualização cadastral URGENTE: nova conta para pagamento da NF {nf}',
-      'To: {usuario}@pastoralo.coop.br',
+      'To: {usuario}@pastoralo.exemplo',
     ],
     contexto: [
-      'O fornecedor verdadeiro usa sementesparana.com.br (sem hífen, .com.br), com DMARC p=reject.',
-      'sementes-parana.co foi registrado há 6 dias.',
+      'O fornecedor verdadeiro usa graoteimoso.com.br (sem "sementes" no nome e com .com.br), com DMARC p=reject.',
+      'graoteimoso-sementes[.]co foi registrado há 6 dias.',
       'A NF citada existe de verdade e vence sexta, o que sugere caixa de e-mail do fornecedor ou da cooperativa já comprometida.',
     ],
     vars: { usuario: USU_COOPERATIVA, nf: ['10432', '11877'], hora: HORA_COMERCIAL, data: DATA },
@@ -636,7 +637,7 @@ export const N1_TP: ModeloAlerta[] = [
     ),
     explicacao:
       'SPF passar só prova que o servidor pode enviar pelo domínio do envelope (envios-baratos), não que o remetente é o fornecedor. O que pesa é o domínio parecido, o Reply-To desviado e o pedido de troca bancária. Bloqueie o domínio e escale: quem sabia da NF verdadeira pode ter acesso a uma caixa, e o financeiro precisa confirmar qualquer troca por telefone já conhecido.',
-    piada: 'O golpista registrou "sementes-parana.co". O Dr. Leôncio teria pago antes de terminar de ler.',
+    piada: 'O golpista registrou o domínio há seis dias. O Dr. Leôncio teria pago antes de terminar de ler.',
   },
   {
     id: 'n1-tp-admin-madrugada-sem-gmud',
@@ -681,16 +682,16 @@ export const N1_TP: ModeloAlerta[] = [
     titulo: '{host} tentando SMB em {n} IPs internos distintos',
     logs: [
       'CEF:0|Firewall|NGFW|9.1|deny|Tráfego negado|5|src={ip} dst=10.20.4.17 dpt=445 proto=TCP rt={data} {hora}',
-      'CEF:0|Firewall|NGFW|9.1|allow|Tráfego permitido|3|src={ip} dst=10.20.1.31 dpt=445 proto=TCP',
+      'CEF:0|Firewall|NGFW|9.1|allow|Tráfego permitido|3|src={ip} dst=10.20.1.58 dpt=445 proto=TCP',
       'Vigia SIEM: {ip} tocou a porta 445 em {n} destinos distintos em 6 minutos, sequência crescente de IPs',
-      'IDS: ET EXPLOIT possível exploração de SMBv1 de {ip} para 10.20.1.31',
+      'IDS: ET EXPLOIT possível exploração de SMBv1 de {ip} para 10.20.1.58',
     ],
     contexto: [
       'CMDB: {host} é estação Windows 7 do protocolo, sem patches desde 2020, SMBv1 habilitado.',
       'Não é o scanner autorizado e não há GMUD.',
       'Duas estações que receberam conexão começaram o mesmo padrão minutos depois.',
     ],
-    vars: { host: ['PMI-PROT-031', 'PMI-PROT-044'], ip: ['10.20.1.31', '10.20.1.44'], n: ['640', '1.210'], hora: HORA_COMERCIAL, data: DATA },
+    vars: { host: ['PREF-PROT-031', 'PREF-PROT-044'], ip: ['10.20.1.31', '10.20.1.44'], n: ['640', '1.210'], hora: HORA_COMERCIAL, data: DATA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -713,7 +714,8 @@ export const N1_TP: ModeloAlerta[] = [
     mitre: 'T1219',
     titulo: 'Ferramenta de acesso remoto não aprovada instalada em {host}',
     logs: [
-      'Sysmon EventID=1 Image=C:\\Users\\{usuario}\\Downloads\\AnyDesk.exe ParentImage=C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe Signature="philandro Software GmbH" válida',
+      'Sysmon EventID=1 Image=C:\\Users\\{usuario}\\Downloads\\AnyDesk.exe ParentImage=C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+      'Guarita EDR: AnyDesk.exe com assinatura válida de "AnyDesk Software GmbH"',
       'Sysmon EventID=3 Image=AnyDesk.exe DestinationPort=443 sessão de entrada iniciada {hora}',
       'Guarita EDR: durante a sessão, abertura do internet banking da empresa e do token no navegador',
     ],
@@ -722,7 +724,7 @@ export const N1_TP: ModeloAlerta[] = [
       'Proxy: o download veio de link enviado por mensagem, depois de uma ligação de "suporte do banco" (relato da própria pessoa no chat).',
       'A sessão continua ativa.',
     ],
-    vars: { host: ['PDL-ESCRIT-FIN01', 'PDL-ESCRIT-FIN02'], usuario: USU_PADARIA, hora: HORA_COMERCIAL, data: DATA },
+    vars: { host: ['PAD-ESCRIT-FIN01', 'PAD-ESCRIT-FIN02'], usuario: USU_PADARIA, hora: HORA_COMERCIAL, data: DATA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(

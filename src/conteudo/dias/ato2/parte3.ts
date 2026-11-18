@@ -16,7 +16,7 @@ function registrosM365(): Registro[] {
   for (let i = 0; i < 5; i++) out.push({ hora: hora(base, r.int(0, 40000)), operacao: 'New-InboxRule', usuario: `${r.um(USUARIOS)}@${DOMINIO}`, ip_cliente: ipBr(), pais: 'BR', regra: r.um(['Newsletters', 'Avisos do RH', 'Chamadão']), acao_regra: 'MoveToFolder', resultado: 'Succeeded' });
   out.push({ hora: hora(base, 3600), operacao: 'New-InboxRule', usuario: `paulo.rodrigues@${DOMINIO}`, ip_cliente: ipBr(), pais: 'BR', regra: 'Cópia para a secretaria', acao_regra: 'ForwardTo', encaminhar_para: `secretaria.diretoria@${DOMINIO}`, resultado: 'Succeeded' });
   for (let i = 0; i < 2; i++) out.push({ hora: hora(base, r.int(0, 40000)), operacao: 'Consent to application', usuario: `${r.um(USUARIOS)}@${DOMINIO}`, ip_cliente: ipBr(), pais: 'BR', aplicativo: 'Agenda de Salas', permissoes: 'User.Read', resultado: 'Succeeded' });
-  const ip = '185.107.56.21';
+  const ip = '203.0.113.56';
   out.push({ hora: '2026-03-18T06:12:44Z', operacao: 'UserLoggedIn', usuario: `fernanda.lima@${DOMINIO}`, ip_cliente: ip, pais: 'NL', resultado: 'Succeeded' });
   out.push({ hora: '2026-03-18T06:14:02Z', operacao: 'New-InboxRule', usuario: `fernanda.lima@${DOMINIO}`, ip_cliente: ip, pais: 'NL', regra: '.', acao_regra: 'ForwardTo, MarkAsRead, MoveToFolder:RSS', palavras: 'boleto, pagamento, transferência, PIX', encaminhar_para: 'fin.tabajara@caixapostal-gratis.top', resultado: 'Succeeded' });
   out.push({ hora: '2026-03-18T06:16:30Z', operacao: 'Consent to application', usuario: `fernanda.lima@${DOMINIO}`, ip_cliente: ip, pais: 'NL', aplicativo: 'Leitor PDF Seguro', permissoes: 'Mail.Read, Mail.Send, offline_access', resultado: 'Succeeded' });
@@ -29,7 +29,7 @@ function registrosCloudTrail(): Registro[] {
   const r = rng(4901);
   const base = '2026-03-20T11:00:00';
   const out: Registro[] = [];
-  const corp = '200.150.10.20';
+  const corp = '198.51.100.20';
   const ev = (t: string, nome: string, fonte: string, usuario: string, ip: string, ua: string, regiao: string, erro: string, bucket = '-') =>
     out.push({ hora: t, eventName: nome, eventSource: fonte, usuario, sourceIPAddress: ip, userAgent: ua, awsRegion: regiao, errorCode: erro, bucket });
   const rotina: [string, string][] = [['PutObject', 's3.amazonaws.com'], ['GetObject', 's3.amazonaws.com'], ['DescribeInstances', 'ec2.amazonaws.com'], ['UpdateFunctionCode', 'lambda.amazonaws.com']];
@@ -40,12 +40,13 @@ function registrosCloudTrail(): Registro[] {
   ev(hora(base, 5000), 'GetBucketPolicy', 's3.amazonaws.com', 'svc-deploy-ci', corp, 'aws-sdk-go-v2/1.25', 'sa-east-1', 'AccessDenied', 'tabajara-sinistros-anexos');
   ev(hora(base, 9000), 'PutObject', 's3.amazonaws.com', 'svc-deploy-ci', corp, 'aws-sdk-go-v2/1.25', 'sa-east-1', 'AccessDenied', 'tabajara-logs');
   for (let i = 0; i < 20; i++) {
-    ev(hora(base, r.int(0, 30000)), r.um(['ConsoleLogin', 'DescribeInstances', 'ListBuckets', 'GetMetricData']), 'signin.amazonaws.com', r.um(['ana.oliveira', 'rafael.costa', 'lucas.ferreira']), corp, 'Mozilla/5.0 (console)', 'sa-east-1', '-');
+    const [nome, fonte] = r.um([['ConsoleLogin', 'signin.amazonaws.com'], ['DescribeInstances', 'ec2.amazonaws.com'], ['ListBuckets', 's3.amazonaws.com'], ['GetMetricData', 'monitoring.amazonaws.com']] as [string, string][]);
+    ev(hora(base, r.int(0, 30000)), nome, fonte, r.um(['ana.oliveira', 'rafael.costa', 'lucas.ferreira']), corp, 'Mozilla/5.0 (console)', 'sa-east-1', '-');
   }
   ev(hora(base, 2000), 'PutObject', 's3.amazonaws.com', 'dev-relatorios', corp, 'Boto3/1.34', 'sa-east-1', '-', 'tabajara-relatorios');
   ev(hora(base, 2100), 'GetObject', 's3.amazonaws.com', 'dev-relatorios', corp, 'Boto3/1.34', 'sa-east-1', '-', 'tabajara-relatorios');
   // a credencial do usuário dev-relatorios aparece usada de um IP de fora
-  const ip = '103.77.41.9';
+  const ip = '198.51.100.77';
   const ua = 'aws-cli/2.15.0 Linux';
   let t = 26000;
   const visto = (nome: string, fonte: string, erro: string, bucket = '-', regiao = 'us-east-1') => ev(hora(base, (t += r.int(4, 30))), nome, fonte, 'dev-relatorios', ip, ua, regiao, erro, bucket);
@@ -78,7 +79,7 @@ function registrosDns(): Registro[] {
     const n = r.int(12, 18);
     for (let k = 0; k < n; k++) nome += letras[r.int(0, letras.length - 1)];
     const resolveu = i === 37;
-    out.push({ hora: hora('2026-03-22T13:40:00', i * 3), host: 'DT-CAIXA-05', consulta: nome + r.um(tlds), tipo: 'A', resposta: resolveu ? 'NOERROR' : 'NXDOMAIN', ip_resolvido: resolveu ? '194.87.12.66' : '-', idade_dominio_dias: resolveu ? 1 : '-' });
+    out.push({ hora: hora('2026-03-22T13:40:00', i * 3), host: 'DT-CAIXA-05', consulta: nome + r.um(tlds), tipo: 'A', resposta: resolveu ? 'NOERROR' : 'NXDOMAIN', ip_resolvido: resolveu ? '203.0.113.66' : '-', idade_dominio_dias: resolveu ? 1 : '-' });
   }
   return porHora(out);
 }
@@ -93,7 +94,7 @@ export const DIAS_46_52: Dia[] = [
     n: 46,
     site: 'bravo',
     turno: 'tarde',
-    titulo: 'Bem-vindos ao Bravo',
+    titulo: 'Boas-vindas ao Bravo',
     resumo: 'Operar no site de contingência: processos diferentes, mesma fila, mesmo SLA.',
     aula:
       'Chegar no site de contingência não é chegar de férias. A primeira hora tem roteiro: confirmar **acesso** (conta, VPN, MFA, permissão no Vigia e no Chamadão a partir da rede do Bravo), ver a **fila** e os SLAs em risco, e receber a lista do que estava em investigação. O cliente não quer saber em que cidade está o analista, quer saber se o alerta dele foi visto.\n\n' +
@@ -101,7 +102,7 @@ export const DIAS_46_52: Dia[] = [
       'Confira o **RPO na prática**: o que se perdeu entre a última replicação e a queda? Ticket com anotação pela metade, alerta reconhecido no Alfa que aparece como novo no Bravo, investigação que só existia na cabeça de alguém. Revalide tudo que estava em andamento.\n\n' +
       'Curiosidade útil: Recife está em UTC-3, igual a Brasília. A diferença de horário entre os sites é zero. A de temperatura é de uns vinte graus, e essa nenhum NTP corrige.',
     chegada: [
-      { quem: 'socorro', texto: 'Sejam bem-vindos ao Bravo. Aqui tem ventilador, bolo de rolo e procedimento. A gente segue o procedimento primeiro, o bolo espera.', gesto: 'acenar', expr: 'sorriso' },
+      { quem: 'socorro', texto: 'Boas-vindas ao Bravo. Aqui tem ventilador, bolo de rolo e procedimento. A gente segue o procedimento primeiro, o bolo espera.', gesto: 'acenar', expr: 'sorriso' },
       { quem: 'nildo', texto: 'Curitiba chegou! Trouxeram casaco? Aqui o ar-condicionado é o mar.', gesto: 'apontar', expr: 'sorriso' },
       { quem: 'ro', texto: 'Nildo, a gente veio trabalhar, não fazer turismo. Onde fica a tomada que ninguém pode desligar?', gesto: 'cruzar' },
       { quem: 'nildo', texto: 'Tem etiqueta. Foi a primeira coisa que a Dona Socorro mandou fazer quando soube da cafeteira de vocês.', gesto: 'ombros' },
@@ -211,13 +212,13 @@ export const DIAS_46_52: Dia[] = [
     resumo: 'Antes de voltar ao Alfa: lições aprendidas do failover, sem caçar culpado.',
     aula:
       'A reunião de **lições aprendidas** acontece logo depois do evento, com a memória fresca. Ela responde: o que aconteceu, o que funcionou, o que não funcionou, por quê, e **o que muda**, com dono e prazo. Ata sem ação com responsável é só um diário.\n\n' +
-      'O formato que funciona é o **pós-mortem sem culpados**: a pergunta não é "quem desligou o nobreak?", é "por que foi possível desligar o nobreak sem perceber?". Tomada sem etiqueta, nobreak acessível, plano impresso numa gaveta, chat no mesmo prédio que caiu. Quando o foco vira culpar uma pessoa, a próxima pessoa esconde o erro, e erro escondido é incidente adiado.\n\n' +
+      'O formato que funciona é o **pós-mortem sem culpados**: a pergunta não é "quem ligou a cafeteira no nobreak?", é "por que foi possível ligar uma cafeteira no nobreak sem ninguém perceber?". Tomada sem etiqueta, nobreak acessível com bateria vencida, plano impresso numa gaveta, chat no mesmo prédio que caiu. Quando o foco vira culpar uma pessoa, a próxima pessoa esconde o erro, e erro escondido é incidente adiado.\n\n' +
       'Métricas do failover entram no relatório: horário da queda, horário do acionamento, horário em que o Bravo assumiu a fila (o **RTO real**), o que se perdeu (o **RPO real**), SLAs estourados e clientes afetados. Compare com o que o plano prometia.\n\n' +
       'O **failback** também é planejado: voltar com tudo testado e numa janela de menor movimento. Voltar correndo numa segunda-feira, no horário em que o Chamadão cai, é pedir uma segunda temporada.',
     chegada: [
       { quem: 'socorro', texto: 'Antes de vocês voltarem para Curitiba, a gente senta e conversa. Sem dedo apontado.', gesto: 'sim' },
       { quem: 'gilmar', texto: 'Eu queria começar pedindo desculpas. A cafeteira era minha. E ela nem ficou tão boa.', expr: 'triste' },
-      { quem: 'socorro', texto: 'Gilmar, a pergunta aqui não é quem. É por que uma tomada de nobreak estava solta para qualquer cafeteira.', gesto: 'nao' },
+      { quem: 'socorro', texto: 'Gilmar, a pergunta aqui não é quem. É por que uma tomada de nobreak estava livre para qualquer cafeteira, e por que ninguém sabia que a bateria estava vencida.', gesto: 'nao' },
       { quem: 'nildo', texto: 'E por que o telefone da gente estava numa gaveta, e não no celular de todo mundo.', gesto: 'apontar' },
       { quem: 'neide', texto: 'E por que ninguém pergunta pra limpeza onde fica cada tomada. Eu sei de todas.', gesto: 'cintura' },
     ],
@@ -291,17 +292,17 @@ export const DIAS_46_52: Dia[] = [
       {
         tipo: 'siem',
         titulo: 'Quem bateu em tantas portas',
-        enunciado: 'CloudTrail da conta AWS da Tabajara. O pipeline `svc-deploy-ci` e as pessoas da TI usam o IP corporativo 200.150.10.20. Ache a identidade cuja credencial foi usada de fora.',
+        enunciado: 'CloudTrail da conta AWS da Tabajara. O pipeline `svc-deploy-ci` e as pessoas da TI usam o IP corporativo 198.51.100.20. Ache a identidade cuja credencial foi usada de fora.',
         registros: registrosCloudTrail(),
         pergunta: 'Qual usuário IAM teve mais negações (AccessDenied) vindas de um único IP?',
         resposta: 'dev-relatorios',
         gabarito: 'errorCode=AccessDenied | contar por usuario,sourceIPAddress | ordenar -total',
         dica: 'Comece por `errorCode=AccessDenied | contar por usuario,sourceIPAddress | ordenar -total`. Depois veja tudo o que esse usuário fez com `usuario=... | tabela hora,eventName,sourceIPAddress,errorCode,bucket`.',
-        explicacao: 'A identidade `dev-relatorios` costuma usar o IP corporativo. De repente aparece em 103.77.41.9 com `aws-cli`, faz `GetCallerIdentity`, `ListBuckets` e uma dúzia de chamadas negadas, até achar o que alcança: lista o bucket `tabajara-sinistros-anexos`, remove o bloqueio de acesso público e troca a política. O `svc-deploy-ci` também tem duas negações, mas do IP de sempre e na rotina. Desative a credencial agora, restaure o bloqueio e meça o que foi acessado.',
+        explicacao: 'A identidade `dev-relatorios` costuma usar o IP corporativo. De repente aparece em 198.51.100.77 com `aws-cli`, faz `GetCallerIdentity`, `ListBuckets` e uma dúzia de chamadas negadas, até achar o que alcança: lista o bucket `tabajara-sinistros-anexos`, remove o bloqueio de acesso público e troca a política. O `svc-deploy-ci` também tem duas negações, mas do IP de sempre e na rotina. Desative a credencial agora, restaure o bloqueio e meça o que foi acessado.',
       },
     ],
     saida: [
-      { quem: 'gilmar', texto: 'Credencial desativada, bucket fechado, jurídico avisado. O tomate está orgulhoso.', gesto: 'sim' },
+      { quem: 'gilmar', texto: 'Credencial desativada, bucket fechado, jurídico avisado. Isso sim é KPI.', gesto: 'sim' },
       { quem: 'ro', texto: 'E o dev que publicou a chave vai ganhar um treinamento. Sem culpa, mas com slide.', expr: 'sorriso' },
     ],
   },
@@ -320,7 +321,7 @@ export const DIAS_46_52: Dia[] = [
       { quem: 'brenda', texto: 'Chegou um PDF com QR code dizendo que meu MFA vai expirar. Escaneei pra ver. Escalo eu mesma?', expr: 'surpresa' },
       { quem: 'ro', texto: 'Brenda, era o simulado de phishing da Keyla. Você vai ganhar um certificado de participação. Em forma de treinamento.', gesto: 'cruzar' },
       { quem: 'keyla', texto: 'Meu simulado pegou 31% da Insônia! Estou feliz e preocupada ao mesmo tempo.', expr: 'sorriso' },
-      { quem: 'vandeco', texto: 'O de verdade chegou na Tabajara ontem, igualzinho. A diferença é que esse não dá certificado, dá relatório pra ANPD.', expr: 'neutro' },
+      { quem: 'vandeco', texto: 'O de verdade chegou na Tabajara ontem, igualzinho. A diferença é que esse não dá certificado, dá incidente. E, se tiver dado pessoal no meio, conversa com a ANPD.', expr: 'neutro' },
     ],
     fila: { quantidade: 8 },
     missoes: [
@@ -389,7 +390,7 @@ export const DIAS_46_52: Dia[] = [
         resposta: 'DT-CAIXA-05',
         gabarito: 'resposta=NXDOMAIN | distintos consulta por host | ordenar -distintos',
         dica: 'Use `resposta=NXDOMAIN | distintos consulta por host | ordenar -distintos`. Depois procure o único que resolveu: `host=DT-CAIXA-05 resposta=NOERROR`.',
-        explicacao: 'O DT-CAIXA-05 pediu mais de 40 nomes aleatórios em cerca de dois minutos, um a cada 3 segundos, quase todos NXDOMAIN. Um resolveu para 194.87.12.66, domínio com um dia de vida: esse é o IOC para bloquear e caçar em outros hosts. Os outros NXDOMAIN são `wpad` e erros de digitação, um por máquina. Próximo passo: isolar o caixa conforme o playbook e verificar no EDR qual processo fez as consultas.',
+        explicacao: 'O DT-CAIXA-05 pediu mais de 40 nomes aleatórios em cerca de dois minutos, um a cada 3 segundos, quase todos NXDOMAIN. Um resolveu para 203.0.113.66, domínio com um dia de vida: esse é o IOC para bloquear e caçar em outros hosts. Os outros NXDOMAIN são `wpad` e erros de digitação, um por máquina. Próximo passo: isolar o caixa conforme o playbook e verificar no EDR qual processo fez as consultas.',
       },
     ],
     saida: [
@@ -407,7 +408,7 @@ export const DIAS_46_52: Dia[] = [
       'Antes de cifrar, o ransomware tenta tirar da vítima o caminho de volta. É a técnica `T1490` (Inhibit System Recovery): apagar as **cópias de sombra** do Windows, o **catálogo de backup** local e desligar a **recuperação automática** da inicialização. Nos logs, isso aparece como execução de binários nativos: `vssadmin.exe`, `wmic.exe` (classe `shadowcopy`), `wbadmin.exe` e `bcdedit.exe`.\n\n' +
       'Por serem ferramentas do próprio Windows, o antivírus pode não reclamar. O que denuncia é o **contexto**: processo pai estranho (`powershell.exe` com `-EncodedCommand`, `cmd.exe` saindo de pasta temporária, um binário desconhecido), conta de usuário comum ou de serviço sem relação com backup, vários desses binários em sequência de segundos, em várias máquinas ao mesmo tempo, fora de janela de mudança.\n\n' +
       'Detecção: Sysmon 1 ou `4688` com esses binários e argumentos de exclusão ou de desligar recuperação; o log de aplicação do VSS; e, no EDR, regra de comportamento que já bloqueia a ação. Esse alerta é **P1 automático**: se ele dispara, a criptografia pode estar a minutos. Isolar primeiro e explicar depois é o raro caso em que o playbook manda correr.\n\n' +
-      'E lembre: cópia de sombra não é backup. Backup de verdade fica fora do alcance da máquina infectada (offline ou imutável). A Padaria Migalha de Byte tem EDR e não tem backup. Ninguém conta isso pra ela num dia de Black Friday.',
+      'E lembre: cópia de sombra não é backup. Backup de verdade fica fora do alcance da máquina infectada (offline ou imutável). A Panificadora Migalha de Byte tem EDR e não tem backup. Ninguém conta isso pra ela num dia de Black Friday.',
     chegada: [
       { quem: 'gilmar', texto: 'O Guarita mandou um alerta codificado do NB-FIN-014. Veio de trás para frente e em base64. Até o alerta está com medo.', gesto: 'apontar', expr: 'surpresa' },
       { quem: 'ro', texto: 'O coletor da Tabajara inverte o texto para "proteger" o log. Proteção criativa, utilidade zero.', gesto: 'cruzar' },
@@ -448,7 +449,7 @@ export const DIAS_46_52: Dia[] = [
       },
     ],
     saida: [
-      { quem: 'gilmar', texto: 'Host isolado em quatro minutos. O tomate nem esquentou.', gesto: 'comemorar', expr: 'sorriso' },
+      { quem: 'gilmar', texto: 'Host isolado em quatro minutos. Esse MTTR eu vou mostrar até na festa de fim de ano.', gesto: 'comemorar', expr: 'sorriso' },
       { quem: 'kevin', texto: 'Vou colar um post-it no monitor: "ferramenta do Windows não é álibi".', gesto: 'sim' },
     ],
   },

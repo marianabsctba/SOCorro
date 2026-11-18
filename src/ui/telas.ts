@@ -22,7 +22,7 @@ const LOG_ABERTURA = [
   '07:00:01  vigia-siem         fila=412 alertas  falso_positivo=71%  cafe=0',
   '07:00:02  guarita-edr      host=NB-SOC-15  cadeira=rasgada  severidade=baixa',
   '07:00:03  chamadao           status=FORA_DO_AR  motivo="é segunda-feira"',
-  '07:00:04  gilmar             "abriu ticket? então não aconteceu."',
+  '07:00:04  gilmar             "não abriu ticket? então não aconteceu."',
   '07:00:05  telefone           origem=Dr. Leoncio  horario=03:12  tentativas=7',
   '07:00:06  vigia-siem         regra=NOVO_ANALISTA_NA_FILA  disparou=1  confianca=alta',
 ];

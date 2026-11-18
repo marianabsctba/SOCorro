@@ -18,4 +18,4 @@ export const USU_PREFEITURA = ['sebastiao.prado', 'gleice.amorim', 'valdir.tesou
 export const USU_HOSPITAL = ['dra.helena.matos', 'enf.patricia', 'dr.otavio.reis', 'farm.jussara', 'recep.cleide'];
 export const USU_COOPERATIVA = ['marlene.financeiro', 'tiago.silo', 'ana.contabil', 'osmar.compras'];
 export const USU_PADARIA = ['bruna.ecommerce', 'carlos.loja04', 'debora.marketing', 'edu.ti'];
-export const USU_OLHOVIVO = ['pamela.n1', 'kevin.n1', 'brenda.n1', 'jefferson.n1', 'rosangela.n2'];
+export const USU_INSONIA = ['pamela.n1', 'kevin.n1', 'brenda.n1', 'jefferson.n1', 'rosangela.n2'];

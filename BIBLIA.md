@@ -35,7 +35,7 @@ Guia de tom, mundo e elenco para quem escreve conteúdo. O contrato técnico est
 
 ## Elenco (ids em `PersonagemId`)
 
-- `gilmar`: **Gilmar**, coordenador do SOC Alfa, 52 anos. Cronometra o MTTR com timer de cozinha em forma de tomate, fala em KPI, ama planilha, no fundo protege a equipe. Bordão: "Abriu ticket? Então não aconteceu."
+- `gilmar`: **Gilmar**, coordenador do SOC Alfa, 52 anos. Cronometra o MTTR com timer de cozinha em forma de tomate, fala em KPI, ama planilha, no fundo protege a equipe. Bordão: "Não abriu ticket? Então não aconteceu."
 - `ro`: **Rosângela, a Rô**, N2, 14 anos de turno. Ironia como idioma nativo, sabe tudo, ensina bufando. Bordão: "Falso positivo é igual boleto: sempre tem mais um."
 - `vandeco`: **Seu Wanderley, o Vandeco**, CSIRT/N3, 58 anos. Lê PCAP de olho, "já vi esse malware em 2003", café sem açúcar, histórias de guerra intermináveis e sempre úteis.
 - `thiaguinho`: **Thiaguinho**, turno da noite, 24 anos. Entrega a fila com 400 alertas e uma coxinha mordida, fecha alerta em lote, dorme de olho aberto. Bom coração, péssimo ticket.

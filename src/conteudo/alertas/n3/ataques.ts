@@ -1,6 +1,6 @@
 // Verdadeiros positivos de N3/CSIRT: incidente de verdade, contenção e coordenação.
 import type { ModeloAlerta } from '../../tipos';
-import { js, HORA, MADRUGADA, DATA3, IP_EXT, IP_INT, U_TAB, U_PREF, U_HOSP, U_COOP } from '../n2/comum';
+import { js, HORA, MADRUGADA, DATA3, IP_EXT, IP_INT, U_TAB, U_PREF, U_HOSP, U_COOP, IP_COOP, IP_HOSP, IP_TAB } from '../n2/comum';
 
 export const N3_TP: ModeloAlerta[] = [
   {
@@ -22,7 +22,7 @@ export const N3_TP: ModeloAlerta[] = [
       'O prontuário eletrônico roda em outro servidor, que ainda responde.',
       'A extensão .causaperdida nunca foi vista em nenhum cliente; a nota pede contato por um endereço em rede anônima.',
     ],
-    vars: { ip: IP_INT, host: ['HSP-FAT-02', 'HSP-FAT-05'], usuario: U_HOSP, data: DATA3, hora: MADRUGADA },
+    vars: { ip: IP_HOSP, host: ['HSP-FAT-02', 'HSP-FAT-05'], usuario: U_HOSP, data: DATA3, hora: MADRUGADA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -33,7 +33,7 @@ export const N3_TP: ModeloAlerta[] = [
       'Esperar o fim da criptografia para medir o estrago com calma.',
     ),
     explicacao:
-      'Em ransomware pelo compartilhamento, o servidor só recebe as escritas: quem cifra é a **estação de origem**, que aparece no 5145 e no EDR. Isole a origem (e bloqueie a conta) para parar a escrita, segmente o servidor sem desligar e preserve a memória para a forense. Desligar da tomada perde evidência volátil e pode corromper o que ainda estava inteiro. No hospital, avise a direção clínica antes de mexer em qualquer sistema assistencial.',
+      'Em ransomware pelo compartilhamento, o servidor só recebe as escritas: quem cifra é a **estação de origem**, que aparece no 5145 e no EDR. A primeira ação é **isolar a origem** (e bloquear a conta) para parar a escrita: o incidente nasce junto, mas sem isolar a estação a criptografia continua enquanto se discute. Segmente o servidor sem desligar e preserve a memória para a forense. Desligar da tomada perde evidência volátil e pode corromper o que ainda estava inteiro. No hospital, avise a direção clínica antes de mexer em qualquer sistema assistencial.',
     piada: 'A extensão escolhida foi .causaperdida. Pelo menos o atacante leu o nome do hospital.',
     peso: 2,
   },
@@ -66,7 +66,7 @@ export const N3_TP: ModeloAlerta[] = [
       'Fechar como falso positivo: o nome vmtoolsd.exe é de ferramenta legítima.',
     ),
     explicacao:
-      'O ransomware para serviços de banco e backup para liberar arquivos travados, depois cifra e deixa a **nota** em cada pasta. Nome de binário imitando software legítimo, fora do caminho padrão e num host onde ele não faz sentido, é truque comum. Isso é incidente: acione o plano, contenha as origens, preserve evidência e alinhe comunicação, inclusive com quem posta no Instagram.',
+      'O ransomware para serviços de banco e backup para liberar arquivos travados, depois cifra e deixa a **nota** em cada pasta. Nome de binário imitando software legítimo, fora do caminho padrão e num host onde ele não faz sentido, é truque comum. Aqui a ação é **abrir incidente**, e não só isolar: o binário já roda no próprio servidor e o acesso de ontem com senha reaproveitada mostra que o atacante tem credencial e outros pontos de apoio. Acione o plano, contenha as origens, preserve evidência e alinhe comunicação, inclusive com quem posta no Instagram.',
     piada: 'Modernizando os sistemas: agora eles são cifrados com algoritmo de 2026.',
   },
   {
@@ -88,7 +88,7 @@ export const N3_TP: ModeloAlerta[] = [
       '{usuario} é usuário do atendimento, sem motivo para RDP em DC.',
       'O encaminhamento do log para o Vigia funcionou até 1 segundo antes da limpeza.',
     ],
-    vars: { host: ['DC01', 'DC02'], usuario: U_TAB, ip: IP_INT, data: DATA3, hora: MADRUGADA },
+    vars: { host: ['DC01', 'DC02'], usuario: U_TAB, ip: IP_TAB, data: DATA3, hora: MADRUGADA },
     veredito: 'tp',
     acao: 'incidente',
     justificativas: js(
@@ -100,7 +100,7 @@ export const N3_TP: ModeloAlerta[] = [
     ),
     explicacao:
       'O **1102** é registrado quando o log de segurança é limpo manualmente; rotação por tamanho não gera esse evento. Quase nunca há motivo legítimo fora de reimagem. Como o log foi encaminhado antes, o SIEM guarda o que o atacante quis apagar: reconstrua a linha do tempo a partir dele. É por isso que coleta centralizada e retenção existem.',
-    piada: 'Ele apagou o log local. O Vigia guardou tudo, igual a Rô guarda cada ticket mal escrito seu desde 2012.',
+    piada: 'Ele apagou o log local. O Vigia guardou tudo, igual a Rô guarda cada ticket mal escrito do Thiaguinho desde 2019.',
   },
   {
     id: 'n3-tp-golden-ticket',
@@ -151,11 +151,11 @@ export const N3_TP: ModeloAlerta[] = [
       'Vigia SIEM: {ip} não está na lista de controladores de domínio; tráfego de replicação DRSUAPI de estação comum',
     ],
     contexto: [
-      'Os DCs da Tabajara são 10.20.0.10 e 10.20.0.11. {ip} é estação do setor de sinistros.',
+      'Os DCs da Tabajara são 10.10.0.10 e 10.10.0.11. {ip} é estação do setor de sinistros.',
       '{usuario} foi adicionado ontem a um grupo com direito de replicação, sem GMUD.',
       'Entra Connect da Tabajara usa a conta MSOL_ dedicada, não {usuario}.',
     ],
-    vars: { usuario: U_TAB, ip: IP_INT, data: DATA3, hora: HORA },
+    vars: { usuario: U_TAB, ip: IP_TAB, data: DATA3, hora: HORA },
     veredito: 'tp',
     acao: 'incidente',
     justificativas: js(
@@ -188,7 +188,7 @@ export const N3_TP: ModeloAlerta[] = [
       'CMDB: {host} é a estação da contabilidade.',
       'Nenhum software instalado explica um "pixel" consultado a cada minuto.',
     ],
-    vars: { host: ['COOP-CONT-01', 'COOP-CONT-02'], ip: IP_INT, data: DATA3, hora: HORA },
+    vars: { host: ['COOP-CONT-01', 'COOP-CONT-02'], ip: IP_COOP, data: DATA3, hora: HORA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -277,7 +277,7 @@ export const N3_TP: ModeloAlerta[] = [
     mitre: 'T1550.001',
     titulo: 'Refresh token de {usuario} usado de infraestrutura de hospedagem',
     logs: [
-      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@agropastoralo.coop.br","ipAddress":"{ip}","incomingTokenType":"refreshToken","authenticationRequirement":"singleFactor","deviceDetail":"não registrado","appDisplayName":"Microsoft Graph"}',
+      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@pastoralo.exemplo","ipAddress":"{ip}","incomingTokenType":"refreshToken","authenticationRequirement":"singleFactor","deviceDetail":"não registrado","appDisplayName":"Microsoft Graph"}',
       '{"activityDisplayName":"Update user","target":"{usuario}","modifiedProperties":"StrongAuthenticationMethod: novo app autenticador adicionado","ipAddress":"{ip}"}',
       '{"Operation":"Set-Mailbox","Parameters":"ForwardingSmtpAddress=contas.pastoralo@caixapostal-segura[.]top","ClientIP":"{ip}"}',
     ],
@@ -331,7 +331,7 @@ export const N3_TP: ModeloAlerta[] = [
     ),
     explicacao:
       'Em ataque à **cadeia de suprimentos**, o código malicioso chega assinado pelo próprio fornecedor, então assinatura não basta. Compare o **comportamento** com a versão anterior, verifique o destino e procure confirmação no canal oficial do fornecedor (não no e-mail que veio junto). Abra incidente, bloqueie o domínio, congele as atualizações automáticas e contate o fornecedor e os outros clientes que usam o mesmo produto.',
-    piada: 'O CotaFácil cotou também o seu Active Directory inteiro. Grátis, sem franquia.',
+    piada: 'O CotaFácil cotou também o Active Directory inteiro da Tabajara. Grátis, sem franquia.',
   },
   {
     id: 'n3-tp-equipamento-medico-varredura',
@@ -343,9 +343,9 @@ export const N3_TP: ModeloAlerta[] = [
     mitre: 'T1046',
     titulo: 'Estação do tomógrafo varrendo a rede por SMB',
     logs: [
-      '{data} {hora} IDS alert | src=10.50.3.21 (HSP-TC-CONSOLE) | dst=10.40.0.0/16 | dpt=445 | 2.400 hosts distintos em 5 minutos',
-      '{data} {hora} IDS alert | src=10.50.3.21 | assinatura: tentativa de exploração de SMBv1 conhecida',
-      'Inventário: HSP-TC-CONSOLE é a estação de controle do tomógrafo, Windows 7 embarcado, sem EDR (o fabricante não permite)',
+      '{data} {hora} IDS alert | src=10.30.8.23 (HSP-TOMO-S2) | dst=10.30.0.0/16 | dpt=445 | 2.400 hosts distintos em 5 minutos',
+      '{data} {hora} IDS alert | src=10.30.8.23 | assinatura: tentativa de exploração de SMBv1 conhecida',
+      'Inventário: HSP-TOMO-S2 é a estação de controle do tomógrafo antigo da sala 2, Windows 7 embarcado, sem EDR (o fabricante não permite)',
     ],
     contexto: [
       'O tomógrafo está com paciente agendado a cada 20 minutos até as 22h.',
@@ -377,13 +377,13 @@ export const N3_TP: ModeloAlerta[] = [
     titulo: 'GPO padrão do domínio alterada para criar tarefa em todas as máquinas',
     logs: [
       '{data} {hora} DC01.migalhadebyte.local EventID=5136 ObjectClass=groupPolicyContainer ObjectDN=Default Domain Policy Attribute=gPCMachineExtensionNames SubjectUserName={usuario}',
-      '{data} {hora} +1m Vigia SIEM | 4698 em 180 hosts | TaskName=AtualizaPDV | Action=\\\\PAD-DC01\\NETLOGON\\pdv.exe',
+      '{data} {hora} +1m Vigia SIEM | 4698 em 180 hosts | TaskName=AtualizaPDV | Action=\\\\DC01\\NETLOGON\\pdv.exe',
       '{data} {hora} +3m Guarita EDR | 40 hosts | serviço do Guarita parado e exclusão de cópias de sombra em sequência',
     ],
     contexto: [
       '{usuario} é conta de TI de uma loja; não administra GPO.',
       'pdv.exe não existe no repositório de software da padaria e foi copiado para o NETLOGON há 10 minutos.',
-      'É véspera de Black Friday. A padaria tem EDR e não tem backup.',
+      'É véspera de Black Friday.',
     ],
     vars: { usuario: ['edu.ti', 'carlos.loja04'], data: DATA3, hora: MADRUGADA },
     veredito: 'tp',
@@ -442,13 +442,13 @@ export const N3_TP: ModeloAlerta[] = [
     titulo: 'Compactação de prontuários e envio para armazenamento externo em {host}',
     logs: [
       '{data} {hora} {host} Sysmon 1 | Image=7z.exe (em C:\\PerfLogs) | Resumo do EDR: compactação com senha de 60 GB da pasta \\\\HSP-FS01\\Prontuarios',
-      '{data} {hora} +40m {host} Sysmon 3 | Image=sync64.exe | DestinationHost=armazenamento-anonimo[.]cc | 58 GB enviados',
+      '{data} {hora} +40m {host} Sysmon 3 | Image=sync64.exe | DestinationHostname=armazenamento-anonimo[.]cc | 58 GB enviados',
       'DLP: arquivos com padrão de CPF e CID detectados no conjunto compactado',
     ],
     contexto: [
       'CMDB: {host} é servidor de impressão, sem nenhum motivo para ler prontuários.',
       '7z.exe e sync64.exe não fazem parte da imagem do servidor; foram copiados há 2 horas.',
-      'A quadrilha que atacou o hospital no início do ato é conhecida por dupla extorsão.',
+      'A quadrilha que atacou o hospital no mês passado é conhecida por dupla extorsão.',
     ],
     vars: { host: ['HSP-PRINT01', 'HSP-PRINT02'], data: DATA3, hora: MADRUGADA },
     veredito: 'tp',
@@ -461,7 +461,7 @@ export const N3_TP: ModeloAlerta[] = [
       'Bloquear o domínio e fechar o alerta.',
     ),
     explicacao:
-      'Na **dupla extorsão**, o grupo leva os dados antes de cifrar, para cobrar duas vezes. Compactação com senha, ferramenta copiada para pasta estranha e envio para serviço anônimo a partir de host sem relação com os dados é o padrão. Dado de saúde é **dado pessoal sensível** na LGPD: além da contenção, envolva DPO e jurídico desde já, porque o prazo de comunicação à ANPD é de 3 dias úteis a partir do conhecimento.',
+      'Na **dupla extorsão**, o grupo leva os dados antes de cifrar, para cobrar duas vezes. Compactação com senha, ferramenta copiada para pasta estranha e envio para serviço anônimo a partir de host sem relação com os dados é o padrão. Dado de saúde é **dado pessoal sensível** na LGPD: além da contenção, envolva o encarregado (DPO) e o jurídico desde já, porque o prazo de comunicação à ANPD é de 3 dias úteis a partir do conhecimento.',
     piada: 'O servidor de impressão nunca imprimiu nada direito, mas exportou 58 GB sem atolar.',
   },
   {
@@ -475,15 +475,16 @@ export const N3_TP: ModeloAlerta[] = [
     titulo: 'Primeira escrita cifrada do incidente veio de {host}',
     logs: [
       '{data} {hora} Vigia SIEM | primeira gravação com entropia acima de 7,9 em compartilhamentos: origem {ip} ({host}) | conta {usuario}',
-      '{data} {hora} -2h {host} EventID=4624 LogonType=10 Account={usuario} SourceIp=192.0.2.240 (VPN, origem estrangeira)',
+      '{data} {hora} -2h {host} EventID=4624 LogonType=10 Account={usuario} SourceIp=10.30.200.41 (pool da VPN; a sessão de VPN veio de 192.0.2.240, no exterior)',
       '{data} {hora} -1h {host} Sysmon 1 | Image=netscan.exe | Resumo do EDR: varredura de compartilhamentos da rede inteira',
     ],
     contexto: [
+      'O incidente de ransomware já está aberto; falta achar e conter a origem.',
       'Todos os outros hosts com escrita cifrada começaram depois de {host}.',
       '{usuario} está de licença médica e não acessa a VPN há 40 dias.',
       'A VPN do hospital não exige MFA para fornecedores e plantonistas.',
     ],
-    vars: { host: ['HSP-ADM-11', 'HSP-ADM-14'], usuario: U_HOSP, ip: IP_INT, data: DATA3, hora: MADRUGADA },
+    vars: { host: ['HSP-ADM-11', 'HSP-ADM-14'], usuario: U_HOSP, ip: IP_HOSP, data: DATA3, hora: MADRUGADA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -495,7 +496,7 @@ export const N3_TP: ModeloAlerta[] = [
     ),
     explicacao:
       'Achar o **paciente zero** é ordenar a linha do tempo pelo primeiro sinal, não pelo alerta mais barulhento. Aqui a primeira escrita cifrada leva a um host que recebeu RDP com credencial de alguém afastado, pela VPN sem MFA: o ponto de entrada. Isole sem formatar, porque é nele que estão as respostas de como entraram e o que mais fizeram.',
-    piada: 'A colaboradora está de licença médica e mesmo assim foi a conta mais produtiva da madrugada.',
+    piada: 'A conta de quem está de licença médica foi a mais produtiva da madrugada.',
   },
   {
     id: 'n3-tp-break-glass-credencial-app',
@@ -507,9 +508,9 @@ export const N3_TP: ModeloAlerta[] = [
     mitre: 'T1098.001',
     titulo: 'Conta de emergência entrou e adicionou credencial em aplicativo',
     logs: [
-      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"emergencia01@insonia.example","ipAddress":"{ip}","conditionalAccessStatus":"notApplied","location":"desconhecida"}',
-      '{"activityDisplayName":"Add service principal credentials","initiatedBy":"emergencia01@insonia.example","target":"Vigia-Integracao-SIEM","ipAddress":"{ip}"}',
-      '{"activityDisplayName":"Add member to role","target":"Vigia-Integracao-SIEM","role":"Global Administrator","initiatedBy":"emergencia01@insonia.example"}',
+      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"emergencia01@insonia.exemplo","ipAddress":"{ip}","conditionalAccessStatus":"notApplied","location":"desconhecida"}',
+      '{"activityDisplayName":"Add service principal credentials","initiatedBy":"emergencia01@insonia.exemplo","target":"Vigia-Integracao-SIEM","ipAddress":"{ip}"}',
+      '{"activityDisplayName":"Add member to role","target":"Vigia-Integracao-SIEM","role":"Global Administrator","initiatedBy":"emergencia01@insonia.exemplo"}',
     ],
     contexto: [
       'A conta de emergência só deve ser usada em pane do provedor de identidade, com dois aprovadores e registro no Chamadão.',

@@ -19,7 +19,7 @@ export const DIAS_71_80: Dia[] = [
     ].join('\n\n'),
     chegada: [
       { quem: 'keyla', texto: 'Minha regra de 4769 sem 4768 disparou! Ela nunca tinha disparado. Eu achava que ela estava morta.', gesto: 'comemorar', expr: 'surpresa' },
-      { quem: 'ro', texto: 'Primeira regra sua que não dispara com tudo. Vou emoldurar.' },
+      { quem: 'ro', texto: 'Primeira regra sua que não dispara com tudo. Vou pedir para plastificar.' },
       { quem: 'vandeco', texto: 'Golden ticket é como ingresso de show falsificado tão bem feito que o segurança deixa você entrar no camarim. O problema é que alguém roubou a gráfica.', gesto: 'pensar' },
       { quem: 'thiaguinho', texto: 'Eu fecharia esse alerta. Se o tíquete é válido, o Windows deixou entrar, então tá certo, né?', gesto: 'ombros' },
       { quem: 'vandeco', texto: 'Válido para o Windows. Não para mim. Senta aqui, menino, que a aula é longa.', gesto: 'apontar' },
@@ -55,7 +55,7 @@ export const DIAS_71_80: Dia[] = [
             p: 'Qual é a resposta correta para invalidar os golden tickets?',
             opcoes: ['Trocar a senha da krbtgt duas vezes, com intervalo para replicação, e investigar como o hash vazou', 'Trocar a senha da krbtgt uma vez e encerrar o incidente', 'Trocar a senha da krbtgt duas vezes seguidas no mesmo minuto', 'Reiniciar o controlador de domínio'],
             certa: 0,
-            explicacao: 'O DC aceita a senha atual e a anterior da krbtgt, então uma troca só não basta. Duas trocas seguidas sem esperar a replicação quebram a autenticação do domínio inteiro. E sem descobrir como o atacante obteve o hash (DCSync, cópia do NTDS.dit), ele repete a dose.',
+            explicacao: 'O DC aceita a senha atual e a anterior da krbtgt, então uma troca só não basta. Duas trocas seguidas, sem esperar a replicação, podem quebrar a autenticação no domínio inteiro. E sem descobrir como o atacante obteve o hash (DCSync, cópia do NTDS.dit), ele repete a dose.',
           },
           {
             p: 'Como se detecta um silver ticket?',
@@ -80,7 +80,7 @@ export const DIAS_71_80: Dia[] = [
     titulo: 'A atualização que veio de presente',
     resumo: 'Cadeia de suprimentos: quando o software confiável do fornecedor vira a porta dos fundos.',
     aula: [
-      'Ataque à **cadeia de suprimentos** compromete um fornecedor para chegar aos clientes dele. A técnica mais conhecida é **T1195.002** (Compromise Software Supply Chain): uma atualização legítima, assinada digitalmente e baixada do site oficial, vem com código malicioso. Casos públicos famosos: a SolarWinds em 2020 e a 3CX em 2023.',
+      'Ataque à **cadeia de suprimentos** compromete um fornecedor para chegar aos clientes dele. A técnica mais conhecida é **T1195.002** (Compromise Software Supply Chain): uma atualização legítima, assinada digitalmente e baixada do site oficial, vem com código malicioso. Dois casos públicos famosos seguiram esse roteiro: o de uma plataforma de monitoramento de TI em 2020 e o de um software de telefonia corporativa em 2023.',
       'A assinatura digital prova quem assinou, não que o conteúdo é bom. Se o ambiente de build do fornecedor foi invadido, o malware sai assinado. Por isso a detecção é por **comportamento**: o software do fornecedor falando com um domínio que nunca falou, criando processo filho que nunca criou (`powershell.exe` saindo do agente de inventário), lendo memória do LSASS ou mexendo em contas.',
       'Cuidado com as exclusões. Muita empresa coloca a pasta do software do fornecedor como exceção no EDR "porque dá falso positivo". É exatamente lá que o ataque de cadeia de suprimentos se esconde. Exclusão boa é estreita (hash, assinatura e caminho juntos) e tem data para expirar.',
       'Resposta: inventariar onde a versão afetada está instalada (um **SBOM** e um bom CMDB ajudam muito), isolar ou desligar o serviço do fornecedor, bloquear os indicadores, falar com o fornecedor e com os outros clientes. Para um MSSP, isso é duplo: o mesmo fornecedor pode estar em seis clientes ao mesmo tempo, e o próprio SOC também tem fornecedores.',
@@ -141,7 +141,7 @@ export const DIAS_71_80: Dia[] = [
     resumo: 'Hunting de beacon: periodicidade, jitter, tamanho constante e destino sem categoria.',
     aula: [
       'Implante de C2 precisa ligar para casa de tempos em tempos: é o **beacon**. Ele pergunta "tem tarefa pra mim?" e, na maioria das vezes, a resposta é "não". Isso deixa uma assinatura de rede: **muitas conexões para o mesmo destino**, com **intervalo regular** e **tamanho quase constante**. O canal costuma ser HTTPS (**T1071.001**, Web Protocols), misturado ao tráfego normal.',
-      'Para não parecer um relógio, o operador configura **jitter**: uma variação aleatória no intervalo (por exemplo, 300 segundos com 10% de jitter dá entre 270 e 330). Ainda assim, a distribuição continua concentrada, muito diferente de uma pessoa navegando, que abre dez abas num minuto e some por uma hora.',
+      'Para não parecer um relógio, o operador configura **jitter**: uma variação aleatória no intervalo (por exemplo, 300 segundos com 10% de jitter dá algo entre 270 e 330 segundos; cada ferramenta aplica a variação do seu jeito). Ainda assim, a distribuição continua concentrada, muito diferente de uma pessoa navegando, que abre dez abas num minuto e some por uma hora.',
       'Hunting de beacon é por hipótese: "algum host fala com um destino desconhecido de forma regular". Junte sinais: destino sem categoria ou registrado há pouco, frequência alta vinda de **um** host só, bytes enviados quase iguais em todas as conexões, horário que não depende do expediente. Coisas legítimas também são periódicas (telemetria do EDR, atualização, NTP), mas costumam aparecer em **todos** os hosts e ter dono conhecido.',
       'Achou? Não bloqueie no impulso sem pensar no resto: isole o host pelo EDR, colete memória, procure o mesmo destino nos outros clientes e só então bloqueie o domínio e o IP. Bloquear primeiro avisa o operador do outro lado que ele foi visto, e ele troca de casa.',
     ].join('\n\n'),
@@ -222,16 +222,16 @@ export const DIAS_71_80: Dia[] = [
     site: 'bravo',
     turno: 'madrugada',
     titulo: 'Plantão em Recife',
-    resumo: 'Sobreaviso no SOC Bravo: acionamento, escalonamento e uma lenda que ninguém explica.',
+    resumo: 'Plantão no SOC Bravo: acionamento, escalonamento e uma lenda que ninguém explica.',
     evento: 'plantao',
     aula: [
-      'Plantão (ou **sobreaviso**) é ficar à disposição para ser chamado fora do turno normal. Pela Súmula 428 do TST, o simples uso de celular corporativo não caracteriza sobreaviso; ele existe quando a pessoa fica sob controle da empresa, aguardando chamado a qualquer momento. Na prática, contrato e escala devem dizer quem está de plantão, de quando a quando e como é remunerado.',
-      'Plantão bom tem **critério de acionamento** escrito (o que me acorda: P1 confirmado, sim; alerta P4 de impressora, não), **matriz de escalonamento** com nomes e telefones atualizados, **tempo de resposta** combinado (por exemplo, retorno em 15 minutos e início do atendimento em 30) e um **runbook** para quem atende sozinho às 3h, com sono e sem a Rô do lado.',
-      'Registre tudo enquanto acontece: hora do acionamento, quem ligou, o que foi feito, quem foi avisado. Isso alimenta o ticket, o MTTR e a passagem de turno. E respeite o limite: plantão de 24 horas acordado não é dedicação, é erro esperando data. Se precisar, acione o segundo nível ou o colega da escala de reserva.',
+      'Plantão pode ser presencial (você está no SOC, de madrugada, atendendo) ou em **sobreaviso** (você está em casa, à disposição para ser chamado fora do turno normal). Pela Súmula 428 do TST, o simples uso de celular corporativo não caracteriza sobreaviso; ele existe quando a pessoa fica sob controle da empresa, aguardando chamado a qualquer momento. Na prática, contrato e escala devem dizer quem está de plantão, de quando a quando e como é remunerado.',
+      'Plantão bom tem **critério de acionamento** escrito (o que me acorda: P1 confirmado, sim; alerta P4 de impressora, não), **matriz de escalonamento** com nomes e telefones atualizados, **tempo de resposta** combinado (por exemplo, retorno em 15 minutos e início do atendimento em 30) e um **runbook** para quem atende sem ninguém por perto às 3h, com sono e sem a Rô do lado.',
+      'Registre tudo enquanto acontece: hora do acionamento, quem ligou, o que foi feito, quem foi avisado. Isso alimenta o ticket, o MTTR e a passagem de turno. E respeite o limite: passar 24 horas sem dormir no plantão não é dedicação, é erro esperando data. Se precisar, acione o segundo nível ou o colega da escala de reserva.',
       'Por fim, a regra de ouro de sobreaviso em ativo-ativo: os dois sites precisam enxergar a mesma fila e falar no mesmo canal. Se Curitiba e Recife tratam o mesmo incidente sem se falar, o cliente recebe duas ligações contraditórias e o incidente ganha um terceiro problema.',
     ].join('\n\n'),
     chegada: [
-      { quem: 'socorro', texto: 'Bem-vindo de volta ao Bravo. Aqui a gente não grita com incidente, a gente conversa com ele. Tem bolo de rolo na copa e o ventilador está de mau humor.', gesto: 'acenar', expr: 'sorriso' },
+      { quem: 'socorro', texto: 'Que bom ter você de volta no Bravo. Aqui a gente não grita com incidente, a gente conversa com ele. Tem bolo de rolo na copa e o ventilador está de mau humor.', gesto: 'acenar', expr: 'sorriso' },
       { quem: 'nildo', texto: 'Curitiba mandou alguém pro plantão? Ótimo. Aqui faz 29 graus às três da manhã. Pode tirar o casaco, ninguém vai rir. Muito.', gesto: 'apontar', expr: 'sorriso' },
       { quem: 'nildo', texto: 'Repara uma coisa: o mapa de ataques daqui pisca no mesmo segundo que o de Curitiba. Exatamente no mesmo. Tem gente que diz que o Bravo é só um print do Alfa.', gesto: 'pensar' },
       { quem: 'socorro', texto: 'Josenildo, deixe de lenda e vá atender a fila.', gesto: 'cintura' },
@@ -243,7 +243,7 @@ export const DIAS_71_80: Dia[] = [
       {
         tipo: 'quiz',
         titulo: 'O telefone toca às 3h17',
-        enunciado: 'Plantão no SOC Bravo. O celular de sobreaviso toca. Responda como quem segura a madrugada.',
+        enunciado: 'Plantão no SOC Bravo. O celular do plantão toca. Responda como quem segura a madrugada.',
         perguntas: [
           {
             p: 'O alerta é "impressora do 2º andar da Tabajara com toner baixo, severidade alta". Aciona o plantão do cliente?',
@@ -264,7 +264,7 @@ export const DIAS_71_80: Dia[] = [
             explicacao: 'Dois sites ligando para o mesmo cliente com informações diferentes geram confusão e perda de confiança. Um condutor, um canal, um ticket.',
           },
           {
-            p: 'Você está acordado há 22 horas e o incidente vai continuar. O que é responsável fazer?',
+            p: 'Você está há 22 horas sem dormir e o incidente vai continuar. O que é responsável fazer?',
             opcoes: ['Acionar o colega da escala de reserva, fazer passagem de turno registrada e descansar', 'Continuar até desmaiar, porque é P1', 'Tomar o quinto energético e seguir', 'Sair sem avisar'],
             certa: 0,
             explicacao: 'Fadiga leva a erro grave (isolar o servidor errado, fechar o alerta errado). A escala de reserva e a passagem de turno registrada existem para que a resposta continue boa, mesmo com outra pessoa.',
@@ -339,7 +339,7 @@ export const DIAS_71_80: Dia[] = [
       },
     ],
     saida: [
-      { quem: 'gilmar', texto: 'Dois verdes, um amarelo e um vermelho. A planilha está colorida como bandeira de festa junina.', expr: 'sorriso' },
+      { quem: 'gilmar', texto: 'Um verde, um amarelo e dois vermelhos. A planilha está colorida como bandeirinha de festa junina, e eu queria menos festa.', expr: 'sorriso' },
       { quem: 'keyla', texto: 'A regra do vssadmin sai hoje. E dessa vez eu testo antes de defender.', gesto: 'sim' },
     ],
   },
@@ -427,7 +427,7 @@ export const DIAS_71_80: Dia[] = [
       { quem: 'pamela', texto: 'Achei a planilha do IPTU de Pindaíba do Sul num site de vazamentos. 41 mil linhas: nome, CPF, endereço e valor do imposto.', gesto: 'apontar', expr: 'triste' },
       { quem: 'ro', texto: 'A planilha tinha senha?' },
       { quem: 'pamela', texto: 'Tinha. Prefeitura@2019.', expr: 'neutro' },
-      { quem: 'ro', texto: 'Claro que tinha. A senha mais famosa do Paraná.', gesto: 'cruzar' },
+      { quem: 'ro', texto: 'Claro que tinha. A senha mais famosa do serviço público municipal.', gesto: 'cruzar' },
       { quem: 'telefone', texto: 'Secretário de Administração falando. O prefeito quer mandar um SMS para todo mundo. Vocês ajudam com o texto?' },
       { quem: 'gilmar', texto: 'A gente ajuda com os fatos e o texto. Quem assina é a prefeitura, com o encarregado. Abriu ticket? Abre já.', gesto: 'sim' },
     ],
@@ -457,7 +457,7 @@ export const DIAS_71_80: Dia[] = [
           {
             texto: 'Nota genérica no site: "Houve um incidente cibernético, sem impacto relevante aos cidadãos."',
             reacao: [
-              { quem: 'telefone', texto: 'Jurídico da prefeitura: sem impacto relevante com CPF e endereço de 41 mil pessoas? A ANPD vai ler isso, doutor. Digo, analista.', expr: 'bravo' },
+              { quem: 'telefone', texto: 'Jurídico da prefeitura: sem impacto relevante com CPF e endereço de 41 mil pessoas? A ANPD vai ler isso. E vai rir, mas não do jeito bom.', expr: 'bravo' },
               { quem: 'gilmar', texto: 'Nota que não informa é pior que silêncio, porque o silêncio pelo menos não mente.', gesto: 'nao' },
             ],
             efeitos: { reputacao: -10 },
@@ -487,7 +487,7 @@ export const DIAS_71_80: Dia[] = [
       { quem: 'chat', texto: 'Brenda compartilhou um link: live do vereador no Instagram. Título: "URGENTE: hackers russos invadiram a prefeitura e roubaram nosso IPTU!!!". 3.200 pessoas assistindo.' },
       { quem: 'brenda', texto: 'Escalei para a Rússia? Não, calma. Escalei para o Gilmar.', expr: 'surpresa' },
       { quem: 'ro', texto: 'Russos. Claro. A senha era Prefeitura@2019, mas a culpa é da geopolítica.', gesto: 'cruzar' },
-      { quem: 'telefone', texto: 'Jornalista da Rádio Norte FM falando. Fiquei sabendo que vocês da Insônia atendem a prefeitura. Só uma palavrinha, em off. Foram os russos mesmo?' },
+      { quem: 'telefone', texto: 'Jornalista da Rádio Pindaíba FM falando. Fiquei sabendo que vocês da Insônia atendem a prefeitura. Só uma palavrinha, em off. Foram os russos mesmo?' },
       { quem: 'gilmar', texto: 'Quem está no turno não fala com imprensa. Nem em off. Principalmente em off.', gesto: 'nao', expr: 'bravo' },
     ],
     fila: { quantidade: 9 },
@@ -516,7 +516,7 @@ export const DIAS_71_80: Dia[] = [
           {
             texto: 'Dar a palavrinha em off para o jornalista: "não foram os russos, o IP é de um provedor brasileiro".',
             reacao: [
-              { quem: 'narrador', texto: 'Às 7h, a Rádio Norte FM abre o jornal: "Fonte da empresa de segurança revela: hacker é brasileiro". O contrato com a prefeitura tem cláusula de confidencialidade de seis páginas.' },
+              { quem: 'narrador', texto: 'Às 7h, a Rádio Pindaíba FM abre o jornal: "Fonte da empresa de segurança revela: hacker é brasileiro". O contrato com a prefeitura tem cláusula de confidencialidade de seis páginas.' },
               { quem: 'gilmar', texto: 'Em off é a forma mais rápida de estar em on. Vamos ter uma conversa com o jurídico.', gesto: 'nao', expr: 'triste' },
             ],
             efeitos: { reputacao: -20, sanidade: -5 },
@@ -537,7 +537,7 @@ export const DIAS_71_80: Dia[] = [
     titulo: 'O cookie que voou para Amsterdã',
     resumo: 'Nuvem: AiTM, sessão roubada, revogar tokens e acesso condicional.',
     aula: [
-      'No phishing com **proxy AiTM** (adversary in the middle, **T1557**), a vítima digita senha e aprova o MFA numa página falsa que repassa tudo para a página real. O proxy fica com o **cookie de sessão** (**T1539**, Steal Web Session Cookie) e o atacante passa a usar essa sessão de outro lugar (**T1550.004**, Web Session Cookie). O MFA foi cumprido, só que pela pessoa errada se beneficiando.',
+      'No phishing com **proxy AiTM** (adversary in the middle, **T1557**), a vítima digita senha e aprova o MFA numa página falsa que repassa tudo para a página real. O proxy fica com o **cookie de sessão** (**T1539**, Steal Web Session Cookie) e o atacante passa a usar essa sessão de outro lugar (**T1550.004**, Web Session Cookie). O MFA foi cumprido de verdade; quem aproveitou foi o atacante.',
       'No log de entrada do Entra ID (o antigo Azure AD), o desenho é típico: um login **interativo** com MFA aprovado vindo de um IP de hospedagem (o proxy), e logo em seguida logins **não interativos** (uso de token) de outro IP, outro país, em dispositivo **não conforme**. A pessoa jura que "aprovou o MFA, como sempre", e ela tem razão.',
       'Resposta: **revogar as sessões** do usuário (invalida os refresh tokens), trocar a senha, revisar os métodos de MFA cadastrados (o atacante adora registrar um método próprio), procurar regras de caixa de entrada criadas e aplicativos OAuth consentidos. Atenção: o access token já emitido pode continuar valendo até expirar (em geral cerca de uma hora), a menos que a avaliação contínua de acesso (CAE) esteja ativa.',
       'Prevenção: **acesso condicional** exigindo dispositivo gerenciado e conforme para aplicações sensíveis, MFA resistente a phishing (FIDO2, chaves de acesso), proteção de token onde houver suporte, e alertas para uso de sessão de país ou ASN incomum. Senha mais forte não resolve: a vítima entregou a senha certa.',

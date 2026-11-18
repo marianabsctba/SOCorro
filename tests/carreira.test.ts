@@ -97,3 +97,14 @@ describe('motor', () => {
     expect(receita('dwBoAG8AYQBtAGkA', ['base64', 'utf16le'])).toBe('whoami');
   });
 });
+
+describe('resposta digitada', async () => {
+  const { respostaBate } = await import('../src/ui/console');
+  it('aceita só o usuário de um e-mail ou de DOMINIO\\usuario, sem ligar para aspas e ponto', () => {
+    expect(respostaBate('camila.ribeiro', 'camila.ribeiro@TABAJARA.LOCAL')).toBe(true);
+    expect(respostaBate('"Camila.Ribeiro@tabajara.local".', 'camila.ribeiro@TABAJARA.LOCAL')).toBe(true);
+    expect(respostaBate('svc_backup', 'TABAJARA\\svc_backup')).toBe(true);
+    expect(respostaBate('camila', 'camila.ribeiro@TABAJARA.LOCAL')).toBe(false);
+    expect(respostaBate('10.20.4.31', '10.20.4.3')).toBe(false);
+  });
+});

@@ -86,16 +86,16 @@ export const DIAS_31_38: Dia[] = [
     resumo: 'O que muda quando o alerta não acaba no "fechar": hipótese, investigação e escopo.',
     aula:
       'Triagem pergunta "isso é real?". Investigação pergunta "o que aconteceu, desde quando, até onde?". Quem investiga trabalha com **hipótese**: uma frase que dá para provar ou derrubar com dado. "A conta da ana.oliveira foi usada por outra pessoa" é hipótese. "Deve ser hacker" é horóscopo.\n\n' +
-      'O método é simples e chato: escreva a hipótese, diga que evidência confirmaria e que evidência derrubaria, vá atrás das duas. Procurar só o que confirma é **viés de confirmação**, o erro mais caro do SOC. Se o 4624 mostra logon tipo 10 de um IP de outro estado, também confira se não existe uma VPN no meio antes de acionar o Gilmar e o timer de tomate.\n\n' +
+      'O método é simples e chato: escreva a hipótese, diga que evidência confirmaria e que evidência derrubaria, vá atrás das duas. Procurar só o que confirma é **viés de confirmação**, o erro mais caro do SOC. Se o 4624 mostra logon tipo 10 de um IP de outro estado, também confira se não existe uma VPN no meio antes de acordar meio mundo às 3h.\n\n' +
       'A investigação gira em torno de **pivôs**: usuário, host, IP, hash, domínio, processo. Achou um IOC, procure ele em todas as fontes (AD, EDR, proxy, e-mail, firewall). Cada pivô novo pode aumentar o **escopo**: a lista de contas, máquinas e dados afetados. Escopo fechado cedo demais é incidente que volta na semana seguinte, de chapéu novo.\n\n' +
       'Registre tudo enquanto investiga: consultas feitas, horários (sempre com fuso), o que foi descartado e por quê. A pergunta "vocês olharam o proxy?" vai chegar, e "acho que sim" não é resposta de quem vai depor numa auditoria.',
     chegada: [
-      { quem: 'gilmar', texto: 'Bom dia, {nome}. A partir de hoje a fila vem com alertas que não fecham em dois cliques. Você vai investigar. Com o salário de quem estiver no seu cargo, claro.', gesto: 'apontar' },
-      { quem: 'ro', texto: 'Promoção, acúmulo de função, chama como quiser. A diferença é que agora a culpa também é sua.', expr: 'sorriso' },
+      { quem: 'gilmar', texto: 'Bom dia, {nome}. A partir de hoje a fila vem com alertas que não fecham em dois cliques. Você vai investigar. Pelo mesmo salário, claro, que reajuste não coube no orçamento deste trimestre.', gesto: 'apontar' },
+      { quem: 'ro', texto: 'Promoção, acúmulo de função, chama como quiser. A diferença é que agora o ticket sai com o seu nome no campo "responsável".', expr: 'sorriso' },
       { quem: 'kevin', texto: 'Eu continuo fechando tudo como falso positivo. Tá dando certo até agora.', gesto: 'ombros' },
       { quem: 'ro', texto: 'Tá dando certo até o dia em que não dá, Kevin. Igual paraquedas.', gesto: 'cruzar' },
       { quem: 'vandeco', texto: 'Em 2003 eu investiguei um worm só com `netstat` e um caderno de capa dura. Hoje vocês têm SIEM e reclamam da cadeira.', expr: 'neutro' },
-      { quem: 'gilmar', texto: 'O tomate está ligado. Hipótese primeiro, consulta depois. Abriu ticket? Então não aconteceu.', gesto: 'sim' },
+      { quem: 'gilmar', texto: 'O tomate está ligado. Hipótese primeiro, consulta depois. Não abriu ticket? Então não aconteceu.', gesto: 'sim' },
     ],
     fila: { quantidade: 8 },
     missoes: [
@@ -168,7 +168,7 @@ export const DIAS_31_38: Dia[] = [
           'AD 4624, 12:05 UTC: logon tipo 3 no SRV-ARQ-01 com a conta ana.oliveira, origem NB-FIN-014',
           'Guarita EDR, 09:30 BRT: leitura em massa de arquivos no compartilhamento do SRV-ARQ-01',
         ],
-        explicacao: 'Convertendo tudo para UTC: e-mail 11:12, Excel abrindo PowerShell 11:19:05, conexão de saída 11:19:40, arquivo criado 11:41, logon no servidor 12:05, leitura em massa 12:30. É a sequência entrega, execução, comando e controle, persistência, movimento lateral e objetivo. Quem ordenou pelos números sem converter colocou a macro antes do e-mail chegar.',
+        explicacao: 'Convertendo tudo para UTC: e-mail 11:12, Excel abrindo PowerShell 11:19:05, conexão de saída 11:19:40, arquivo criado 11:41, logon no servidor 12:05, leitura em massa 12:30. É a sequência entrega, execução, comando e controle, download do segundo estágio, movimento lateral e objetivo. Quem ordenou pelos números sem converter colocou a macro antes do e-mail chegar.',
       },
     ],
     saida: [
@@ -240,7 +240,7 @@ export const DIAS_31_38: Dia[] = [
     titulo: 'A impressora que faz força bruta',
     resumo: 'Tuning 1: matar o falso positivo pela raiz sem cegar o SOC.',
     aula:
-      '**Tuning** é ajustar a regra para ela parar de gritar à toa sem ficar surda. A regra ruim vira ruído, o ruído vira fadiga, e a fadiga faz alguém fechar em lote o alerta que era de verdade. Todo SOC tem uma impressora com senha vencida de conta de serviço gerando `4625` com status `0xC000006A` (senha errada) a cada quinze minutos.\n\n' +
+      '**Tuning** é ajustar a regra para ela parar de gritar à toa sem ficar surda. A regra ruim vira ruído, o ruído vira fadiga, e a fadiga faz alguém fechar em lote o alerta que era de verdade. Todo SOC tem uma impressora com senha vencida de conta de serviço gerando `4625` com `0xC000006A` (senha errada) a cada quinze minutos. No evento de verdade esse código vem no campo `Sub Status`, com `Status` igual a `0xC000006D`; aqui o Vigia já mostra o código que interessa no campo `status`.\n\n' +
       'Primeiro, conserte a causa quando puder: avisar o cliente para atualizar a senha da `svc_scanner` resolve mais que qualquer exclusão. Enquanto isso, a exclusão deve ser a **mais específica possível**: combinação de conta, host de origem e IP. Excluir por um campo só ("tudo de `svc_*`", "todo logon tipo 3") é desligar a regra com outro nome.\n\n' +
       'Pergunta de ouro antes de aprovar uma exclusão: **se o atacante estivesse aqui, esse filtro esconderia ele?** Spraying vem quase sempre como logon tipo 3 com `0xC000006A` e `0xC0000064` (usuário inexistente), muitas vezes testando contas de serviço. Qualquer filtro que casa com isso é armadilha.\n\n' +
       'Toda exclusão precisa de dono, motivo, ticket e **validade**. Exclusão eterna é o lugar onde atacante mora de graça.',
@@ -257,7 +257,7 @@ export const DIAS_31_38: Dia[] = [
         tipo: 'regra',
         titulo: 'Tuning da regra de força bruta da Tabajara',
         enunciado: 'A regra dispara demais por causa da impressora do segundo andar e do servidor de monitoramento. No meio do barulho há um password spraying de verdade. Escolha as exclusões que tiram o falso positivo sem esconder o ataque.',
-        regra: 'evento=4625 contra SRV-DC-01, mais de 3 falhas em 1 hora por conta: severidade alta',
+        regra: 'evento=4625 com destino SRV-DC-01: cada falha vira alerta de severidade alta, "Força bruta"',
         registros: registrosImpressora(),
         exclusoes: [
           { texto: 'Excluir a conta svc_scanner vindo da impressora IMP-2ANDAR-01', filtro: 'usuario=svc_scanner host_origem=IMP-2ANDAR-01' },
@@ -369,8 +369,8 @@ export const DIAS_31_38: Dia[] = [
     titulo: 'O boleto que não tem vírus',
     resumo: 'BEC: sem malware, com domínio parecido e conta bancária trocada.',
     aula:
-      '**BEC** (Business Email Compromise) é golpe sem anexo malicioso e sem link: só texto, urgência e uma conta bancária nova. Ele passa pelo antivírus porque não tem nada para o antivírus ver. O prejuízo médio é bem maior que o de muito ransomware, e o atacante não precisa saber programar, só escrever com educação.\n\n' +
-      'Os sinais aparecem no cabeçalho e no contexto: domínio parecido registrado há poucos dias (`agropecas-sul.com.br` x `agropecas-sul-financeiro.com`), `Reply-To` diferente do `From`, pedido de troca de dados bancários, pressa e sigilo ("não comente com ninguém"). Cuidado: **SPF, DKIM e DMARC passando só provam que o e-mail veio do domínio que diz vir**. Se o domínio é do golpista, passa tudo.\n\n' +
+      '**BEC** (Business Email Compromise) é golpe sem anexo malicioso e sem link: só texto, urgência e uma conta bancária nova. Ele passa pelo antivírus porque não tem nada para o antivírus ver. Nos relatórios anuais do FBI (IC3), o BEC aparece sempre entre os crimes de maior prejuízo somado, e o atacante não precisa saber programar, só escrever com educação.\n\n' +
+      'Os sinais aparecem no cabeçalho e no contexto: domínio parecido registrado há poucos dias (`racoesmugido.exemplo` x `racoesmugido-financeiro.exemplo`), `Reply-To` diferente do `From`, pedido de troca de dados bancários, pressa e sigilo ("não comente com ninguém"). Cuidado: **SPF, DKIM e DMARC passando só provam que o e-mail veio do domínio que diz vir**. Se o domínio é do golpista, passa tudo.\n\n' +
       'Quando o golpe usa a caixa real do fornecedor (conta comprometida), o cabeçalho fica limpo. Aí o que denuncia é comportamento: login de origem estranha, regra de caixa de entrada nova, conversa antiga respondida com dado bancário diferente. No ATT&CK, o fingimento é `T1656` (Impersonation) e o acesso à caixa costuma ser `T1078`.\n\n' +
       'A resposta certa nunca é "responder o e-mail perguntando se é golpe". É confirmar por **canal independente**: telefone que já estava no cadastro do fornecedor, não o do rodapé da mensagem. Se o dinheiro já saiu, o tempo manda: acione o banco imediatamente para tentar o bloqueio.',
     chegada: [
@@ -387,15 +387,15 @@ export const DIAS_31_38: Dia[] = [
         titulo: 'O fornecedor que mudou de banco',
         enunciado: 'O Dr. Leôncio encaminhou o e-mail. Analise o cabeçalho e o corpo.',
         anexo:
-          'Received: from mail.agropecas-sul-financeiro.com (191.33.47.120)\n' +
-          '  by mx.pastoralo.coop.br; Tue, 10 Mar 2026 14:02:11 +0000\n' +
-          'Authentication-Results: mx.pastoralo.coop.br;\n' +
-          '  spf=pass smtp.mailfrom=agropecas-sul-financeiro.com;\n' +
-          '  dkim=pass header.d=agropecas-sul-financeiro.com;\n' +
-          '  dmarc=pass header.from=agropecas-sul-financeiro.com\n' +
-          'From: "Financeiro Agropeças Sul" <cobranca@agropecas-sul-financeiro.com>\n' +
-          'Reply-To: agropecas.financeiro@caixapostal-gratis.top\n' +
-          'To: leoncio@pastoralo.coop.br\n' +
+          'Received: from mail.racoesmugido-financeiro.exemplo (203.0.113.120)\n' +
+          '  by mx.pastoralo.exemplo; Tue, 10 Mar 2026 14:02:11 +0000\n' +
+          'Authentication-Results: mx.pastoralo.exemplo;\n' +
+          '  spf=pass smtp.mailfrom=racoesmugido-financeiro.exemplo;\n' +
+          '  dkim=pass header.d=racoesmugido-financeiro.exemplo;\n' +
+          '  dmarc=pass header.from=racoesmugido-financeiro.exemplo\n' +
+          'From: "Financeiro Rações Mugido" <cobranca@racoesmugido-financeiro.exemplo>\n' +
+          'Reply-To: racoesmugido.financeiro@caixapostal-gratis.top\n' +
+          'To: leoncio@pastoralo.exemplo\n' +
           'Subject: RES: Pedido 4471 ração bovina | ATUALIZAÇÃO CADASTRAL URGENTE\n' +
           '\n' +
           'Prezado Dr. Leôncio,\n' +
@@ -404,11 +404,11 @@ export const DIAS_31_38: Dia[] = [
           'atrasar a entrega. Pedimos sigilo, pois a mudança ainda não foi comunicada aos demais clientes.\n' +
           '\n' +
           '[WHOIS do domínio remetente: criado em 07/03/2026]\n' +
-          '[Fornecedor cadastrado na cooperativa: agropecas-sul.com.br, desde 2014]',
+          '[Fornecedor cadastrado na cooperativa: racoesmugido.exemplo, desde 2014]',
         perguntas: [
           {
             p: 'SPF, DKIM e DMARC passaram. Isso quer dizer que o e-mail é legítimo?',
-            opcoes: ['Sim, os três passaram, pode pagar', 'Não: provam só que veio de `agropecas-sul-financeiro.com`, que não é o domínio cadastrado do fornecedor', 'Sim, porque o DKIM é assinatura digital', 'Depende do antivírus'],
+            opcoes: ['Sim, os três passaram, pode pagar', 'Não: provam só que veio de `racoesmugido-financeiro.exemplo`, que não é o domínio cadastrado do fornecedor', 'Sim, porque o DKIM é assinatura digital', 'Depende do antivírus'],
             certa: 1,
             explicacao: 'Autenticação de e-mail valida o domínio, não a intenção. O golpista registrou o domínio parecido três dias antes e configurou tudo direitinho.',
           },
@@ -425,7 +425,7 @@ export const DIAS_31_38: Dia[] = [
             explicacao: 'Confirmação por canal independente. Responder o e-mail ou ligar para o número do rodapé é conversar com o próprio golpista.',
           },
           {
-            p: 'Se o e-mail tivesse vindo do domínio verdadeiro `agropecas-sul.com.br`, com tudo passando, o que mudaria na investigação?',
+            p: 'Se o e-mail tivesse vindo do domínio verdadeiro `racoesmugido.exemplo`, com tudo passando, o que mudaria na investigação?',
             opcoes: ['Nada, seria legítimo com certeza', 'Hipótese de conta do fornecedor comprometida: avisar o fornecedor e procurar regra de encaminhamento, login estranho e conversas antigas respondidas', 'Seria problema só do fornecedor, encerrar', 'Bloquear o domínio do fornecedor para sempre'],
             certa: 1,
             explicacao: 'BEC com caixa real comprometida é comum. O pedido de troca bancária continua exigindo confirmação por telefone, não importa de onde veio o e-mail.',
@@ -445,7 +445,7 @@ export const DIAS_31_38: Dia[] = [
     titulo: 'Assando tíquetes',
     resumo: 'Kerberoasting: muitos 4769 com RC4 (0x17) da mesma conta em poucos segundos.',
     aula:
-      'No Kerberos, quem já tem um TGT (evento `4768`) pede um tíquete de serviço para cada SPN que quer acessar (evento `4769` no controlador de domínio). Esse tíquete vem cifrado com a senha da **conta de serviço**. No **Kerberoasting** (`T1558.003`), o atacante com qualquer conta de domínio pede tíquetes de vários SPNs e leva para quebrar a senha fora da rede, longe dos seus logs.\n\n' +
+      'No Kerberos, quem já tem um TGT (o pedido dele gera o evento `4768` no controlador de domínio) pede um tíquete de serviço para cada SPN que quer acessar (evento `4769` no controlador de domínio). Esse tíquete vem cifrado com uma chave derivada da senha da **conta de serviço** dona do SPN. No **Kerberoasting** (`T1558.003`), o atacante com qualquer conta de domínio pede tíquetes de vários SPNs e leva para quebrar a senha fora da rede, longe dos seus logs.\n\n' +
       'O que o SOC vê: vários `4769` da mesma conta, para SPNs diferentes, em poucos segundos, com `Ticket Encryption Type` igual a `0x17` (RC4-HMAC). Ambiente moderno usa `0x12` (AES256) ou `0x11` (AES128); RC4 é pedido de propósito porque é mais fácil de quebrar. Usuário comum não precisa de tíquete para o SQL, o backup e o SharePoint no mesmo minuto.\n\n' +
       'Cuidado com o ruído: sistema legado que só fala RC4 gera `0x17` legítimo, mas sempre para o mesmo serviço. O que pesa é a **quantidade de serviços distintos** pedidos pela mesma conta numa janela curta.\n\n' +
       'Defesa: senha longa e aleatória em conta de serviço (ou gMSA, que troca sozinha), desabilitar RC4 onde der, e um **SPN isca** (honey SPN) numa conta que ninguém usa: qualquer `4769` para ele é alerta de alta confiança. Sim, é uma armadilha. Não, não é crueldade.',
@@ -486,7 +486,7 @@ export const DIAS_31_38: Dia[] = [
       'Depois de pegar credencial, o atacante anda pela rede. No Windows, o caminho mais visto usa compartilhamentos administrativos (`T1021.002`, SMB/Windows Admin Shares) e execução por serviço (`T1569.002`). A ferramenta PsExec, muito usada por administrador legítimo, também é muito usada por ransomware.\n\n' +
       'A pegada nos logs do host de destino vem em sequência: `4624` com **logon tipo 3** (rede) vindo do IP da máquina de origem, `5145` (acesso a objeto de compartilhamento, se auditado) em `ADMIN$` gravando `PSEXESVC.exe`, e `7045` no log System: serviço novo instalado, nome `PSEXESVC`. Quando a conta vem com privilégio, aparece também o `4672`.\n\n' +
       'Para separar administrador de atacante, olhe o padrão: a ferramenta de gestão (SCCM, inventário) usa conta de serviço conhecida, de servidor conhecido, em horário de janela. O atacante usa conta de gente, de estação de trabalho, em sequência rápida, para hosts que aquela conta nunca tocou. **Um IP de origem tocando muitos hosts com logon tipo 3 em poucos minutos** é o sinal clássico.\n\n' +
-      'Contenção: isolar a máquina de origem no EDR, desabilitar ou trocar a senha da conta usada e verificar cada host de destino. Desligar o switch inteiro funciona, mas o Gilmar perde o timer de tomate no meio da confusão.',
+      'Contenção: isolar a máquina de origem no EDR, desabilitar ou trocar a senha da conta usada e verificar cada host de destino. Desligar o switch inteiro também "contém", no mesmo sentido em que tirar a pilha do detector de fumaça apaga o incêndio.',
     chegada: [
       { quem: 'gilmar', texto: 'O EDR da Tabajara marcou `PSEXESVC` em seis máquinas. O pessoal de TI jura que não foi ninguém. Isso sempre me dá azia.', gesto: 'cintura' },
       { quem: 'kevin', texto: 'PsExec é ferramenta de admin. Falso positivo, fecho?', gesto: 'ombros' },

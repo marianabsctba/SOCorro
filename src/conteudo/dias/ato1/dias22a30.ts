@@ -16,14 +16,14 @@ export const DIAS_22_30: Dia[] = [
       '**Conta de serviço** é a conta que um sistema usa para rodar: backup, banco de dados, integração, antivírus. Ela trabalha de madrugada, em fim de semana e no Natal, e não reclama. Por isso alerta de "logon fora do horário" dispara com ela o tempo todo. Contas de serviço costumam fazer logon tipo **5** (serviço), **4** (lote, tarefa agendada) ou **3** (rede).',
       'A **GMUD** (gestão de mudança, o famoso "change") é o registro aprovado de uma alteração: o que será feito, em quais ativos, por quem, com qual conta, em qual **janela** de horário e com plano de retorno. Alerta que bate exatamente com uma GMUD aprovada (mesmo ativo, mesma conta, dentro da janela) é **benigno verdadeiro**, e a GMUD é a evidência no ticket.',
       'Mas confira tudo, não só a existência da GMUD. Logon **fora da janela**, em **ativo que não está na lista**, ou com **tipo de logon que não combina** (conta de serviço fazendo logon tipo 2 ou 10, interativo ou RDP, como se fosse gente) é sinal de abuso. Atacante adora conta de serviço: senha que não expira, privilégio alto e ninguém olhando.',
-      'Boas práticas que o SOC pode recomendar: contas de serviço com nome padronizado (`svc_`), sem logon interativo (política "Negar logon local" e "Negar logon via Serviços de Área de Trabalho Remota"), senha longa e rotacionada, ou contas gerenciadas pelo próprio AD (gMSA). E GMUD com janela realista, não "das 00h às 23h59, todo dia, para sempre".',
+      'Boas práticas que o SOC pode recomendar: contas de serviço com nome padronizado (`svc_`), sem logon interativo (políticas "Negar logon localmente" e "Negar logon pelos Serviços de Área de Trabalho Remota"), senha longa e rotacionada, ou contas gerenciadas pelo próprio AD (gMSA). E GMUD com janela realista, não "das 00h às 23h59, todo dia, para sempre".',
     ),
     chegada: [
       { quem: 'brenda', texto: 'A conta svc_backup logou às 2h no servidor de banco da Tabajara! De madrugada! Escalei para o Vandeco, a Rô, o Gilmar e o papa.', gesto: 'apontar', expr: 'surpresa' },
       { quem: 'ro', texto: 'Brenda, é o backup. Ele roda às 2h desde 2017. Tem GMUD, tem janela, tem até aniversário.', expr: 'neutro' },
       { quem: 'vandeco', texto: 'Se o backup não rodar às 2h, aí sim me liga.', gesto: 'cruzar' },
       { quem: 'jefferson', texto: 'Mas como a gente sabe que é o backup mesmo e não alguém usando a conta do backup?', gesto: 'pensar' },
-      { quem: 'vandeco', texto: 'Essa pergunta vale mais que o seu concurso inteiro, garoto. Senta que eu explico.', expr: 'sorriso' },
+      { quem: 'vandeco', texto: 'Essa pergunta vale mais que o seu concurso inteiro, Jefferson. Senta que eu explico.', expr: 'sorriso' },
     ],
     fila: { quantidade: 7 },
     missoes: [
@@ -172,7 +172,7 @@ export const DIAS_22_30: Dia[] = [
     saida: [
       { quem: 'thiaguinho', texto: 'Apaguei a planilha do ticket e pedi para o Chamadão expurgar o histórico.', gesto: 'sim' },
       { quem: 'gilmar', texto: 'E o Chamadão?' },
-      { quem: 'thiaguinho', texto: 'Caiu. É segunda-feira.', gesto: 'ombros' },
+      { quem: 'thiaguinho', texto: 'Caiu. Deve ser segunda-feira em algum fuso.', gesto: 'ombros' },
     ],
   },
   {
@@ -184,7 +184,7 @@ export const DIAS_22_30: Dia[] = [
     aula: aula(
       '**Defang** é desarmar um indicador para que ninguém clique sem querer: `http` vira `hxxp`, o ponto vira `[.]`, às vezes o `@` vira `[@]`. Em ticket, e-mail e chat, IOC vai **sempre** defangado. Link clicável de phishing no Bate-Papo Corporativo é armadilha para o colega.',
       '**Codificação de URL** (percent-encoding) troca caracteres por `%` e o código hexadecimal: `%3A` é `:`, `%2F` é `/`, `%3D` é `=`, `%40` é `@`, `%20` é espaço. Phishing usa isso para esconder o destino dentro de um parâmetro, e muitas vezes empilha camadas: um parâmetro `url=` com base64 dentro, codificado de novo para URL.',
-      '**Encurtadores** e redirecionadores escondem o destino final. Para expandir sem visitar, use serviços de expansão de link ou consulte a reputação da URL, e se precisar abrir, faça em navegador isolado ou sandbox, nunca na sua estação. Outra pegadinha clássica: em `https://www.tabajaraseguros.com.br@login-falso.top/`, tudo antes do `@` é "usuário" e o domínio de verdade é o que vem depois.',
+      '**Encurtadores** e redirecionadores escondem o destino final. Para expandir sem visitar, use serviços de expansão de link ou consulte a reputação da URL, e se precisar abrir, faça em navegador isolado ou sandbox, nunca na sua estação. Outra pegadinha clássica: em `https://www.tabajara.exemplo@login-falso.top/`, tudo antes do `@` é "usuário" e o domínio de verdade é o que vem depois.',
       'No Canivete, a ordem importa: desfaça as camadas de fora para dentro. Primeiro a codificação de URL (**url**), depois o que aparecer (**base64**, por exemplo). O resultado é o destino real, que vira IOC para o ticket e para a busca no proxy: quem mais acessou isso?',
     ),
     chegada: [
@@ -244,7 +244,7 @@ export const DIAS_22_30: Dia[] = [
         resposta: 'juliana.santos',
         gabarito: 'resultado!=aprovado | contar por usuario | ordenar -total | topo 5',
         dica: 'Tire os aprovados e conte por usuário: `resultado!=aprovado | contar por usuario | ordenar -total`. Depois veja a história completa com `usuario=juliana* | tabela hora,app,resultado,ip_origem,cidade`.',
-        explicacao: '`juliana.santos` recebeu 22 solicitações de MFA para a VPN em menos de meia hora, a partir das 02:10, de `77.91.124.56` (Amsterdã), negou ou ignorou todas e aprovou às 02:39. O atacante tinha a senha dela. O `bruno.carvalho` tem 3 sem resposta à tarde, de Curitiba, no IP da empresa: celular esquecido, não ataque. Ação: P1, revogar sessões da VPN, trocar a senha, bloquear o IP, ligar para a usuária e recomendar number matching.',
+        explicacao: '`juliana.santos` recebeu 22 solicitações de MFA para a VPN em menos de meia hora, a partir das 05:10 UTC (02:10 em Brasília), de `77.91.124.56` (Amsterdã), negou ou ignorou todas e aprovou às 05:39 UTC. O atacante tinha a senha dela. O `bruno.carvalho` tem 3 sem resposta à tarde, de Curitiba, no IP da empresa: celular esquecido, não ataque. Ação: P1, revogar sessões da VPN, trocar a senha, bloquear o IP, ligar para a usuária e recomendar number matching.',
       },
     ],
     saida: [
@@ -423,7 +423,7 @@ export const DIAS_22_30: Dia[] = [
       { quem: 'thiaguinho', texto: 'Eu vou, mas só se tiver coxinha. Inteira dessa vez.', gesto: 'comemorar' },
       { quem: 'ro', texto: 'Eu vou ficar meia hora. Em 14 anos de turno aprendi: quem não descansa vira alerta.', expr: 'neutro' },
       { quem: 'neide', texto: 'Meu bem, você tá com uma cara de quem dormiu três horas. Hoje, quando sair, sai mesmo. O computador não sente sua falta, eu juro.', expr: 'sorriso' },
-      { quem: 'vandeco', texto: 'Em 2008 eu fiquei 40 horas acordado num incidente. Resolvi tudo e depois dormi no carro, no estacionamento, com o motor ligado. Não façam isso. É a única história minha que não serve para nada.', gesto: 'nao' },
+      { quem: 'vandeco', texto: 'Em 2008 eu fiquei 40 horas acordado num incidente. Resolvi tudo, dormi no carro, no estacionamento do cliente, e acordei com um tíquete de 14 horas para pagar. Não façam isso. É a única história minha que não serve para nada.', gesto: 'nao' },
     ],
     fila: { quantidade: 8 },
     missoes: [
@@ -519,7 +519,7 @@ export const DIAS_22_30: Dia[] = [
             explicacao: 'Spraying é muitos usuários distintos a partir de um IP, com poucas tentativas cada. Contar por usuário mostra só a força bruta barulhenta.',
           },
           {
-            p: 'Um e-mail tem `spf=pass`, `dkim=pass header.d=tabajara-segur0s.top` e `dmarc=fail header.from=tabajaraseguros.com.br`. Conclusão:',
+            p: 'Um e-mail tem `spf=pass`, `dkim=pass header.d=tabajara-segur0s.top` e `dmarc=fail header.from=tabajara.exemplo`. Conclusão:',
             opcoes: ['O domínio parecido autenticou a si mesmo, mas não está alinhado com o From: forte indício de falsificação', 'É legítimo, SPF e DKIM passaram', 'O DMARC do cliente está mal configurado', 'É impossível concluir qualquer coisa pelo cabeçalho'],
             certa: 0,
             explicacao: 'DMARC verifica o alinhamento com o From visível. O golpista autenticou o próprio domínio com zero no lugar do "o".',
@@ -556,9 +556,9 @@ export const DIAS_22_30: Dia[] = [
           },
           {
             p: 'Um IP aparece com 40 portas de destino distintas bloqueadas em 40 segundos, e duas permitidas (80 e 443). Isso é:',
-            opcoes: ['Varredura de portas (T1046); as portas permitidas mostram o que ficou exposto', 'Força bruta', 'Credential stuffing', 'Tráfego normal de navegação'],
+            opcoes: ['Varredura de portas; as portas permitidas mostram o que ficou exposto', 'Força bruta', 'Credential stuffing', 'Tráfego normal de navegação'],
             certa: 0,
-            explicacao: 'Muitas portas distintas por IP em pouco tempo é varredura. O allow no meio é o que o atacante descobriu.',
+            explicacao: 'Muitas portas distintas por IP em pouco tempo é varredura. O allow no meio é o que o atacante descobriu. Vinda da internet, o ATT&CK chama de T1595 (Active Scanning); de dentro da rede, de T1046.',
           },
           {
             p: 'Regra de severidade baixa "Novo serviço instalado" no controlador de domínio, às 3h, sem GMUD. Prioridade:',

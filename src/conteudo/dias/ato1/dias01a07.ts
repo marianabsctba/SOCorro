@@ -19,7 +19,7 @@ export const DIAS_01_07: Dia[] = [
       { quem: 'narrador', texto: 'Curitiba, 7h. Garoa fina na janela, 16 °C lá fora e 16 °C aqui dentro, porque o ar-condicionado é solidário. Na parede, a placa "Dias sem incidente: 0".' },
       { quem: 'gilmar', texto: 'Bem-vindo, bem-vinda, bem-vinde, o RH mandou falar os três. Eu sou o Gilmar, coordenador. Este aqui é o Tomatinho.', gesto: 'apontar', expr: 'sorriso' },
       { quem: 'voce', texto: 'Um timer de cozinha?' },
-      { quem: 'gilmar', texto: 'É o nosso MTTR. Alerta crítico chegou, eu giro o tomate. Se tocar antes do ticket, alguém vai ouvir sobre KPI até o Natal.', gesto: 'cintura' },
+      { quem: 'gilmar', texto: 'É o nosso MTTR. Alerta crítico chegou, eu giro o tomate. Se tocar antes de o ticket estar fechado, alguém vai ouvir sobre KPI até o Natal.', gesto: 'cintura' },
       { quem: 'ro', texto: 'Ele não tá brincando. Eu ouvi sobre KPI no Natal de 2019. Na ceia.', expr: 'neutro' },
       { quem: 'neide', texto: 'A senha do Wi-Fi de visitante tá colada atrás do quadro, meu bem. É a mesma desde que eu entrei. Ninguém atualiza nada aqui, nem a placa, nem a senha.', gesto: 'acenar', expr: 'sorriso' },
       { quem: 'gilmar', texto: 'E lembre: abriu ticket? Então aconteceu. Não abriu? Então não aconteceu, e quem explica para o cliente é você.' },
@@ -93,7 +93,7 @@ export const DIAS_01_07: Dia[] = [
         perguntas: [
           {
             p: 'Alerta "Força bruta no AD": 300 falhas de logon da conta `svc_scanner_impressora` vindo do IP da impressora do 3º andar. A TI trocou a senha da conta ontem e esqueceu de atualizar a impressora.',
-            opcoes: ['Falso positivo: não é ataque, é credencial desatualizada, e a regra deveria tratar isso', 'Verdadeiro positivo: são 300 falhas, é força bruta', 'Benigno verdadeiro: o scanner é autorizado', 'Falso negativo'],
+            opcoes: ['Falso positivo: não é ataque, é credencial desatualizada, e a regra deveria tratar isso', 'Verdadeiro positivo: são 300 falhas, é força bruta', 'Benigno verdadeiro: é uma força bruta autorizada', 'Falso negativo'],
             certa: 0,
             explicacao: 'A regra diz "força bruta" e isso não aconteceu: ninguém está tentando adivinhar senha. É falso positivo, com ação para o cliente (atualizar a senha na impressora) e talvez para a regra. As falhas são reais, o ataque não.',
           },
@@ -192,7 +192,7 @@ export const DIAS_01_07: Dia[] = [
     aula: aula(
       'No log de segurança do Windows, os eventos de logon que você mais vai ver: **4624** logon bem-sucedido, **4625** falha de logon, **4634** logoff (e 4647 quando o próprio usuário pede o logoff), **4672** privilégios especiais atribuídos ao novo logon (conta administrativa entrou). Um 4624 seguido de 4672 no mesmo segundo diz "entrou alguém com poder".',
       'O campo **Logon Type** conta como a pessoa entrou. **2**: interativo, no teclado da máquina. **3**: rede (acesso a pasta compartilhada, por exemplo). **4**: lote (tarefa agendada). **5**: serviço. **7**: desbloqueio de tela. **10**: RemoteInteractive, ou seja, RDP. **11**: credencial em cache (notebook fora da rede). Tipo 10 vindo de IP público em servidor é o tipo de coisa que faz o Tomatinho girar sozinho.',
-      'Na falha (4625), o campo **Status/SubStatus** diz o motivo: `0xC000006A` senha errada, `0xC0000064` usuário não existe, `0xC0000234` conta bloqueada, `0xC0000072` conta desabilitada. Usuário inexistente em sequência é sinal de alguém testando lista de nomes.',
+      'Na falha (4625), o campo **Status/SubStatus** diz o motivo: `0xC000006A` senha errada, `0xC0000064` usuário não existe, `0xC0000234` conta bloqueada, `0xC0000072` conta desabilitada. Usuário inexistente em sequência é sinal de alguém testando lista de nomes. Detalhe: no 4625 o campo Status costuma vir genérico (`0xC000006D`, logon falhou) e o motivo real aparece no SubStatus.',
       'Campos para olhar sempre: conta (TargetUserName), máquina de destino, **IpAddress** de origem, Logon Type e horário. A pergunta de triagem é: essa conta costuma entrar assim, nesse host, desse lugar, nesse horário? No Vigia, `evento=4624 tipo_logon=10` já separa os RDPs, e `ip_origem!=10.*` tira tudo que veio da rede interna.',
     ),
     chegada: [
@@ -213,7 +213,7 @@ export const DIAS_01_07: Dia[] = [
         resposta: 'paulo.rodrigues',
         gabarito: 'evento=4624 tipo_logon=10 ip_origem!=10.* | tabela hora,usuario,host,ip_origem',
         dica: 'Filtre logon bem-sucedido por RDP com `evento=4624 tipo_logon=10`. Depois tire a rede interna com `ip_origem!=10.*` (o asterisco é curinga). Use `| tabela hora,usuario,host,ip_origem` para ver só o que importa.',
-        explicacao: 'A conta `paulo.rodrigues` teve uma falha (4625) e depois um logon tipo 10 no SRV-SQL-02 às 03:13 UTC vindo de `185.143.77.20`, seguido de 4672 (privilégios especiais). Os outros RDPs são do `adm.marcos.gomes` saindo de 10.20.1.15, a estação do time de TI, em horário comercial. Escalaria com: conta, host, IP, horários e o fato de RDP estar exposto para a internet.',
+        explicacao: 'A conta `paulo.rodrigues` teve uma falha (4625) e depois um logon tipo 10 no SRV-SQL-02 às 03:13 UTC vindo de `185.143.77.20`, seguido de 4672 (privilégios especiais). Os outros RDPs são do `adm.marcos.gomes` saindo de 10.20.1.15, a estação do time de TI, durante o expediente. Escalaria com: conta, host, IP, horários e o fato de RDP estar exposto para a internet.',
       },
     ],
     saida: [
@@ -245,7 +245,7 @@ export const DIAS_01_07: Dia[] = [
       {
         tipo: 'siem',
         titulo: 'O vendedor de pano de prato',
-        enunciado: 'O OWA da Tabajara teve uma tarde cheia de falhas de logon. Tem gente errando senha, tem um IP desesperado batendo numa conta só e tem outra coisa mais discreta. Ache o password spraying.',
+        enunciado: 'O OWA da Tabajara teve um dia cheio de falhas de logon. Tem gente errando senha, tem um IP desesperado batendo numa conta só e tem outra coisa mais discreta. Ache o password spraying.',
         registros: falhasDia5(),
         pergunta: 'Qual IP de origem está fazendo password spraying?',
         resposta: '179.124.33.208',
@@ -266,7 +266,7 @@ export const DIAS_01_07: Dia[] = [
     titulo: 'O boleto que veio de longe',
     resumo: 'Cabeçalho de e-mail sem medo: Received, Return-Path, SPF, DKIM e DMARC.',
     aula: aula(
-      'O cabeçalho de e-mail é lido **de baixo para cima**: cada servidor que passa a mensagem adiante acrescenta uma linha `Received:` no topo. O último `Received` (o mais embaixo) é o mais perto da origem, e o de cima é o seu próprio servidor recebendo. O `Return-Path` é o endereço do envelope (MAIL FROM), para onde volta a mensagem de erro; o `From` é o que o usuário vê, e pode ser qualquer coisa.',
+      'O cabeçalho de e-mail é lido **de baixo para cima**: cada servidor que passa a mensagem adiante acrescenta uma linha `Received:` no topo. O último `Received` (o mais embaixo) é o mais perto da origem, e o de cima é o seu próprio servidor recebendo. Cuidado: as linhas de baixo podem ser inventadas pelo remetente; só confie a partir do primeiro servidor que é seu. O `Return-Path` é o endereço do envelope (MAIL FROM), para onde volta a mensagem de erro; o `From` é o que o usuário vê, e pode ser qualquer coisa.',
       '**SPF** (RFC 7208) diz quais servidores podem enviar e-mail por um domínio, e é checado contra o domínio do `Return-Path`. **DKIM** é uma assinatura criptográfica; o domínio que assina aparece em `d=`. Atenção: `spf=pass` e `dkim=pass` só dizem que o domínio do atacante autenticou o próprio domínio do atacante. Golpista também configura SPF.',
       '**DMARC** amarra tudo ao `From` visível: exige que SPF ou DKIM passem **e** estejam alinhados com o domínio do `From`. A política (`p=none`, `p=quarantine`, `p=reject`) diz o que fazer quando falha. `dmarc=fail` com `From` do domínio do cliente é sinal forte de falsificação.',
       'Outros sinais: `Reply-To` diferente do `From` (a resposta vai para o golpista), domínio parecido com troca de letra (`segur0s` com zero), urgência ("vence hoje") e anexo ou link de "segunda via". No SOC, o resultado de autenticação aparece consolidado no cabeçalho `Authentication-Results`.',
@@ -286,17 +286,17 @@ export const DIAS_01_07: Dia[] = [
         enunciado: 'O financeiro da Tabajara mandou o .eml do "boleto urgente". Leia o cabeçalho anexado e responda.',
         anexo: [
           'Return-Path: <cobranca@tabajara-segur0s.top>',
-          'Received: from mail.tabajara-segur0s.top (unknown [45.83.122.17])',
-          '        by mx1.tabajaraseguros.com.br with ESMTPS id 4f2a91; Fri, 6 Mar 2026 09:12:44 -0300',
-          'Received: from [192.168.0.23] (unknown [192.168.0.23])',
-          '        by mail.tabajara-segur0s.top with ESMTPSA; Fri, 6 Mar 2026 12:12:39 +0000',
-          'Authentication-Results: mx1.tabajaraseguros.com.br;',
+          'Authentication-Results: mx1.tabajara.exemplo;',
           '        spf=pass smtp.mailfrom=tabajara-segur0s.top;',
           '        dkim=pass header.d=tabajara-segur0s.top;',
-          '        dmarc=fail (p=quarantine) header.from=tabajaraseguros.com.br',
-          'From: "Financeiro Tabajara" <financeiro@tabajaraseguros.com.br>',
+          '        dmarc=fail (p=quarantine) header.from=tabajara.exemplo',
+          'Received: from mail.tabajara-segur0s.top (unknown [45.83.122.17])',
+          '        by mx1.tabajara.exemplo with ESMTPS id 4f2a91; Fri, 6 Mar 2026 09:12:44 -0300',
+          'Received: from [192.168.0.23] (unknown [192.168.0.23])',
+          '        by mail.tabajara-segur0s.top with ESMTPSA; Fri, 6 Mar 2026 12:12:39 +0000',
+          'From: "Financeiro Tabajara" <financeiro@tabajara.exemplo>',
           'Reply-To: <financeiro.tabajara@correio-rapido.exemplo>',
-          'To: <patricia.alves@tabajaraseguros.com.br>',
+          'To: <patricia.alves@tabajara.exemplo>',
           'Subject: URGENTE: boleto da apólice 2026 vence HOJE',
           'Content-Type: multipart/mixed; boundary="b1"',
           'X-Attachment: boleto_2via_0603.pdf.html',
@@ -304,7 +304,7 @@ export const DIAS_01_07: Dia[] = [
         perguntas: [
           {
             p: 'Qual linha `Received` mostra o ponto mais próximo da origem da mensagem?',
-            opcoes: ['A de baixo, "from [192.168.0.23] by mail.tabajara-segur0s.top"', 'A de cima, "by mx1.tabajaraseguros.com.br"', 'Nenhuma, a origem está no From', 'O Return-Path'],
+            opcoes: ['A de baixo, "from [192.168.0.23] by mail.tabajara-segur0s.top"', 'A de cima, "by mx1.tabajara.exemplo"', 'Nenhuma, a origem está no From', 'O Return-Path'],
             certa: 0,
             explicacao: 'Cada servidor acrescenta seu Received no topo, então a leitura é de baixo para cima. O de baixo mostra a máquina que entregou a mensagem ao servidor do golpista. O de cima é o MX da Tabajara recebendo.',
           },
@@ -316,9 +316,9 @@ export const DIAS_01_07: Dia[] = [
           },
           {
             p: 'Por que o DMARC falhou?',
-            opcoes: ['Porque o domínio do From (tabajaraseguros.com.br) não está alinhado com o domínio que passou no SPF e no DKIM', 'Porque o SPF falhou', 'Porque o e-mail tem anexo', 'Porque o horário dos Received está em fusos diferentes'],
+            opcoes: ['Porque o domínio do From (tabajara.exemplo) não está alinhado com o domínio que passou no SPF e no DKIM', 'Porque o SPF falhou', 'Porque o e-mail tem anexo', 'Porque o horário dos Received está em fusos diferentes'],
             certa: 0,
-            explicacao: 'DMARC exige alinhamento com o From visível. O From diz tabajaraseguros.com.br, mas quem autenticou foi tabajara-segur0s.top. Os fusos diferentes nos Received (-0300 e +0000) são normais: 12:12 UTC é 09:12 em Brasília.',
+            explicacao: 'DMARC exige alinhamento com o From visível. O From diz tabajara.exemplo, mas quem autenticou foi tabajara-segur0s.top. Os fusos diferentes nos Received (-0300 e +0000) são normais: 12:12 UTC é 09:12 em Brasília.',
           },
           {
             p: 'Qual combinação de sinais você coloca no ticket como evidência de phishing?',
@@ -342,14 +342,14 @@ export const DIAS_01_07: Dia[] = [
     resumo: 'Como escrever um ticket que outra pessoa entende às 4h da manhã sem te ligar.',
     aula: aula(
       'Ticket bom responde, nesta ordem: **o quê** (qual alerta, qual veredito), **quando** (data e hora com fuso, de preferência UTC e local), **onde** (cliente, host, conta, IP), **evidência** (os eventos que sustentam a conclusão, com IDs e valores), **ação** (o que você fez e quando) e **próximo passo** (o que falta e com quem está).',
-      '"Verificado ok", "analisado", "FP" e "normal" não são justificativa. São opinião sem prova. Quem abrir o ticket daqui a três meses (auditoria, cliente, N2, você mesmo de ressaca) precisa conseguir refazer o raciocínio sem te procurar.',
+      '"Verificado ok", "analisado", "FP" e "normal" não são justificativa. São opinião sem prova. Quem abrir o ticket daqui a três meses (auditoria, cliente, N2, você de ressaca) precisa conseguir refazer o raciocínio sem te procurar.',
       'Escreva fato, não adjetivo: em vez de "acesso muito suspeito", escreva "logon tipo 10 às 03:13 UTC de 185.143.77.20, IP sem histórico no cliente, seguido de 4672". Hora sempre com fuso: o SIEM está em UTC, o cliente pensa em horário de Brasília (UTC-3) e a confusão vira incidente próprio.',
       'Ticket é documento. Não cole senha, não cole dado pessoal à toa (CPF de cliente no corpo do ticket é outro problema, que veremos com a LGPD) e não escreva nada que você não diria na frente do cliente. Porque um dia o cliente lê.',
     ),
     chegada: [
       { quem: 'gilmar', texto: 'Recebi uma reclamação da Tabajara. O ticket dizia, na íntegra: "verificado ok". Assinado: Thiaguinho.', gesto: 'cruzar', expr: 'bravo' },
       { quem: 'thiaguinho', texto: 'Mas estava ok!', expr: 'surpresa' },
-      { quem: 'gilmar', texto: 'O quê estava ok? Quando? Onde? Comparado com quê? O cliente quer saber se pode dormir, Thiaguinho, não se você dormiu.' },
+      { quem: 'gilmar', texto: 'O que estava ok? Quando? Onde? Comparado com quê? O cliente quer saber se pode dormir, Thiaguinho, não se você dormiu.' },
       { quem: 'pamela', texto: 'Eu tenho um modelo de ticket que eu uso. Posso mandar no chat.', expr: 'neutro' },
       { quem: 'gilmar', texto: 'Ótimo, alguém manda o modelo no chat.', gesto: 'sim' },
       { quem: 'ro', texto: 'Foi a Pâmela, Gilmar. Ela tá do seu lado faz um ano.', expr: 'neutro' },
@@ -365,7 +365,7 @@ export const DIAS_01_07: Dia[] = [
           'Quando: 04/03/2026 às 03:13 UTC (00:13 em Brasília)',
           'Onde: Tabajara, servidor SRV-SQL-02, conta paulo.rodrigues, origem 185.143.77.20',
           'Evidência: 4625 às 03:12 e 4624 tipo 10 às 03:13, seguido de 4672 no mesmo segundo; IP sem histórico no cliente',
-          'Ação: escalado ao N2 às 03:21 e TI do cliente acionada pelo contato do contrato',
+          'Ação: escalado ao N2 às 10:21 UTC, depois do relato de lentidão, e TI do cliente acionada pelo contato do contrato',
           'Próximo passo: N2 confirmar com o titular da conta, revisar a exposição do RDP e avaliar bloqueio do IP',
         ],
         explicacao: 'O quê, quando, onde, evidência, ação e próximo passo. Repare no fuso (UTC e Brasília), nos IDs de evento e no "próximo passo" com dono. Esse ticket dá para ler sem ligar para ninguém, que é o maior elogio que um ticket pode receber.',

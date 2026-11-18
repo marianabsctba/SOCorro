@@ -1,6 +1,6 @@
 // Verdadeiros positivos de N2: investigação, escopo e ação.
 import type { ModeloAlerta } from '../../tipos';
-import { js, HORA, MADRUGADA, DATA, IP_EXT, IP_INT, U_TAB, U_PREF, U_HOSP, U_COOP, U_PAD } from './comum';
+import { js, HORA, MADRUGADA, DATA, IP_EXT, IP_INT, U_TAB, U_PREF, U_HOSP, U_COOP, U_PAD, IP_COOP, IP_HOSP, IP_TAB } from './comum';
 
 export const N2_TP: ModeloAlerta[] = [
   {
@@ -23,7 +23,7 @@ export const N2_TP: ModeloAlerta[] = [
       'Política do domínio: AES habilitado para todas as contas de serviço desde 2024; RC4 só aparece quando o cliente pede.',
       'Guarita EDR no notebook: processo não assinado iniciado de Downloads 4 minutos antes.',
     ],
-    vars: { ip: IP_INT, usuario: U_TAB, data: DATA, hora: HORA },
+    vars: { ip: IP_TAB, usuario: U_TAB, data: DATA, hora: HORA },
     veredito: 'tp',
     acao: 'resetar',
     justificativas: js(
@@ -34,8 +34,8 @@ export const N2_TP: ModeloAlerta[] = [
       'O DC está com problema de criptografia e precisa reiniciar.',
     ),
     explicacao:
-      'No Kerberoasting o atacante pede tickets de serviço (4769) para quebrar a senha das contas de serviço fora da rede, e prefere RC4 (0x17) porque é mais fácil de quebrar. O sinal é a combinação: muitos **ServiceName** distintos, curto intervalo, uma origem e criptografia rebaixada. A resposta é isolar a estação, trocar a senha das contas de serviço expostas (senha longa, de preferência gMSA) e investigar o processo que pediu os tickets.',
-    piada: 'A svc_backup_legado tem a senha "Tabajara2016" e um cargo maior que o seu no organograma.',
+      'No Kerberoasting o atacante pede tickets de serviço (4769) para quebrar a senha das contas de serviço fora da rede, e prefere RC4 (0x17) porque é mais fácil de quebrar. O sinal é a combinação: muitos **ServiceName** distintos, curto intervalo, uma origem e criptografia rebaixada. A ação que mais importa é **trocar a senha das contas de serviço** expostas (senha longa, de preferência gMSA), porque os tickets já saíram e a quebra acontece fora da rede, longe de qualquer bloqueio; junto disso, isole a estação e investigue o processo que pediu os tickets.',
+    piada: 'A svc_backup_legado tem a senha "Tabajara2016" e mais permissões que a diretoria inteira da Tabajara.',
   },
   {
     id: 'n2-tp-lateral-servico-novo',
@@ -68,7 +68,7 @@ export const N2_TP: ModeloAlerta[] = [
       'Como a conta é administrativa, ela pode criar serviço, então está autorizado.',
     ),
     explicacao:
-      'Movimento lateral por SMB costuma deixar a dupla **4624 tipo 3** (logon de rede) e **7045** (serviço instalado) no destino, com poucos segundos de diferença. Nome aleatório, binário em `Temp` e execução como LocalSystem são o tempero. Isole os servidores e a origem, desabilite a conta e trate como incidente: a credencial foi comprometida.',
+      'Movimento lateral por SMB costuma deixar a dupla **4624 tipo 3** (logon de rede) e **7045** (serviço instalado) no destino, com poucos segundos de diferença. Nome aleatório, binário em `Temp` e execução como LocalSystem são o tempero. A primeira ação é **isolar** a origem e os servidores pelo EDR, para cortar a propagação; logo depois, desabilite a conta e trate como incidente, porque a credencial foi comprometida.',
     piada: 'O dono da conta está em Porto Seguro e o vereador já postou a foto dele no Instagram.',
   },
   {
@@ -86,7 +86,7 @@ export const N2_TP: ModeloAlerta[] = [
       '{data} {hora} +1m {host} Sysmon 3 | Image=adbsync.exe | DestinationIp={ip} | DestinationPort=443 | Resumo do EDR: destino sem reputação',
     ],
     contexto: [
-      'CMDB: {host} é estação do marketing, dona {usuario}.',
+      'CMDB: {host} é estação da padaria usada por {usuario}.',
       'Não existe produto Adobe chamado "AdobeSync"; o binário não tem assinatura.',
       'E-mail recebido 3 minutos antes: "Pedido de 500 sonhos para evento corporativo.zip".',
     ],
@@ -116,7 +116,7 @@ export const N2_TP: ModeloAlerta[] = [
     logs: [
       '{data} {hora} {host} EventID=4698 TaskName=\\Microsoft\\Windows\\UpdateCheck Author={usuario} Action=C:\\Users\\Public\\Libraries\\upd.exe Trigger=a cada 30 minutos',
       '{data} {hora} -15s {host} Sysmon 1 | Image=schtasks.exe | ParentImage=powershell.exe | Resumo do EDR: PowerShell com comando codificado criou a tarefa',
-      '{data} {hora} +30m {host} EventID=4688 NewProcessName=C:\\Users\\Public\\Libraries\\upd.exe Creator=taskeng',
+      '{data} {hora} +30m {host} EventID=4688 NewProcessName=C:\\Users\\Public\\Libraries\\upd.exe ParentProcessName=C:\\Windows\\System32\\svchost.exe (serviço Schedule)',
     ],
     contexto: [
       'CMDB: {host} é estação da recepção do pronto-socorro.',
@@ -151,7 +151,7 @@ export const N2_TP: ModeloAlerta[] = [
       '{data} {hora} {host} Sysmon 21 | WmiEventConsumerToFilter | Consumer=SysPerfMon | User={usuario}',
     ],
     contexto: [
-      'CMDB: {host} é a estação do financeiro, usuária {usuario}.',
+      'CMDB: {host} é estação da cooperativa usada por {usuario}.',
       'A cooperativa não usa SCCM nem ferramenta de inventário via WMI.',
       'Ontem {usuario} abriu um "boleto do Funrural atualizado" que veio por e-mail.',
     ],
@@ -179,12 +179,12 @@ export const N2_TP: ModeloAlerta[] = [
     titulo: 'POST repetido em .aspx recém-criado na pasta de anexos do portal',
     logs: [
       '#Fields: date time s-ip cs-method cs-uri-stem s-port c-ip cs(User-Agent) sc-status sc-bytes time-taken',
-      '{data} {hora} 10.30.1.15 POST /portal/anexos/2026/img_x7.aspx 443 {ip} Mozilla/5.0 200 1843 312',
-      '{data} {hora} +9s 10.30.1.15 POST /portal/anexos/2026/img_x7.aspx 443 {ip} Mozilla/5.0 200 25410 1204',
+      '{data} {hora} 10.20.0.80 POST /portal/anexos/2026/img_x7.aspx 443 {ip} Mozilla/5.0 200 1843 312',
+      '{data} {hora} +9s 10.20.0.80 POST /portal/anexos/2026/img_x7.aspx 443 {ip} Mozilla/5.0 200 25410 1204',
       '{data} {hora} +12s Sysmon 1 | Image=cmd.exe | ParentImage=w3wp.exe | Resumo do EDR: processo do IIS abriu shell e listou usuários do domínio',
     ],
     contexto: [
-      'CMDB: PREF-WEB01 hospeda o portal do cidadão, com upload de documentos.',
+      'CMDB: PREF-WEB01 (10.20.0.80) hospeda o portal do cidadão, com upload de documentos.',
       'img_x7.aspx foi criado há 2 horas e não existe no repositório do portal.',
       'Reputação de {ip}: hospedagem barata, sem histórico com a prefeitura.',
     ],
@@ -212,8 +212,8 @@ export const N2_TP: ModeloAlerta[] = [
     mitre: 'T1114.003',
     titulo: 'Regra de caixa de entrada encaminhando para fora na conta de {usuario}',
     logs: [
-      '{"CreationTime":"{data}T{hora}","Operation":"New-InboxRule","UserId":"{usuario}@agropastoralo.coop.br","ClientIP":"{ip}","Parameters":"ForwardTo=financeiro.pastoralo@mailbox-seguro[.]top; SubjectContainsWords=boleto, pagamento, TED; MarkAsRead=True; MoveToFolder=RSS"}',
-      '{"CreationTime":"{data}T{hora}","Operation":"UserLoggedIn","UserId":"{usuario}@agropastoralo.coop.br","ClientIP":"{ip}","Country":"desconhecido","UserAgent":"python-requests"}',
+      '{"CreationTime":"{data}T{hora}","Operation":"New-InboxRule","UserId":"{usuario}@pastoralo.exemplo","ClientIP":"{ip}","Parameters":"ForwardTo=financeiro.pastoralo@mailbox-seguro[.]top; SubjectContainsWords=boleto, pagamento, TED; MarkAsRead=True; MoveToFolder=RSS"}',
+      '{"CreationTime":"{data}T{hora}","Operation":"UserLoggedIn","UserId":"{usuario}@pastoralo.exemplo","ClientIP":"{ip}","Country":"desconhecido","UserAgent":"python-requests"}',
     ],
     contexto: [
       'Domínio mailbox-seguro[.]top registrado há 6 dias.',
@@ -244,7 +244,7 @@ export const N2_TP: ModeloAlerta[] = [
     mitre: 'T1528',
     titulo: 'Usuário consentiu app não verificado com acesso a e-mail: "PDF Visualizador Pro"',
     logs: [
-      '{"activityDateTime":"{data}T{hora}","activityDisplayName":"Consent to application","initiatedBy":"{usuario}@tabajaraseguros.com.br","target":"PDF Visualizador Pro","publisherVerified":false,"scopes":"Mail.ReadWrite Mail.Send Files.ReadWrite.All offline_access"}',
+      '{"activityDateTime":"{data}T{hora}","activityDisplayName":"Consent to application","initiatedBy":"{usuario}@tabajara.exemplo","target":"PDF Visualizador Pro","publisherVerified":false,"scopes":"Mail.ReadWrite Mail.Send Files.ReadWrite.All offline_access"}',
       '{"activityDateTime":"{data}T{hora}","activityDisplayName":"Add service principal","target":"PDF Visualizador Pro","replyUrl":"hxxps://pdfviewer-auth[.]online/callback"}',
       'Vigia SIEM: 2.300 leituras de mensagens pela API do app na primeira hora',
     ],
@@ -282,7 +282,7 @@ export const N2_TP: ModeloAlerta[] = [
       '{"eventTime":"{data}T{hora}Z","eventName":"RunInstances","userIdentity":"IAMUser/deploy-site","sourceIPAddress":"{ip}","requestParameters":"32 instâncias GPU em região nunca usada","errorCode":"Client.UnauthorizedOperation"}',
     ],
     contexto: [
-      'deploy-site só é usado pelo pipeline do e-commerce, que sai sempre do mesmo IP do provedor de CI.',
+      'deploy-site só é usado pelo pipeline do e-commerce, que roda nos executores da plataforma de CI, sempre dentro da faixa de IPs publicada por ela.',
       'Ontem o Edu da TI subiu um repositório público com um arquivo de configuração "para testar rapidinho".',
       '{ip} é de hospedagem em outro continente, nunca visto na conta.',
     ],
@@ -308,10 +308,10 @@ export const N2_TP: ModeloAlerta[] = [
     fonte: 'Nuvem',
     severidade: 'crítica',
     mitre: 'T1530',
-    titulo: 'Bucket pao-de-lo-pedidos ficou público para leitura',
+    titulo: 'Bucket migalha-pedidos-delivery ficou público para leitura',
     logs: [
-      '{"eventTime":"{data}T{hora}Z","eventName":"DeletePublicAccessBlock","userIdentity":"IAMUser/{usuario}","bucket":"pao-de-lo-pedidos","sourceIPAddress":"{ip}"}',
-      '{"eventTime":"{data}T{hora}Z","eventName":"PutBucketPolicy","userIdentity":"IAMUser/{usuario}","bucket":"pao-de-lo-pedidos","policy":"Effect=Allow Principal=* Action=s3:GetObject"}',
+      '{"eventTime":"{data}T{hora}Z","eventName":"DeletePublicAccessBlock","userIdentity":"IAMUser/{usuario}","bucket":"migalha-pedidos-delivery","sourceIPAddress":"{ip}"}',
+      '{"eventTime":"{data}T{hora}Z","eventName":"PutBucketPolicy","userIdentity":"IAMUser/{usuario}","bucket":"migalha-pedidos-delivery","policy":"Effect=Allow Principal=* Action=s3:GetObject"}',
       'Vigia SIEM: 41.000 GetObject anônimos nas últimas 3 horas, de 220 IPs distintos',
     ],
     contexto: [
@@ -330,7 +330,7 @@ export const N2_TP: ModeloAlerta[] = [
       'Só é problema se alguém apagar os arquivos.',
     ),
     explicacao:
-      'Intenção não muda impacto: o usuário quis abrir para um fornecedor, mas `Principal=*` abre para o planeta, e o volume de downloads anônimos mostra que alguém achou. Criptografia em repouso não protege contra leitura autorizada pela política. Feche o acesso, preserve os logs de acesso, meça o que vazou e envolva o jurídico e a DPO para avaliar a comunicação à ANPD.',
+      'Intenção não muda impacto: o usuário quis abrir para um fornecedor, mas `Principal=*` abre para o planeta, e o volume de downloads anônimos mostra que alguém achou. Criptografia em repouso não protege contra leitura autorizada pela política. Feche o acesso, preserve os logs de acesso, meça o que vazou e envolva o jurídico e o encarregado (DPO) do cliente para avaliar a comunicação à ANPD.',
     piada: 'O fornecedor de etiquetas conseguiu baixar. Ele e mais 219 amigos.',
   },
   {
@@ -353,7 +353,7 @@ export const N2_TP: ModeloAlerta[] = [
       'Os outros hosts do faturamento fazem em média 12 NXDOMAIN por dia.',
       'O único domínio que resolveu foi registrado ontem.',
     ],
-    vars: { host: ['HSP-FAT-02', 'HSP-FAT-05', 'HSP-ALMOX-01'], ip: IP_INT, data: DATA, hora: HORA },
+    vars: { host: ['HSP-FAT-02', 'HSP-FAT-05', 'HSP-ALMOX-01'], ip: IP_HOSP, data: DATA, hora: HORA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -381,9 +381,9 @@ export const N2_TP: ModeloAlerta[] = [
       'Enriquecimento: WHOIS com registrante oculto, criado há 2 dias, certificado gratuito emitido ontem, página copia o logo da Tabajara',
     ],
     contexto: [
-      'O domínio oficial da Tabajara é tabajaraseguros.com.br. tabajara-portal-sso[.]com não pertence ao cliente.',
+      'O domínio oficial da Tabajara é tabajara.exemplo. tabajara-portal-sso[.]com não pertence ao cliente.',
       '{usuario} clicou em e-mail "Sua senha expira hoje" recebido às {hora}.',
-      'Nenhum logon novo com a conta dele ainda.',
+      'Nenhum logon novo com essa conta, por enquanto.',
     ],
     vars: { usuario: U_TAB, data: DATA, hora: HORA },
     veredito: 'tp',
@@ -397,7 +397,7 @@ export const N2_TP: ModeloAlerta[] = [
     ),
     explicacao:
       'Idade de domínio é enriquecimento, não veredito, mas aqui ela se junta a tudo: nome imitando o cliente, e-mail com urgência, página clonada e **POST** logo depois do GET. O 302 é o redirecionamento depois de receber a senha. Troque a senha, revogue sessões, bloqueie o domínio e procure quem mais recebeu o e-mail.',
-    piada: 'A senha dele expirou de fato: agora ela pertence a outra pessoa.',
+    piada: 'A senha expirou mesmo: agora ela pertence a outra pessoa.',
   },
   {
     id: 'n2-tp-exfiltracao-volume',
@@ -416,9 +416,9 @@ export const N2_TP: ModeloAlerta[] = [
     contexto: [
       'CMDB: {host} é estação de {usuario}, do setor de compras.',
       'A cooperativa só homologou o OneDrive corporativo.',
-      'RH: {usuario} pediu demissão na segunda.',
+      'RH: {usuario} pediu demissão na segunda. A cópia ainda está em andamento.',
     ],
-    vars: { host: ['COOP-COMP-01', 'COOP-COMP-03'], usuario: U_COOP, ip: IP_INT, data: DATA, hora: MADRUGADA },
+    vars: { host: ['COOP-COMP-01', 'COOP-COMP-03'], usuario: U_COOP, ip: IP_COOP, data: DATA, hora: MADRUGADA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -429,7 +429,7 @@ export const N2_TP: ModeloAlerta[] = [
       'Por ser saída permitida no firewall, está autorizado.',
     ),
     explicacao:
-      'Exfiltração se vê em **bytes por destino**: compare com a linha de base do host, olhe horário, o tipo de destino e o processo responsável. HTTPS protege o atacante, não você. Corte a saída, preserve evidências e envolva RH e jurídico, porque ameaça interna tem trâmite próprio.',
+      'Exfiltração se vê em **bytes por destino**: compare com a linha de base do host, olhe horário, o tipo de destino e o processo responsável. HTTPS protege o atacante, não você. A primeira ação é **isolar** a estação pelo EDR: corta a cópia em andamento sem desligar a máquina, e a evidência fica. Depois, preserve os logs e envolva RH e jurídico, porque ameaça interna tem trâmite próprio.',
     piada: 'Pediu demissão na segunda e levou de lembrança 18 GB de contratos. Tem gente que leva só a caneca.',
   },
   {
@@ -442,14 +442,14 @@ export const N2_TP: ModeloAlerta[] = [
     mitre: 'T1557',
     titulo: 'Mesmo token de sessão de {usuario} usado de duas origens',
     logs: [
-      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@tabajaraseguros.com.br","ipAddress":"192.0.2.10","sessionId":"a91c-77de-4f02","mfaDetail":"push aprovado","deviceDetail":"Windows, Edge, gerenciado"}',
-      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@tabajaraseguros.com.br","ipAddress":"{ip}","sessionId":"a91c-77de-4f02","authenticationRequirement":"singleFactor (token)","deviceDetail":"Linux, navegador desconhecido, não gerenciado"}',
-      '{"Operation":"MailItemsAccessed","UserId":"{usuario}@tabajaraseguros.com.br","ClientIP":"{ip}","Count":"412"}',
+      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@tabajara.exemplo","ipAddress":"192.0.2.10","sessionId":"a91c-77de-4f02","mfaDetail":"push aprovado","deviceDetail":"Windows, Edge, gerenciado"}',
+      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@tabajara.exemplo","ipAddress":"{ip}","sessionId":"a91c-77de-4f02","authenticationRequirement":"singleFactor (token)","deviceDetail":"Linux, navegador desconhecido, não gerenciado"}',
+      '{"Operation":"MailItemsAccessed","UserId":"{usuario}@tabajara.exemplo","ClientIP":"{ip}","Count":"412"}',
     ],
     contexto: [
       '192.0.2.10 é o IP do escritório da Tabajara em Curitiba. {ip} é de hospedagem no exterior.',
       'Minutos antes, {usuario} clicou num link de QR code "Atualize seu crachá digital".',
-      'O cliente jura que aprovou o MFA "porque o celular pediu".',
+      'A pessoa jura que aprovou o MFA "porque o celular pediu".',
     ],
     vars: { usuario: U_TAB, ip: IP_EXT, data: DATA, hora: HORA },
     veredito: 'tp',
@@ -530,7 +530,7 @@ export const N2_TP: ModeloAlerta[] = [
     ),
     explicacao:
       'Antes de cifrar, o ransomware tira as rotas de volta: apaga **cópias de sombra** (`vssadmin`), o **catálogo do backup** (`wbadmin`) e a **recuperação** do boot (`bcdedit`). Ferramenta da Microsoft não significa ação benigna, por isso olhe quem chamou. Aqui é corrida contra o relógio: isole já e acione o N3, porque a criptografia costuma vir em minutos.',
-    piada: 'svch0st.exe com zero no lugar do o. O atacante caprichou tanto quanto a impressora de 2009.',
+    piada: 'O binário pai se chama svch0st.exe, com zero no lugar do o. O atacante economizou até na vogal.',
   },
   {
     id: 'n2-tp-certutil-download',
@@ -581,9 +581,9 @@ export const N2_TP: ModeloAlerta[] = [
     contexto: [
       'CMDB: {host} é o notebook do Dr. Leôncio.',
       'nfe-consulta-sefaz[.]site não é da Sefaz; foi registrado semana passada.',
-      'O Dr. Leôncio ligou às 3h perguntando por que "a nota fiscal abriu uma tela azul e sumiu".',
+      'O Dr. Leôncio ligou minutos depois, de madrugada, perguntando por que "a nota fiscal abriu uma tela azul e sumiu".',
     ],
-    vars: { host: ['COOP-DIR-NB01'], ip: IP_EXT, data: DATA, hora: HORA },
+    vars: { host: ['COOP-DIR-NB01'], ip: IP_EXT, data: DATA, hora: MADRUGADA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -611,7 +611,7 @@ export const N2_TP: ModeloAlerta[] = [
       '{data} {hora} +5s {host} Sysmon 1 | Image=rundll32.exe | ParentImage=regsvr32.exe | Resumo do EDR: biblioteca sem nome de exportação padrão, conexão periódica',
     ],
     contexto: [
-      'CMDB: {host} é estação do jurídico, usuária {usuario}.',
+      'CMDB: {host} é estação do jurídico, usada por {usuario}.',
       'O wscript veio de um arquivo .js baixado de um link "Intimação eletrônica".',
       'Nenhum outro host da Tabajara executou regsvr32 com rede em 90 dias.',
     ],
@@ -648,7 +648,7 @@ export const N2_TP: ModeloAlerta[] = [
       'O Word abriu "Currículo analista SOC sênior.docm" enviado para a vaga aberta.',
       'Sim, o SOC também é atacado.',
     ],
-    vars: { host: ['OV-ALFA-ST12', 'OV-ALFA-ST07'], usuario: ['pamela.n1', 'kevin.n1', 'brenda.n1', 'jefferson.n1'], ip: IP_EXT, data: DATA, hora: HORA },
+    vars: { host: ['INS-ALFA-ST12', 'INS-ALFA-ST07'], usuario: ['pamela.n1', 'kevin.n1', 'brenda.n1', 'jefferson.n1'], ip: IP_EXT, data: DATA, hora: HORA },
     veredito: 'tp',
     acao: 'isolar',
     justificativas: js(
@@ -659,6 +659,6 @@ export const N2_TP: ModeloAlerta[] = [
     ),
     explicacao:
       '**rundll32.exe** sempre recebe a DLL e a função como argumento. Sem argumentos, ele é uma casca vazia muito usada por frameworks de ataque para hospedar código injetado. Combine com processo pai do Office, memória executável sem arquivo e conexão periódica. Isole, mesmo sendo estação do SOC: aqui não tem foro privilegiado.',
-    piada: 'O currículo dizia "proativo e com sede de aprender". Aprendeu o seu IP interno em 2 segundos.',
+    piada: 'O currículo dizia "proativo e com sede de aprender". Aprendeu o IP interno do SOC em 2 segundos.',
   },
 ];

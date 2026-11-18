@@ -13,7 +13,7 @@ export const DIAS_61_70: Dia[] = [
     aula: [
       'O **NIST SP 800-61** é o guia de resposta a incidentes mais citado do mundo. Na revisão 2, o ciclo tem quatro fases: **Preparação**; **Detecção e Análise**; **Contenção, Erradicação e Recuperação**; e **Atividade Pós-Incidente**. A revisão 3, publicada em 2025, encaixa a resposta nas funções do NIST CSF 2.0 (Governar, Identificar, Proteger, Detectar, Responder, Recuperar), mas a lógica não mudou: se preparar, perceber, estancar, limpar, voltar e aprender.',
       '**Preparação** é tudo o que existe antes do alerta: playbook revisado, contatos do cliente atualizados (inclusive jurídico e encarregado de dados, o DPO), acesso testado às ferramentas, backup que já foi restaurado alguma vez e matriz de escalonamento. Incidente não é hora de descobrir que a senha do console do EDR está num post-it na mesa de quem saiu de férias.',
-      '**Detecção e análise** confirmam se é incidente e definem o escopo: quais hosts, contas e dados, desde quando, com qual severidade. Depois vem a **contenção** (impedir que piore: isolar host, desabilitar conta, segmentar rede), a **erradicação** (remover a causa: malware, persistência, conta criada pelo atacante) e a **recuperação** (voltar a operar com monitoramento reforçado). A ordem importa: erradicar antes de conter é enxugar gelo com o freezer aberto.',
+      '**Detecção e análise** confirmam se é incidente e definem o escopo: quais hosts, contas e dados, desde quando, com qual severidade. Depois vem a **contenção** (impedir que piore: isolar host, desabilitar conta, segmentar rede), a **erradicação** (remover a causa: malware, persistência, conta criada pelo atacante) e a **recuperação** (voltar a operar com monitoramento reforçado). A ordem importa: erradicar antes de conter é secar o chão com a torneira aberta.',
       'A **atividade pós-incidente** fecha o ciclo: reunião de lições aprendidas, ações com dono e prazo, ajuste de detecção e de playbook. O ciclo é circular, o que se aprende volta para a preparação. Se a reunião termina com "a culpa foi do estagiário", o ciclo quebrou e o próximo incidente já está agendado.',
     ].join('\n\n'),
     chegada: [
@@ -43,7 +43,7 @@ export const DIAS_61_70: Dia[] = [
       },
     ],
     saida: [
-      { quem: 'gilmar', texto: 'Sete fases, sete passos. Se todo incidente fosse assim, eu aposentava o tomate.', expr: 'sorriso' },
+      { quem: 'gilmar', texto: 'Quatro fases, sete passos, zero improviso. Se todo incidente fosse assim, eu aposentava o tomate.', expr: 'sorriso' },
       { quem: 'neide', texto: 'Ninguém aposenta tomate, seu Gilmar. Tomate a gente usa até virar molho.' },
     ],
   },
@@ -59,14 +59,14 @@ export const DIAS_61_70: Dia[] = [
       'Ransomware moderno quase sempre é **dupla extorsão**: a quadrilha copia os dados antes de cifrar e ameaça publicar. A cifragem (**T1486**, Data Encrypted for Impact) é o último ato de uma peça que começou horas ou dias antes: acesso inicial, execução, comunicação com o C2, descoberta, movimento lateral e a tentativa de impedir a recuperação apagando cópias de sombra (**T1490**, Inhibit System Recovery, o famoso `vssadmin delete shadows`).',
       'O **paciente zero** é o primeiro host comprometido, não o primeiro host cifrado. Quem olha só os arquivos `.sjt` aparecendo acha o servidor de arquivos e conclui errado. Para achar a origem, volte no tempo: qual foi o primeiro processo estranho? Quem foi o processo pai? Houve conexão externa logo em seguida?',
       'Sinais clássicos de acesso inicial por e-mail: anexo malicioso (**T1566.001**), execução pelo usuário (**T1204.002**) e extensão dupla para enganar o olho (**T1036.007**, como `laudo.pdf.exe`). No Sysmon, o evento 1 mostra o processo e o pai; o evento 3 mostra a conexão; o evento 11 mostra arquivos criados. Processo filho do `OUTLOOK.EXE` com extensão dupla é praticamente uma confissão assinada.',
-      'Em hospital, a pergunta técnica anda junto com a clínica: o que está parado afeta paciente? Avise a liderança do plantão para acionar a contingência em papel antes de qualquer outra coisa. Prontuário que não abre não é só um ticket P1, é um médico decidindo sem histórico.',
+      'Em hospital, a pergunta técnica anda junto com a clínica: o que está parado afeta paciente? Avise a liderança do plantão logo no primeiro contato, para acionar a contingência em papel enquanto o SOC investiga e contém. Prontuário que não abre não é só um ticket P1, é um médico decidindo sem histórico.',
     ].join('\n\n'),
     chegada: [
       { quem: 'telefone', texto: 'Aqui é a enfermeira-chefe do Santa Paciência. Os computadores da recepção estão com um papel de parede de caveira e os arquivos terminam com ".sjt". Isso é normal?', expr: 'surpresa' },
       { quem: 'thiaguinho', texto: 'Eu ia fechar como falso positivo, mas a caveira tem uma carteira de bitcoin embaixo. Achei que valia escalar.', gesto: 'ombros' },
       { quem: 'vandeco', texto: 'Bom instinto, menino. Caveira com carteira nunca é falso positivo.', gesto: 'sim' },
       { quem: 'vandeco', texto: 'Já vi esse filme em 2003, só que a caveira era em ASCII. Primeiro a gente acha por onde entrou. Os arquivos cifrados são a fumaça, eu quero o fósforo.', gesto: 'pensar' },
-      { quem: 'gilmar', texto: 'Timer ligado. Quatro e cinquenta da manhã, e o tomate já está suando.', gesto: 'apontar' },
+      { quem: 'gilmar', texto: 'Timer ligado. Cinco e dois da manhã, e o tomate já está suando.', gesto: 'apontar' },
       { quem: 'ro', texto: 'Liga pro hospital e manda acionar a contingência em papel. A gente acha o culpado, eles salvam gente. Cada um no seu.' },
     ],
     fila: { quantidade: 6 },
@@ -80,7 +80,7 @@ export const DIAS_61_70: Dia[] = [
         resposta: 'DT-RECEP-04',
         gabarito: 'processo=*.pdf.exe | ordenar hora | tabela host,hora,usuario,processo,processo_pai',
         dica: 'Os `.sjt` (`evento=11 arquivo=*.sjt | ordenar hora`) mostram o estrago, não a origem. Volte no tempo pelos processos: `evento=1 processo_pai=OUTLOOK.EXE | ordenar hora` e desconfie de extensão dupla.',
-        explicacao: 'Às 2h13 a `aline.martins`, na DT-RECEP-04, abriu `laudo_exame_0931.pdf.exe` direto do cache do Outlook (T1566.001 e T1204.002, com extensão dupla T1036.007). Trinta segundos depois veio a conexão para `179.61.204.33:443`, depois o `rundll32` carregando uma DLL de `ProgramData` e a descoberta de administradores do domínio. A NB-ENF-11 abriu o mesmo anexo às 4h10, mas é a segunda vítima, não a primeira. O `vssadmin` e os `.sjt` no SRV-ARQ-HSP são o fim da história, quase três horas depois.',
+        explicacao: 'Às 2h13 a `aline.martins`, na DT-RECEP-04, abriu `laudo_exame_0931.pdf.exe` direto do cache do Outlook (T1566.001 e T1204.002, com extensão dupla T1036.007). Pouco mais de trinta segundos depois veio a conexão para `179.61.204.33:443`, depois o `rundll32` carregando uma DLL de `ProgramData` e a descoberta de administradores do domínio. A NB-ENF-11 abriu o mesmo anexo às 4h10, mas é a segunda vítima, não a primeira. O `vssadmin` e os `.sjt` no SRV-ARQ-HSP são o fim da história, mais de duas horas e meia depois.',
       },
     ],
     saida: [
@@ -118,10 +118,10 @@ export const DIAS_61_70: Dia[] = [
         enunciado: 'O ransomware está se espalhando pelo Santa Paciência. Hora de decidir a contenção sem matar ninguém (no sentido literal).',
         perguntas: [
           {
-            p: 'A DT-RECEP-04 (paciente zero) ainda está ligada e cifrando o compartilhamento. O que fazer primeiro?',
+            p: 'A DT-RECEP-04 (paciente zero) ainda está ligada, com o implante conversando com o C2 e alcançando a rede interna. O que fazer primeiro?',
             opcoes: ['Isolar pelo Guarita EDR, mantendo a máquina ligada para coleta de memória', 'Desligar da tomada para parar a cifragem na hora', 'Formatar a máquina imediatamente', 'Mandar a usuária reiniciar e ver se melhora'],
             certa: 0,
-            explicacao: 'O isolamento corta a rede (para de cifrar o compartilhamento e de falar com o C2) e preserva a memória, onde estão processos, conexões e às vezes material da chave. Desligar e formatar destroem evidência; reiniciar destrói evidência e ainda pode disparar persistência.',
+            explicacao: 'O isolamento corta a rede (o implante para de falar com o C2 e de alcançar outros hosts) e preserva a memória, onde estão processos, conexões e às vezes material da chave. Desligar e formatar destroem evidência; reiniciar destrói evidência e ainda pode disparar persistência.',
           },
           {
             p: 'O ransomware se propaga entre estações por compartilhamentos administrativos. Qual contenção de rede costuma frear isso sem parar o hospital?',
@@ -199,7 +199,7 @@ export const DIAS_61_70: Dia[] = [
           '$ vol -f SRV-ARQ-HSP.mem windows.malfind',
           'PID   Process        Start VPN     Protection               Hexdump',
           '6120  svhost32.exe   0x1c40000     PAGE_EXECUTE_READWRITE   4d 5a 90 00 03 00 00 00  MZ......',
-          '1220  svchost.exe    0x2a10000     PAGE_EXECUTE_READ        48 89 5c 24 08 57 48 83  H.\\$.WH.',
+          '1220  svchost.exe    0x2a10000     PAGE_EXECUTE_READWRITE   48 89 5c 24 08 57 48 83  H.\\$.WH.',
         ].join('\n'),
         perguntas: [
           {
@@ -212,17 +212,17 @@ export const DIAS_61_70: Dia[] = [
             p: 'O que a linha do `windows.netscan` com o PID 6120 mostra?',
             opcoes: ['Uma conexão estabelecida do processo suspeito para 179.61.204.33 na porta 443, o mesmo IP visto no paciente zero', 'Que o servidor está compartilhando arquivos normalmente', 'Uma conexão com o servidor de backup', 'Que a máquina está desligada'],
             certa: 0,
-            explicacao: 'Conexão estabelecida para fora, na 443, com o mesmo IP que a DT-RECEP-04 contatou às 2h13. Isso liga o servidor ao paciente zero e vira IOC para bloquear em todo o hospital. A conexão do System na 445 é o próprio compartilhamento.',
+            explicacao: 'Conexão estabelecida para fora, na 443, com o mesmo IP que a DT-RECEP-04 contatou às 2h13. Isso liga o servidor ao paciente zero e vira IOC para bloquear em todo o hospital. A conexão do System na 445 é uma sessão SMB de entrada vinda de 10.40.12.44: anote esse IP, ele vai aparecer de novo.',
           },
           {
             p: 'Por que a saída do `windows.malfind` para o PID 6120 é grave?',
             opcoes: ['Região com execução e escrita, sem arquivo mapeado, começando com MZ: um executável carregado direto na memória', 'Porque todo processo com malfind é malware', 'Porque PAGE_EXECUTE_READWRITE é o padrão de qualquer programa', 'Porque o hexdump está em inglês'],
             certa: 0,
-            explicacao: '`4d 5a` é `MZ`, o começo de um executável Windows. Numa região `PAGE_EXECUTE_READWRITE` sem arquivo por trás, é forte indício de injeção (T1055). A linha do `svchost.exe` legítimo é só leitura e execução, sem MZ, e malfind sozinho dá falso positivo com JIT.',
+            explicacao: '`4d 5a` é `MZ`, o começo de um executável Windows. Numa região `PAGE_EXECUTE_READWRITE` sem arquivo por trás, é forte indício de injeção (T1055). A linha do `svchost.exe` (PID 1220) também tem execução e escrita, mas não começa com MZ e não tem nenhum outro indício: é o tipo de achado que o malfind traz sozinho (JIT, por exemplo) e que só vale combinado com o resto.',
           },
           {
             p: 'Qual achado reforça que o atacante tentou impedir a recuperação?',
-            opcoes: ['O vssadmin.exe (PID 6188) filho do mesmo cmd.exe, dois minutos antes da cifragem', 'O VeeamAgent.exe conectado ao servidor de backup', 'O smss.exe criado no boot', 'O explorer.exe existir'],
+            opcoes: ['O vssadmin.exe (PID 6188) filho do mesmo cmd.exe, três minutos antes de os .sjt aparecerem', 'O VeeamAgent.exe conectado ao servidor de backup', 'O smss.exe criado no boot', 'O explorer.exe existir'],
             certa: 0,
             explicacao: 'O `vssadmin` saindo do mesmo `cmd.exe` que gerou o `svhost32.exe` combina com o `vssadmin delete shadows /all /quiet` visto no Sysmon (T1490). O Veeam conectado é o backup legítimo, e vale verificar se a cópia está protegida antes que alguém mexa nele.',
           },
@@ -243,7 +243,7 @@ export const DIAS_61_70: Dia[] = [
     titulo: 'Quem apagou o log',
     resumo: 'EVTX: 1102 é log limpo, 4688 é processo criado, 7045 é serviço instalado.',
     aula: [
-      'Atacante esperto tenta apagar o rastro, e apagar o rastro deixa rastro. Limpar o log de Segurança gera o **Event ID 1102** (o log de auditoria foi apagado) no próprio canal Security; limpar o canal System gera o **104**. A técnica no ATT&CK é **T1070.001** (Clear Windows Event Logs). Log limpo fora de manutenção agendada é alerta crítico por definição.',
+      'Atacante esperto tenta apagar o rastro, e apagar o rastro deixa rastro. Limpar o log de Segurança gera o **Event ID 1102** (o log de auditoria foi apagado) no próprio canal Security; limpar os outros canais, como o System, gera o **104** no canal System. A técnica no ATT&CK é **T1070.001** (Clear Windows Event Logs). Log limpo fora de manutenção agendada é alerta crítico por definição.',
       'O **4688** (Security) registra a criação de processo. Com a política "incluir linha de comando" ligada, ele mostra o comando inteiro, quase um Sysmon 1 de pobre. Se a política estiver desligada, você vê que o `wevtutil.exe` rodou, mas não vê o `cl Security`. Revise a política de auditoria antes do incidente, não durante.',
       'O **7045** (System) registra um serviço novo instalado, com nome, caminho do binário e tipo de início. Serviço é persistência clássica e também a forma como ferramentas de execução remota rodam código (**T1543.003**, Windows Service, e **T1569.002**, Service Execution). Sinais ruins: binário em `C:\\Windows\\Temp` ou `C:\\Users\\Public`, nome genérico tipo "atualizador", instalação por conta humana fora de janela de mudança. O **4697** no Security é o primo do 7045, quando a auditoria correspondente está ligada.',
       'E a lição de ouro: se o log local foi limpo, ele ainda pode existir no SIEM. Encaminhamento centralizado é exatamente para isso. O atacante apaga a lousa da sala, mas a foto da lousa já está no celular de alguém.',
@@ -266,7 +266,7 @@ export const DIAS_61_70: Dia[] = [
         resposta: 'SvcAtualizaLab',
         gabarito: 'evento=7045 host=SRV-LAB-01 | tabela servico,host,hora,usuario,imagem',
         dica: 'Comece por `evento=1102` para achar o host. Depois veja os serviços instalados nele: `evento=7045 host=NOME_DO_HOST`. Compare com os 7045 dos outros servidores.',
-        explicacao: 'O 1102 aparece só no SRV-LAB-01, às 3h33, feito pela `adm.ti`. Dois minutos antes, a mesma conta entrou por rede (4624 tipo 3, vindo da DT-RECEP-04), instalou o serviço `SvcAtualizaLab` com binário em `C:\\Windows\\Temp` (7045, T1543.003), o serviço rodou (4688) e o `wevtutil cl Security` limpou o log (T1070.001). Os 7045 do `GuaritaUpdater` nos outros servidores são a atualização do EDR, iguais em todos, em `Program Files` e na janela da mudança.',
+        explicacao: 'O 1102 aparece só no SRV-LAB-01, às 3h33, feito pela `adm.ti`. Dois minutos antes, a mesma conta entrou por rede (4624 tipo 3, vindo de 10.40.12.44, a DT-RECEP-04, o mesmo IP com sessão SMB aberta no servidor de arquivos), instalou o serviço `SvcAtualizaLab` com binário em `C:\\Windows\\Temp` (7045, T1543.003), o serviço rodou (4688) e o `wevtutil cl Security` limpou o log (T1070.001). Os 7045 do `GuaritaUpdater` nos outros servidores são a atualização do EDR, iguais em todos, em `Program Files` e na janela da mudança.',
       },
     ],
     saida: [
@@ -293,7 +293,7 @@ export const DIAS_61_70: Dia[] = [
       { quem: 'telefone', texto: 'Diretor-geral falando. A quadrilha pede 40 bitcoins. O SOC acha que a gente paga? Vocês são os especialistas.', expr: 'bravo' },
       { quem: 'gilmar', texto: '(cochichando) Cuidado com essa resposta. Ela vai para a ata.', gesto: 'pensar' },
       { quem: 'chat', texto: 'Rô: respira. Fato, prazo e quem decide. Nada de opinião sobre bitcoin.' },
-      { quem: 'vandeco', texto: 'Em 2003 o resgate era um e-mail com erro de português. Hoje tem portal de atendimento, SLA e chat ao vivo. Profissionalizaram a desgraça.' },
+      { quem: 'vandeco', texto: 'Quadrilha de ransomware hoje tem portal de atendimento, SLA e chat ao vivo. O SLA deles é melhor que o do Chamadão, e isso dói.' },
     ],
     fila: { quantidade: 6 },
     missoes: [
@@ -303,7 +303,7 @@ export const DIAS_61_70: Dia[] = [
         enunciado: 'O diretor-geral quer uma resposta do SOC sobre o resgate e sobre "avisar alguém". O que você diz?',
         opcoes: [
           {
-            texto: 'Apresentar os fatos (escopo, backup íntegro, tempo estimado de restauração, indício de vazamento), lembrar que resgate é decisão da diretoria com o jurídico e que o prazo da ANPD é de 3 dias úteis.',
+            texto: 'Apresentar os fatos (escopo, backup íntegro, tempo estimado de restauração, indício de vazamento), lembrar que resgate é decisão da diretoria com o jurídico e que a comunicação à ANPD é do hospital, em 3 dias úteis.',
             reacao: [
               { quem: 'telefone', texto: 'Jurídico falando. Era exatamente isso que eu precisava ouvir. A DPO já está montando a comunicação à ANPD.', expr: 'sorriso' },
               { quem: 'gilmar', texto: 'Fato, prazo e quem decide. Eu choraria se não estivesse cronometrando.', gesto: 'comemorar', expr: 'sorriso' },
@@ -311,7 +311,7 @@ export const DIAS_61_70: Dia[] = [
             efeitos: { reputacao: 15, sanidade: 5 },
           },
           {
-            texto: 'Dizer que você mesmo pode negociar com a quadrilha pelo chat do portal, para conseguir um desconto.',
+            texto: 'Oferecer-se para negociar pessoalmente com a quadrilha pelo chat do portal, para conseguir um desconto.',
             reacao: [
               { quem: 'telefone', texto: 'Jurídico falando. Por favor, ninguém do SOC entra nesse chat. Ninguém. Isso vai para a ata.', expr: 'bravo' },
               { quem: 'ro', texto: 'Parabéns, agora a quadrilha tem um contato comercial na Insônia. Desfaz isso antes que ela te mande proposta de parceria.', gesto: 'cruzar' },
@@ -342,7 +342,7 @@ export const DIAS_61_70: Dia[] = [
     titulo: 'Restaurar não é dar Ctrl+Z',
     resumo: 'Recuperação: 3-2-1, cópia imutável, ponto de restauração limpo e restauração testada.',
     aula: [
-      'A regra **3-2-1** do backup: **3** cópias dos dados, em **2** tipos de mídia diferentes, com **1** cópia fora do local. A versão moderna é **3-2-1-1-0**: mais **1** cópia offline ou imutável (que nem o administrador consegue apagar antes do prazo) e **0** erros na verificação de restauração. Ransomware sabe onde mora o backup e apaga primeiro; por isso imutabilidade não é luxo.',
+      'A regra **3-2-1** do backup: **3** cópias dos dados, em **2** tipos de mídia diferentes, com **1** cópia fora do local. A versão moderna é **3-2-1-1-0**: mais **1** cópia offline ou imutável (que nem o administrador consegue apagar antes do prazo) e **0** erros na verificação de restauração. Quadrilha de ransomware costuma procurar o backup e apagar antes de cifrar; por isso imutabilidade não é luxo.',
       'Recuperar começa antes de restaurar: confirme que a ameaça foi erradicada e que as credenciais privilegiadas foram trocadas. Restaurar em cima de rede ainda comprometida é reformar a casa com o ladrão dormindo no sofá. Escolha o **ponto de restauração** anterior ao acesso inicial (a linha do tempo da análise diz qual é), não só anterior à cifragem.',
       'Restaure por **prioridade de negócio**, que em hospital é prioridade clínica: prontuário, laboratório, farmácia e imagens antes do faturamento e do RH. O **RTO** (tempo para voltar) e o **RPO** (quanto dado se aceita perder) deveriam estar no plano de continuidade. Se não estavam, agora você descobre na marra quais são.',
       'Valide com quem usa: a farmácia confere o estoque, o laboratório confere os laudos. Religue a rede por etapas, com monitoramento reforçado nos dias seguintes, porque quadrilha que perde o acesso costuma tentar voltar. E um backup que nunca foi restaurado é só uma esperança com nome bonito.',
@@ -351,7 +351,7 @@ export const DIAS_61_70: Dia[] = [
       { quem: 'gilmar', texto: 'O hospital quer tudo de volta até o meio-dia. Eu disse que até o meio-dia a gente devolve a esperança.', gesto: 'ombros' },
       { quem: 'pamela', texto: 'Conferi o backup imutável. Está íntegro, último ponto limpo é de 13 de março às 23h, antes do anexo ser aberto.', gesto: 'sim' },
       { quem: 'ro', texto: 'Quem conferiu? A Pâmela. De novo. Alguém dá um aumento pra essa menina antes que o concorrente dê.' },
-      { quem: 'thiaguinho', texto: 'Por que não restaura o de ontem às 4h? É mais recente, perde menos coisa.', gesto: 'pensar' },
+      { quem: 'thiaguinho', texto: 'Por que não restaura o das 4h do dia 14? É mais recente, perde menos coisa.', gesto: 'pensar' },
       { quem: 'vandeco', texto: 'Porque às 4h o atacante já estava lá dentro, menino. Restaurar backup infectado é reprise de filme de terror.', gesto: 'nao' },
     ],
     fila: { quantidade: 8 },
@@ -447,7 +447,7 @@ export const DIAS_61_70: Dia[] = [
     resumo: 'BEC na Cooperativa Agro Pasto Ralo: domínio parecido, troca de conta bancária e nenhum malware.',
     aula: [
       'O **BEC** (comprometimento de e-mail corporativo) não precisa de malware. O golpe é conversa: alguém se passa por fornecedor ou diretor e pede uma transferência ou a troca da conta bancária de um pagamento. No ATT&CK, o fim da história é **T1657** (Financial Theft); o começo costuma ser phishing (**T1566**) ou uma caixa de e-mail já comprometida.',
-      'Domínio parecido passa em **SPF, DKIM e DMARC**, porque o golpista é dono do domínio falso e configura tudo certinho. Os autenticadores provam que o e-mail veio do domínio que diz, não que o domínio é quem você pensa. Olhe letra por letra (`l` virando `i`, `rn` virando `m`), a **idade do domínio**, o **Reply-To** diferente do remetente e a resposta numa conversa antiga (o golpista leu a conversa em algum lugar).',
+      'Domínio parecido passa em **SPF, DKIM e DMARC**, porque o golpista é dono do domínio falso e configura tudo certinho. Os autenticadores provam que o e-mail veio do domínio que diz, não que o domínio é quem você pensa. Olhe letra por letra (`i` virando `1`, `l` virando `I`, `rn` virando `m`), a **idade do domínio**, o **Reply-To** diferente do remetente e a resposta numa conversa antiga (o golpista leu a conversa em algum lugar).',
       'Resposta a BEC é corrida contra o relógio: o cliente aciona o banco **imediatamente** para tentar bloquear ou devolver (no Pix existe o MED, Mecanismo Especial de Devolução; em TED a chance depende da rapidez), registra boletim de ocorrência e preserva os e-mails com cabeçalho completo. O SOC procura regras de encaminhamento e logins estranhos na caixa da vítima, porque às vezes o golpista ainda está lá dentro.',
       'A prevenção é processo, não ferramenta: **toda troca de dados bancários é confirmada por telefone, num número já conhecido**, nunca no número que veio no próprio e-mail. E o alerta de "domínio externo parecido com fornecedor" vale ouro. O Dr. Leôncio, infelizmente, achou que o antivírus cobria isso. Antivírus não é seguro de vida, doutor.',
     ].join('\n\n'),
@@ -464,13 +464,13 @@ export const DIAS_61_70: Dia[] = [
       {
         tipo: 'siem',
         titulo: 'O e-mail do adubo',
-        enunciado: 'Três dias de logs do gateway de e-mail da Cooperativa Agro Pasto Ralo. O fornecedor legítimo é a Fertilizantes Pé Vermelho, que manda e-mail de `pevermelho-fert.com.br` há anos. Ache o e-mail que pediu a troca da conta.',
+        enunciado: 'Três dias de logs do gateway de e-mail da Cooperativa Agro Pasto Ralo. O fornecedor legítimo é a Fertilizantes Adubo Cheiroso, que manda e-mail de `adubocheiroso.exemplo` há anos. Ache o e-mail que pediu a troca da conta.',
         registros: registrosDia69(),
         pergunta: 'Qual domínio o golpista usou para pedir a troca dos dados bancários?',
-        resposta: 'pevermeiho-fert.com.br',
+        resposta: 'aduboche1roso.exemplo',
         gabarito: 'assunto="*dados banc*" | tabela dominio_remetente,remetente,hora,spf,dmarc,reply_to,idade_dominio_dias',
         dica: 'Compare os domínios: `| contar por dominio_remetente` e leia letra por letra. Ou procure pelo assunto com curinga entre aspas: `assunto="*dados banc*"`.',
-        explicacao: 'O domínio `pevermeiho-fert.com.br` troca o `l` por `i`, tem 6 dias de vida, passa em SPF, DKIM e DMARC (o golpista é dono dele) e põe o Reply-To numa caixa postal genérica. Antes de pedir a troca, o golpista respondeu a uma conversa real sobre a NF-e 4471, sinal de que leu e-mails do fornecedor ou da própria cooperativa: vale investigar as duas caixas. Os e-mails com DMARC falhando são só spam de trator, que é ruído, não o golpe.',
+        explicacao: 'O domínio `aduboche1roso.exemplo` troca o `i` pelo número `1`, tem 6 dias de vida, passa em SPF, DKIM e DMARC (o golpista é dono dele) e põe o Reply-To numa caixa postal genérica. Antes de pedir a troca, o golpista respondeu a uma conversa real sobre a NF-e 4471, sinal de que leu e-mails do fornecedor ou da própria cooperativa: vale investigar as duas caixas. Os e-mails com DMARC falhando são só spam de trator, que é ruído, não o golpe.',
       },
     ],
     saida: [
@@ -492,9 +492,9 @@ export const DIAS_61_70: Dia[] = [
       'E converse. Muita gente descobre que dava para negociar onde está, ou que o trabalho novo tem um sobreaviso escondido que come o aumento. Proposta boa sobrevive a perguntas; proposta que exige resposta em uma hora geralmente é a própria pressa vestida de oportunidade.',
     ].join('\n\n'),
     chegada: [
-      { quem: 'chat', texto: 'Mensagem privada de uma recrutadora da Muralha Total MSSP: "Oi! Vimos seu trabalho no caso do hospital. Pagamos R$ 300 a mais. Topa? Preciso da resposta até o fim do dia :)"' },
+      { quem: 'chat', texto: 'Mensagem privada de uma recrutadora da Muralha de Papel MSSP: "Oi! Vimos seu trabalho no caso do hospital. Pagamos R$ 300 a mais. Topa? Preciso da resposta até o fim do dia :)"' },
       { quem: 'kevin', texto: 'Eles me mandaram a mesma. Eu fechei como falso positivo.', gesto: 'ombros' },
-      { quem: 'ro', texto: 'A Muralha Total? Conheço. A cafeteira deles é de cápsula. Cápsula, gente.', expr: 'bravo', gesto: 'cruzar' },
+      { quem: 'ro', texto: 'A Muralha de Papel? Conheço. A cafeteira deles é de cápsula. Cápsula, gente.', expr: 'bravo', gesto: 'cruzar' },
       { quem: 'neide', texto: 'Trezentos reais dá para muita coisa. Dá para três pizzas grandes. Ou uma pizza grande em Curitiba.', gesto: 'pensar' },
       { quem: 'gilmar', texto: 'Eu ouvi a palavra concorrente? Não ouvi. O tomate também não ouviu.', expr: 'triste' },
     ],
@@ -502,8 +502,8 @@ export const DIAS_61_70: Dia[] = [
     missoes: [
       {
         tipo: 'escolha',
-        titulo: 'A proposta da Muralha Total',
-        enunciado: 'A Muralha Total MSSP oferece R$ 300 a mais. A resposta precisa sair hoje. O que você faz?',
+        titulo: 'A proposta da Muralha de Papel',
+        enunciado: 'A Muralha de Papel MSSP oferece R$ 300 a mais. A resposta precisa sair hoje. O que você faz?',
         opcoes: [
           {
             texto: 'Aceitar. Trezentos reais são trezentos reais, e cafeteira de cápsula também faz café.',

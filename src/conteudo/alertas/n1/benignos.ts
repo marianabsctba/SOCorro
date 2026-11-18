@@ -1,6 +1,6 @@
 // Benignos verdadeiros de N1: aconteceu de verdade, mas é esperado ou autorizado.
 import type { ModeloAlerta } from '../../tipos';
-import { js, HORA_COMERCIAL, HORA_MADRUGADA, DATA, IP_EXTERNO, USU_TABAJARA, USU_OLHOVIVO } from './comum';
+import { js, HORA_COMERCIAL, HORA_MADRUGADA, DATA, IP_EXTERNO, USU_TABAJARA, USU_INSONIA } from './comum';
 
 export const N1_BP: ModeloAlerta[] = [
   {
@@ -34,7 +34,7 @@ export const N1_BP: ModeloAlerta[] = [
     ),
     explicacao:
       'A regra acertou: houve varredura. O que muda o veredito é a autorização. Confira três coisas: a origem é o ativo do scanner no CMDB, o horário e a faixa batem com a GMUD aprovada, e a exceção está dentro da validade. Se qualquer uma falhar (fora da janela, outra faixa, exceção vencida), escale.',
-    piada: 'A varredura da prefeitura é tão pontual que é a única coisa no TI de lá com GMUD aprovada.',
+    piada: 'A varredura mensal da prefeitura é pontual, autorizada e documentada. Corrigir o que ela encontra já é outra GMUD, prevista para 2031.',
     peso: 3,
   },
   {
@@ -54,7 +54,7 @@ export const N1_BP: ModeloAlerta[] = [
       'Assinatura do script: "CN=Tabajara Seguros TI Code Signing" válida',
     ],
     contexto: [
-      'Tarefa agendada "Inventario semanal" criada pelo TI em 2024, toda segunda às 10h.',
+      'Tarefa agendada "Inventario de hardware" criada pelo TI em 2024, roda todo dia às 10h.',
       'O script está no compartilhamento do TI, assinado com o certificado de código da empresa.',
       'O 4104 mostra só coleta de hardware e gravação no compartilhamento de inventário.',
     ],
@@ -68,7 +68,7 @@ export const N1_BP: ModeloAlerta[] = [
     ),
     explicacao:
       '`-ExecutionPolicy Bypass` e `-WindowStyle Hidden` aparecem em ataque e em automação legítima. A diferença está no resto: processo pai (o agendador de tarefas e não o Word), origem do script (compartilhamento do TI e não `%TEMP%` ou download), assinatura e o conteúdo do script no evento 4104. Sempre que puder, leia o 4104.',
-    piada: 'O TI da Tabajara assina os scripts, mas ainda usa uma impressora de 2009. Cada um com suas prioridades.',
+    piada: 'O TI da Tabajara assina os scripts com certificado de código. É a única assinatura da empresa que não precisa de firma reconhecida em cartório.',
     peso: 2,
   },
   {
@@ -88,7 +88,7 @@ export const N1_BP: ModeloAlerta[] = [
     contexto: [
       'GMUD-{gmud} aprovada: aplicação de patches em {servidor}, hoje das 02h às 04h, executor adm.{admin}.',
       '10.30.1.50 é o servidor de salto (jump server) do TI, origem obrigatória para administração.',
-      '{servidor}: servidor de laboratório, janela combinada com a equipe clínica.',
+      '{servidor} está na lista de servidores da GMUD; a janela foi combinada com as áreas que usam o sistema.',
     ],
     vars: { servidor: ['HSP-LAB01', 'HSP-APP03', 'HSP-FS-FAT01'], admin: ['ricardo', 'silvana', 'wellington'], gmud: ['2026-0211', '2026-0388', '2026-0420'], hora: ['02:04:18', '02:11:52', '02:26:07'], data: DATA },
     veredito: 'bp',
@@ -114,13 +114,13 @@ export const N1_BP: ModeloAlerta[] = [
     mitre: 'T1078.004',
     titulo: 'Login do diretor a partir de Orlando, EUA',
     logs: [
-      '{"CreationTime":"{data}T{hora}","Operation":"UserLoggedIn","UserId":"leoncio@pastoralo.coop.br","ClientIP":"{ip}","Geo":"Orlando, FL, US","ResultStatus":"Success","MfaDetail":"Microsoft Authenticator (número correspondente)"}',
+      '{"CreationTime":"{data}T{hora}","Operation":"UserLoggedIn","UserId":"leoncio@pastoralo.exemplo","ClientIP":"{ip}","Geo":"Orlando, FL, US","ResultStatus":"Success","MfaDetail":"Notificação push aprovada no aplicativo"}',
       '{"CreationTime":"{data}T{hora}","DeviceDetail":{"deviceId":"iPhone do Leôncio","isCompliant":true},"UserAgent":"Outlook-iOS/2.0"}',
       'Histórico: último login no Brasil há 2 dias, aeroporto de Guarulhos às 21h',
     ],
     contexto: [
       'O Dr. Leôncio está de férias nos parques de Orlando. Conferido por telefone com ele e com a secretária.',
-      'Mesmo iPhone cadastrado, MFA com número correspondente aprovado.',
+      'Mesmo iPhone cadastrado de sempre, MFA aprovado nele.',
       'Nenhuma regra de caixa ou permissão alterada.',
     ],
     vars: { ip: IP_EXTERNO, hora: ['09:14:02', '13:47:30', '22:05:11'], data: DATA },
@@ -144,7 +144,7 @@ export const N1_BP: ModeloAlerta[] = [
     severidade: 'crítica',
     titulo: 'Vírus detectado e removido em {host}: EICAR-Test-File',
     logs: [
-      '{data} {hora} AV host={host} user=PAODELO\\edu.ti detection="EICAR-Test-File (not a virus)" file="C:\\Users\\edu.ti\\Desktop\\teste_av.com" action=DELETED',
+      '{data} {hora} AV host={host} user=MIGALHA\\edu.ti detection="EICAR-Test-File (not a virus)" file="C:\\Users\\edu.ti\\Desktop\\teste_av.com" action=DELETED',
       'sha256=275A021BBFB6489E54D471899F7DB9D1663FC695EC2FE2A2C4538AABF651FD0F size=68',
       'Bate-Papo Corporativo (canal #ti-padaria) {hora}: "vou testar se o antivírus novo está pegando nas lojas"',
     ],
@@ -153,7 +153,7 @@ export const N1_BP: ModeloAlerta[] = [
       'O usuário é o analista de TI da padaria, que avisou do teste no chat.',
       'Implantação do antivírus novo nas lojas: chamado aberto esta semana.',
     ],
-    vars: { host: ['PDL-LOJA04-PDV1', 'PDL-LOJA07-ADM', 'PDL-ESCRIT-TI01'], hora: HORA_COMERCIAL, data: DATA },
+    vars: { host: ['PAD-LOJA04-PDV1', 'PAD-LOJA07-ADM', 'PAD-ESCRIT-TI01'], hora: HORA_COMERCIAL, data: DATA },
     veredito: 'bp',
     justificativas: js(
       0,
@@ -176,14 +176,14 @@ export const N1_BP: ModeloAlerta[] = [
     mitre: 'T1110.001',
     titulo: 'Força bruta: 6 falhas de logon para {usuario} em 4 minutos',
     logs: [
-      '{data} 08:{min}:12 DC01.tabajara.local 4625 Tipo de logon: 2 Conta: {usuario} Estação: {host} Sub Status: 0xC000006A',
-      '{data} 08:{min}:40 DC01.tabajara.local 4625 Tipo de logon: 2 Conta: {usuario} Estação: {host} Sub Status: 0xC000006A',
+      '{data} 08:{min}:12 {host}.tabajara.local 4625 Tipo de logon: 2 Conta: {usuario} Estação: {host} Sub Status: 0xC000006A',
+      '{data} 08:{min}:40 {host}.tabajara.local 4625 Tipo de logon: 2 Conta: {usuario} Estação: {host} Sub Status: 0xC000006A',
       '{data} 08:{min}:59 DC01.tabajara.local 4740 Conta bloqueada: {usuario}',
       'Chamadão: chamado SD-{chamado} "desbloqueio de conta", aberto por {usuario} pelo ramal às 08:{min}',
     ],
     contexto: [
       '{usuario} voltou hoje de 30 dias de férias (RH).',
-      'Logon tipo 2 (interativo, no teclado) na própria estação dela, {host}, dentro do prédio.',
+      'Logon tipo 2 (interativo, no teclado) na estação de trabalho de {usuario}, {host}, dentro do prédio.',
       'Depois do desbloqueio pelo service desk, 4624 com sucesso e nada mais.',
     ],
     vars: { usuario: USU_TABAJARA, host: ['TAB-SIN-0412', 'TAB-ATD-0312', 'TAB-COM-0101'], min: ['02', '11', '27'], chamado: ['77120', '77134', '77158'], data: ['2026-03-09', '2026-04-06', '2026-06-01'] },
@@ -192,7 +192,7 @@ export const N1_BP: ModeloAlerta[] = [
       2,
       'Força bruta interna, isolar a estação.',
       'Falso positivo: não houve falha de logon.',
-      'As falhas são reais e da própria dona da conta, no teclado da estação dela, na segunda de manhã depois das férias, com chamado de desbloqueio aberto por ela.',
+      'As falhas são reais e da própria pessoa dona da conta, no teclado da estação dela, na segunda de manhã depois das férias, com chamado de desbloqueio aberto por ela.',
       'Password spraying.',
     ),
     explicacao:
@@ -210,8 +210,8 @@ export const N1_BP: ModeloAlerta[] = [
     mitre: 'T1078.002',
     titulo: 'Conta de serviço svc_backup autenticando em {n} servidores às {hora}',
     logs: [
-      '{data} {hora} DC01.pmi.local 4624 Tipo de logon: 3 Conta: svc_backup Origem: 10.20.0.40 Processo: Kerberos',
-      '{data} {hora} FS02.pmi.local 4624 Tipo de logon: 3 Conta: svc_backup Origem: 10.20.0.40',
+      '{data} {hora} DC01.prefeitura.local 4624 Tipo de logon: 3 Conta: svc_backup Origem: 10.20.0.40 Processo: Kerberos',
+      '{data} {hora} FS02.prefeitura.local 4624 Tipo de logon: 3 Conta: svc_backup Origem: 10.20.0.40',
       '{data} {hora} BKP01 agente: job "Diário servidores" iniciado, destinos {n}, política incremental',
     ],
     contexto: [
@@ -249,6 +249,7 @@ export const N1_BP: ModeloAlerta[] = [
       '{ip} consta na carta de autorização do teste de intrusão contratado pela padaria (empresa de pentest, vigência desta semana, ambiente de homologação e produção da loja).',
       'Contato do responsável pelo teste e janela (09h às 18h) registrados no ticket TST-{tst}.',
       'Nenhuma resposta 500 nem vazamento observado até agora.',
+      'O sensor do IDS fica depois da terminação TLS do balanceador e enxerga o tráfego da loja já decifrado.',
     ],
     vars: { ip: ['198.51.100.90', '198.51.100.91'], tst: ['0042', '0057'], hora: HORA_COMERCIAL, data: DATA },
     veredito: 'bp',
@@ -272,11 +273,11 @@ export const N1_BP: ModeloAlerta[] = [
     mitre: 'T1566.002',
     titulo: 'Phishing: "Seu vale-refeição foi bloqueado" para {n} colaboradores',
     logs: [
-      'Return-Path: <rh@beneficios-ovseg[.]example>',
-      'Received: from sim01.plataforma-conscientizacao.example ([198.51.100.33]) by mx.insonia.com.br; {data} {hora} -0300',
+      'Return-Path: <rh@beneficios-ins0nia[.]example>',
+      'Received: from sim01.plataforma-conscientizacao.example ([198.51.100.33]) by mx.insonia.exemplo; {data} {hora} -0300',
       'X-Simulacao-Id: CAMP-2026-{camp}',
       'Subject: Seu vale-refeição foi bloqueado. Regularize em 24 horas',
-      'link: hxxps://beneficios-ovseg[.]example/login?t=8f2a',
+      'link: hxxps://beneficios-ins0nia[.]example/login?t=8f2a',
     ],
     contexto: [
       'A segurança corporativa da Insônia agendou a campanha de simulação CAMP-2026-{camp} para hoje (comunicado ao SOC na passagem de turno).',
@@ -305,8 +306,8 @@ export const N1_BP: ModeloAlerta[] = [
     mitre: 'T1027',
     titulo: 'Anexo protegido por senha recebido por {n} colaboradores',
     logs: [
-      'From: Folha de Pagamento <holerite@folha-terceirizada.example> To: {usuario}@tabajara.com.br',
-      'Authentication-Results: mx.tabajara.com.br; spf=pass; dkim=pass header.d=folha-terceirizada.example; dmarc=pass',
+      'From: Folha de Pagamento <holerite@folha-terceirizada.example> To: {usuario}@tabajara.exemplo',
+      'Authentication-Results: mx.tabajara.exemplo; spf=pass; dkim=pass header.d=folha-terceirizada.example; dmarc=pass',
       'Subject: Demonstrativo de pagamento referente ao mês',
       'anexo=holerite.pdf tipo=application/pdf cifrado=SIM sandbox=NÃO_ANALISADO motivo="arquivo protegido por senha"',
     ],
@@ -338,12 +339,12 @@ export const N1_BP: ModeloAlerta[] = [
     mitre: 'T1114.003',
     titulo: 'Regra de caixa de correio criada na conta do diretor',
     logs: [
-      '{"CreationTime":"{data}T{hora}","Operation":"New-InboxRule","UserId":"leoncio@pastoralo.coop.br","ClientIP":"10.40.1.15","Parameters":[{"Name":"ForwardTo","Value":"secretaria.diretoria@pastoralo.coop.br"},{"Name":"SubjectContainsWords","Value":"Agenda;Convite"}]}',
-      'Origem: estação da secretaria da diretoria, sessão delegada (SendOnBehalf já existente)',
+      '{"CreationTime":"{data}T{hora}","Operation":"New-InboxRule","UserId":"leoncio@pastoralo.exemplo","ClientIP":"198.51.100.61","Parameters":[{"Name":"ForwardTo","Value":"secretaria.diretoria@pastoralo.exemplo"},{"Name":"SubjectContainsWords","Value":"Agenda;Convite"}]}',
+      'Origem: 198.51.100.61 é a saída de internet do escritório de Cascavel; sessão do próprio diretor, no PC da sala dele, dispositivo gerenciado',
     ],
     contexto: [
       'O destino é interno (domínio da própria cooperativa) e é a secretaria da diretoria.',
-      'Chamado SD-{chamado}: "encaminhar convites e agenda do diretor para a secretaria", aberto pelo Dr. Leôncio.',
+      'Chamado SD-{chamado}: "encaminhar convites e agenda do diretor para a secretaria", aberto pelo Dr. Leôncio, que criou a regra com o service desk ao telefone.',
       'Nenhum outro evento de login estranho na conta nos últimos 7 dias.',
     ],
     vars: { chamado: ['31012', '31088'], hora: HORA_COMERCIAL, data: DATA },
@@ -351,7 +352,7 @@ export const N1_BP: ModeloAlerta[] = [
     justificativas: js(
       1,
       'BEC: regra de encaminhamento criada é sinal de conta comprometida.',
-      'A regra existe, mas encaminha só convites e agenda para a secretaria interna, a partir da estação dela, com chamado do próprio diretor.',
+      'A regra existe, mas encaminha só convites e agenda para a secretaria interna, criada pelo próprio diretor no escritório, com chamado aberto por ele.',
       'Falso positivo: o M365 registrou errado.',
     ),
     explicacao:
@@ -369,15 +370,15 @@ export const N1_BP: ModeloAlerta[] = [
     titulo: 'PsExec executado contra {n} estações a partir de {origem}',
     logs: [
       '{data} {hora} {alvo} 7045 Um serviço foi instalado no sistema. Nome: PSEXESVC Arquivo: %SystemRoot%\\PSEXESVC.exe Conta: LocalSystem',
-      'Sysmon EventID=1 Computer={origem} Image=C:\\Ferramentas\\Sysinternals\\PsExec64.exe CommandLine="PsExec64.exe @lista_protocolo.txt -s msiexec /i \\\\FS01\\pacotes\\leitor-pdf-24.msi /qn" User=PMI\\adm.valdir',
-      'Signature="Microsoft Corporation" SignatureStatus=Valid',
+      'Sysmon EventID=1 Computer={origem} Image=C:\\Ferramentas\\Sysinternals\\PsExec64.exe CommandLine="PsExec64.exe @lista_protocolo.txt -s msiexec /i \\\\FS01\\pacotes\\leitor-pdf-24.msi /qn" User=PREFEITURA\\adm.valdir',
+      'Guarita EDR: PsExec64.exe com assinatura válida de "Microsoft Corporation"',
     ],
     contexto: [
       'CMDB: {origem} é a estação do administrador de TI da prefeitura.',
       'GMUD-{gmud}: atualização do leitor de PDF nas estações do protocolo, hoje à tarde.',
       'O pacote instalado vem do compartilhamento oficial de pacotes do TI.',
     ],
-    vars: { origem: ['PMI-TI-001', 'PMI-TI-002'], alvo: ['PMI-PROT-014', 'PMI-PROT-022'], n: ['31', '44'], gmud: ['2026-0219', '2026-0333'], hora: HORA_COMERCIAL, data: DATA },
+    vars: { origem: ['PREF-TI-001', 'PREF-TI-002'], alvo: ['PREF-PROT-014', 'PREF-PROT-022'], n: ['31', '44'], gmud: ['2026-0219', '2026-0333'], hora: HORA_COMERCIAL, data: DATA },
     veredito: 'bp',
     justificativas: js(
       2,
@@ -388,7 +389,7 @@ export const N1_BP: ModeloAlerta[] = [
     ),
     explicacao:
       'PsExec é ferramenta de administração e também favorita de quem faz movimento lateral (o serviço PSEXESVC no evento 7045 é a marca dele). Ser assinado pela Microsoft não absolve; o que absolve é quem rodou, de onde, o que executou e se há mudança aprovada. Linha de comando instalando pacote interno com GMUD é benigno.',
-    piada: 'A prefeitura atualizou o leitor de PDF com GMUD. O Windows 7 ao lado assistiu com inveja.',
+    piada: 'A prefeitura atualizou o leitor de PDF com GMUD, janela e pacote oficial. O vereador já está preparando a live de inauguração.',
   },
   {
     id: 'n1-bp-nuvem-chave-cicd',
@@ -400,7 +401,7 @@ export const N1_BP: ModeloAlerta[] = [
     mitre: 'T1078.004',
     titulo: 'Chave de acesso da nuvem usada a partir de IP nunca visto: {ip}',
     logs: [
-      '{"eventTime":"{data}T{hora}Z","eventName":"UpdateFunctionCode","eventSource":"lambda.amazonaws.com","sourceIPAddress":"{ip}","userIdentity":{"type":"IAMUser","userName":"deploy-loja"},"userAgent":"aws-cli/2.17 ... exec-env/GitHub-Actions"}',
+      '{"eventTime":"{data}T{hora}Z","eventName":"UpdateFunctionCode20150331v2","eventSource":"lambda.amazonaws.com","sourceIPAddress":"{ip}","userIdentity":{"type":"IAMUser","userName":"deploy-loja"},"userAgent":"aws-cli/2.17 ... exec-env/GitHub-Actions"}',
       '{"eventTime":"{data}T{hora}Z","eventName":"PutObject","requestParameters":{"bucketName":"padaria-site-estatico"},"userIdentity":{"userName":"deploy-loja"}}',
       'Repositório da loja: workflow "deploy-producao" executado às {hora} por edu.ti, commit "ajuste do banner da Black Friday"',
     ],
@@ -419,7 +420,7 @@ export const N1_BP: ModeloAlerta[] = [
     ),
     explicacao:
       'Em nuvem, "IP novo" é comum para automação. O que importa é o casamento entre o evento e uma execução conhecida (workflow, horário, autor) e se as ações cabem no que a chave deveria fazer. Chave vazada costuma aparecer criando usuário, listando tudo ou subindo máquina em região que o cliente nunca usou. Recomende trocar chave fixa por identidade federada do pipeline.',
-    piada: 'O banner da Black Friday subiu para produção com pipeline, chave dedicada e menor privilégio. O backup continua sendo um sonho de padaria.',
+    piada: 'O banner da Black Friday subiu com pipeline, chave dedicada e menor privilégio. É a coisa mais bem governada da padaria, e é um banner.',
   },
   {
     id: 'n1-bp-dlp-corretora',
@@ -463,15 +464,16 @@ export const N1_BP: ModeloAlerta[] = [
     titulo: 'Dispositivo USB de armazenamento conectado em {host}',
     logs: [
       '{data} {hora} {host} Microsoft-Windows-Partition/Diagnostic 1006 Fabricante=Kingston Modelo=DataTraveler Serial=AA00{serial} Capacidade=32 GB',
-      'Sysmon EventID=1 Image=E:\\update\\fw_installer.exe Signature="Fabricante do Tomógrafo GmbH" SignatureStatus=Valid User={host}\\servico',
+      'Sysmon EventID=1 Image=E:\\update\\fw_installer.exe User={host}\\servico',
+      'Guarita EDR: fw_installer.exe com assinatura válida do fabricante do tomógrafo',
       'Guarita EDR: varredura do volume E: concluída, 0 ameaças',
     ],
     contexto: [
-      'CMDB: {host} é a estação de controle do tomógrafo da sala 3.',
+      'CMDB: {host} é a estação de controle de um dos tomógrafos do hospital.',
       'OS de manutenção MNT-{os}: técnico credenciado do fabricante atualizando firmware hoje, acompanhado pela engenharia clínica.',
       'Pendrive cadastrado na OS pelo número de série.',
     ],
-    vars: { host: ['HSP-TOMO-S3', 'HSP-RM-S1'], serial: ['7731', '9012'], os: ['0912', '1044'], hora: HORA_COMERCIAL, data: DATA },
+    vars: { host: ['HSP-TOMO-S3', 'HSP-TOMO-S1'], serial: ['7731', '9012'], os: ['0912', '1044'], hora: HORA_COMERCIAL, data: DATA },
     veredito: 'bp',
     justificativas: js(
       0,
@@ -525,7 +527,7 @@ export const N1_BP: ModeloAlerta[] = [
     logs: [
       'CEF:0|Firewall|NGFW|9.1|allow|Tráfego permitido|3|src={ip} dst=203.0.113.200 dpt=443 proto=TCP out={gb}GB app=ssl rt={data} {hora}',
       'SNI=backup.armazenamento-nuvem.example',
-      'BKP-ABG01 agente: job "Offsite semanal" iniciado às 22h00, cópia imutável, status=Concluído',
+      'BKP-COOP01 agente: job "Offsite semanal" iniciado às 22h00, cópia imutável, status=Concluído',
     ],
     contexto: [
       'CMDB: {ip} é o servidor de backup da cooperativa.',
@@ -543,7 +545,7 @@ export const N1_BP: ModeloAlerta[] = [
     ),
     explicacao:
       'Volume sozinho não é exfiltração; precisa saber de onde, para onde e se é rotina. Servidor de backup, destino contratado, job registrado e volume igual às semanas anteriores: benigno. Desconfie de volume grande saindo de estação, para serviço de compartilhamento pessoal ou fora de qualquer rotina.',
-    piada: 'A cooperativa tem backup offsite imutável. A padaria pediu o contato e depois esqueceu.',
+    piada: 'Backup fora do local, imutável e testado: a cooperativa fez tudo certo, e a regra ainda deu severidade crítica. Competência também gera ticket.',
   },
   {
     id: 'n1-bp-contas-estagiarios',
@@ -586,8 +588,8 @@ export const N1_BP: ModeloAlerta[] = [
     mitre: 'T1098',
     titulo: 'Membro adicionado ao grupo Domain Admins: {conta}',
     logs: [
-      '{data} {hora} DC01.pmi.local 4728 Membro adicionado a grupo global com segurança habilitada. Grupo: Domain Admins Membro: {conta} Conta que alterou: adm.valdir',
-      '{data} {hora} DC01.pmi.local 5136 Objeto alterado: CN={conta} atributo description="Acesso temporário GMUD-{gmud}, remover em 48 h"',
+      '{data} {hora} DC01.prefeitura.local 4728 Membro adicionado a grupo global com segurança habilitada. Grupo: Domain Admins Membro: {conta} Conta que alterou: adm.valdir',
+      '{data} {hora} DC01.prefeitura.local 5136 Objeto alterado: CN={conta} atributo description="Acesso temporário GMUD-{gmud}, remover em 48 h"',
     ],
     contexto: [
       'GMUD-{gmud} aprovada pelo comitê: migração do servidor de arquivos pela empresa contratada, acesso privilegiado por 48 h.',
@@ -617,7 +619,7 @@ export const N1_BP: ModeloAlerta[] = [
     mitre: 'T1046',
     titulo: 'Ferramenta de hacking detectada em {host}: nmap.exe',
     logs: [
-      '{data} {hora} AV host={host} user=OLHOVIVO\\{usuario} detection="HackTool:Win32/Nmap" file="C:\\Laboratorio\\ferramentas\\nmap\\nmap.exe" action=ALLOWED_BY_POLICY',
+      '{data} {hora} AV host={host} user=INSONIA\\{usuario} detection="HackTool:Win32/Nmap" file="C:\\Laboratorio\\ferramentas\\nmap\\nmap.exe" action=ALLOWED_BY_POLICY',
       'Sysmon EventID=1 Image=C:\\Laboratorio\\ferramentas\\nmap\\nmap.exe CommandLine="nmap.exe -sV 10.99.0.0/24" Computer={host}',
       'destino 10.99.0.0/24: rede isolada do laboratório de treinamento',
     ],
@@ -626,7 +628,7 @@ export const N1_BP: ModeloAlerta[] = [
       'Política de antivírus do laboratório permite ferramentas de segurança, com registro.',
       'Atividade da trilha de treinamento "Logs de firewall e varredura" desta semana.',
     ],
-    vars: { host: ['OV-LAB-01', 'OV-LAB-02'], usuario: USU_OLHOVIVO, hora: HORA_COMERCIAL, data: DATA },
+    vars: { host: ['INS-LAB-01', 'INS-LAB-02'], usuario: USU_INSONIA, hora: HORA_COMERCIAL, data: DATA },
     veredito: 'bp',
     justificativas: js(
       2,
@@ -636,7 +638,7 @@ export const N1_BP: ModeloAlerta[] = [
     ),
     explicacao:
       'Ferramenta de segurança detectada é verdadeira (ela existe e rodou). O veredito depende de onde e contra o quê: laboratório isolado com política é benigno; a mesma ferramenta numa estação de produção ou contra a rede de um cliente, sem autorização, é para escalar.',
-    piada: 'A trilha de treinamento usa o nmap. A Wiki do SOC ainda recomenda o Nessus de 2012.',
+    piada: 'A trilha de treinamento usa o nmap. A Wiki do SOC ainda ensina a instalar por disquete.',
   },
   {
     id: 'n1-bp-vereador-live',
@@ -649,11 +651,11 @@ export const N1_BP: ModeloAlerta[] = [
     titulo: 'Upload de {mb} MB para rede social a partir do gabinete',
     logs: [
       '{data} {hora} 10.20.3.3 TCP_TUNNEL/200 {mb}000000 CONNECT live-upload.instagram.com:443 gab.vereador categoria="Redes sociais"',
-      'Sysmon EventID=1 Image=C:\\Program Files\\OBS Studio\\bin\\64bit\\obs64.exe Computer=PMI-GAB-003',
+      'Sysmon EventID=1 Image=C:\\Program Files\\OBS Studio\\bin\\64bit\\obs64.exe Computer=PREF-GAB-003',
       'duração da sessão: 1 h 12 min, taxa constante de 2,5 Mbps (transmissão de vídeo)',
     ],
     contexto: [
-      'CMDB: PMI-GAB-003 é a estação do gabinete do vereador.',
+      'CMDB: PREF-GAB-003 é a estação do gabinete do vereador.',
       'A agenda pública do gabinete anuncia live "Prestação de contas da semana" hoje.',
       'Política da prefeitura libera redes sociais para o gabinete e a comunicação.',
     ],

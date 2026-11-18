@@ -346,6 +346,22 @@ function detalheMissao(em: EstadoMissao | undefined): string {
   return h + rodapeMissao(em);
 }
 
+/**
+ * compara a resposta digitada com a certa sem exigir perfeição de cartório:
+ * ignora maiúsculas, aspas, crases e ponto final; e-mail vale também só pelo usuário (antes do @);
+ * no Canivete, aceita a resposta com um pouquinho de sobra em volta
+ */
+export function respostaBate(digitada: string, certa: string, folga = false): boolean {
+  const limpa = (s: string) => normalizar(s).replace(/^["'`\s]+|["'`.\s]+$/g, '');
+  const v = limpa(digitada);
+  const c = limpa(certa);
+  if (!v) return false;
+  if (v === c) return true;
+  if (c.includes('@') && !v.includes('@') && v === c.split('@')[0]) return true;
+  if (c.includes('\\') && !v.includes('\\') && v === c.split('\\').pop()) return true;
+  return folga && v.includes(c) && v.length <= c.length + 4;
+}
+
 function nomeFalante(q: string) {
   return ({ voce: 'Você', narrador: '', telefone: 'Telefone', chat: 'Chat' } as Record<string, string>)[q] ?? q.charAt(0).toUpperCase() + q.slice(1);
 }
@@ -672,7 +688,7 @@ function acao(a: string, b: HTMLElement) {
       const m = em.m;
       const certa = m.tipo === 'siem' || m.tipo === 'decodificar' ? m.resposta : '';
       em.respostas.ultima = v;
-      if (normalizar(v) === normalizar(certa) || (m.tipo === 'decodificar' && normalizar(v).includes(normalizar(certa)) && normalizar(v).length <= normalizar(certa).length + 4)) {
+      if (respostaBate(v, certa, m.tipo === 'decodificar')) {
         concluir(em, 6 - em.tentativas * 2 - (em.respostas.dica ? 1 : 0));
         if (em.pontos < 2) em.pontos = 2;
       } else {

@@ -138,13 +138,13 @@ export function registrosDia69(): Registro[] {
   const internos = ['leoncio', 'financeiro', 'compras', 'contabilidade', 'diretoria', 'silo.norte'];
   const out: Registro[] = [];
   const legit: [string, string, string][] = [
-    ['nfe@pevermelho-fert.com.br', 'pevermelho-fert.com.br', 'NF-e 4471 emitida: Fertilizantes Pé Vermelho'],
-    ['comercial@pevermelho-fert.com.br', 'pevermelho-fert.com.br', 'Tabela de preços safra 26/27'],
-    ['avisos@sicooperativo.com.br', 'sicooperativo.com.br', 'Extrato mensal disponível'],
-    ['noreply@agrotempo.com.br', 'agrotempo.com.br', 'Previsão: geada no norte do Paraná'],
-    ['contato@revistapastoralo.com.br', 'revistapastoralo.com.br', 'Newsletter: o preço da arroba hoje'],
-    ['rh@agropastoralo.coop.br', 'agropastoralo.coop.br', 'Escala de colheita'],
-    ['ti@agropastoralo.coop.br', 'agropastoralo.coop.br', 'Lembrete: não clique em link de boleto'],
+    ['nfe@adubocheiroso.exemplo', 'adubocheiroso.exemplo', 'NF-e 4471 emitida: Fertilizantes Adubo Cheiroso'],
+    ['comercial@adubocheiroso.exemplo', 'adubocheiroso.exemplo', 'Tabela de preços safra 26/27'],
+    ['avisos@credipastoralo.exemplo', 'credipastoralo.exemplo', 'Extrato mensal disponível'],
+    ['noreply@previsao-na-roca.exemplo', 'previsao-na-roca.exemplo', 'Previsão: geada no norte do Paraná'],
+    ['contato@revistapastoralo.exemplo', 'revistapastoralo.exemplo', 'Newsletter: o preço da arroba hoje'],
+    ['rh@pastoralo.exemplo', 'pastoralo.exemplo', 'Escala de colheita'],
+    ['ti@pastoralo.exemplo', 'pastoralo.exemplo', 'Lembrete: não clique em link de boleto'],
   ];
   for (let i = 0; i < 110; i++) {
     const [rem, dom, assunto] = r.um(legit);
@@ -152,13 +152,13 @@ export function registrosDia69(): Registro[] {
       hora: hora(base, r.int(0, 3 * 24 * 3600)),
       remetente: rem,
       dominio_remetente: dom,
-      destinatario: `${r.um(internos)}@agropastoralo.coop.br`,
+      destinatario: `${r.um(internos)}@pastoralo.exemplo`,
       assunto,
       spf: 'pass',
       dkim: 'pass',
       dmarc: 'pass',
       reply_to: '-',
-      idade_dominio_dias: dom === 'pevermelho-fert.com.br' ? 4410 : dom === 'agropastoralo.coop.br' ? 3650 : r.int(900, 6000),
+      idade_dominio_dias: dom === 'adubocheiroso.exemplo' ? 4410 : dom === 'pastoralo.exemplo' ? 3650 : r.int(900, 6000),
       ip_origem: ipExterno(r),
     });
   }
@@ -168,7 +168,7 @@ export function registrosDia69(): Registro[] {
       hora: hora(base, r.int(0, 3 * 24 * 3600)),
       remetente: `promo${r.int(10, 99)}@ofertas-trator-barato.biz`,
       dominio_remetente: 'ofertas-trator-barato.biz',
-      destinatario: `${r.um(internos)}@agropastoralo.coop.br`,
+      destinatario: `${r.um(internos)}@pastoralo.exemplo`,
       assunto: 'Trator 0 km por R$ 99 (sério)',
       spf: 'fail',
       dkim: 'none',
@@ -179,11 +179,11 @@ export function registrosDia69(): Registro[] {
     });
   }
   // o golpe: domínio parecido, registrado há poucos dias, com SPF/DKIM/DMARC passando
-  const golpe = { remetente: 'financeiro@pevermeiho-fert.com.br', dominio_remetente: 'pevermeiho-fert.com.br', spf: 'pass', dkim: 'pass', dmarc: 'pass', reply_to: 'financeiro.pevermelho@caixapostal-segura.net', idade_dominio_dias: 6, ip_origem: '91.214.63.18' };
+  const golpe = { remetente: 'financeiro@aduboche1roso.exemplo', dominio_remetente: 'aduboche1roso.exemplo', spf: 'pass', dkim: 'pass', dmarc: 'pass', reply_to: 'financeiro.pevermelho@caixapostal-segura.net', idade_dominio_dias: 6, ip_origem: '91.214.63.18' };
   out.push(
-    { hora: hora(base, 26 * 3600 + 14 * 60), destinatario: 'leoncio@agropastoralo.coop.br', assunto: 'RE: NF-e 4471 emitida: Fertilizantes Pé Vermelho', ...golpe },
-    { hora: hora(base, 26 * 3600 + 52 * 60), destinatario: 'leoncio@agropastoralo.coop.br', assunto: 'URGENTE: atualização de dados bancários para pagamento', ...golpe },
-    { hora: hora(base, 27 * 3600 + 30 * 60), destinatario: 'financeiro@agropastoralo.coop.br', assunto: 'RE: URGENTE: atualização de dados bancários para pagamento', ...golpe },
+    { hora: hora(base, 26 * 3600 + 14 * 60), destinatario: 'leoncio@pastoralo.exemplo', assunto: 'RE: NF-e 4471 emitida: Fertilizantes Adubo Cheiroso', ...golpe },
+    { hora: hora(base, 26 * 3600 + 52 * 60), destinatario: 'leoncio@pastoralo.exemplo', assunto: 'URGENTE: atualização de dados bancários para pagamento', ...golpe },
+    { hora: hora(base, 27 * 3600 + 30 * 60), destinatario: 'financeiro@pastoralo.exemplo', assunto: 'RE: URGENTE: atualização de dados bancários para pagamento', ...golpe },
   );
   return porHora(out);
 }
@@ -196,12 +196,12 @@ export function registrosDia73(): Registro[] {
   const base = '2026-03-27T09:00:00';
   const hosts = ['NB-FIN-014', 'NB-RH-007', 'DT-ATEND-031', 'NB-DIR-001', 'DT-TI-002', 'NB-COM-022', 'DT-CAIXA-05', 'NB-JUR-003'];
   const sites: [string, string][] = [
-    ['portal.tabajaraseguros.com.br', 'Negócios'],
-    ['sinistros.tabajaraseguros.com.br', 'Negócios'],
+    ['portal.tabajara.exemplo', 'Negócios'],
+    ['sinistros.tabajara.exemplo', 'Negócios'],
     ['www.receita.fazenda.gov.br', 'Governo'],
     ['noticias.exemplo.com.br', 'Notícias'],
     ['cdn.exemplo-imagens.net', 'CDN'],
-    ['webmail.tabajaraseguros.com.br', 'Webmail'],
+    ['webmail.tabajara.exemplo', 'Webmail'],
     ['clima.exemplo.com.br', 'Notícias'],
     ['loja-de-capinhas.exemplo.com', 'Compras'],
     ['receitas-da-vovo.exemplo.com', 'Entretenimento'],

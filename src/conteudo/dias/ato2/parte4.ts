@@ -8,7 +8,7 @@ function registrosGeo(): (Registro & { malicioso: 0 | 1 })[] {
   const base = '2026-03-24T08:00:00';
   const out: (Registro & { malicioso: 0 | 1 })[] = [];
   for (let i = 0; i < 30; i++) {
-    out.push({ hora: hora(base, r.int(0, 36000)), usuario: r.um(USUARIOS), pais: 'Estados Unidos', ip: `152.67.20.${r.int(10, 40)}`, rede: 'vpn_corporativa', app: r.um(['Outlook', 'Teams', 'SharePoint']), mfa: 'aprovado', dispositivo_gerenciado: 'sim', resultado: 'sucesso', malicioso: 0 });
+    out.push({ hora: hora(base, r.int(0, 36000)), usuario: r.um(USUARIOS), pais: 'Estados Unidos', ip: `198.51.100.${r.int(10, 40)}`, rede: 'vpn_corporativa', app: r.um(['Outlook', 'Teams', 'SharePoint']), mfa: 'aprovado', dispositivo_gerenciado: 'sim', resultado: 'sucesso', malicioso: 0 });
   }
   for (let i = 0; i < 8; i++) {
     out.push({ hora: hora(base, r.int(0, 36000)), usuario: 'paulo.rodrigues', pais: 'Portugal', ip: `89.152.${r.int(1, 254)}.${r.int(1, 254)}`, rede: 'movel', app: r.um(['Outlook', 'Teams']), mfa: 'aprovado', dispositivo_gerenciado: 'sim', resultado: 'sucesso', malicioso: 0 });
@@ -19,8 +19,8 @@ function registrosGeo(): (Registro & { malicioso: 0 | 1 })[] {
   for (let i = 0; i < 5; i++) {
     out.push({ hora: hora(base, r.int(0, 36000)), usuario: r.um(USUARIOS.slice(0, 10)), pais: 'Paraguai', ip: `181.${r.int(1, 254)}.${r.int(1, 254)}.${r.int(1, 254)}`, rede: 'movel', app: 'Outlook', mfa: 'aprovado', dispositivo_gerenciado: 'não', resultado: 'sucesso', malicioso: 0 });
   }
-  out.push({ hora: hora(base, 15000), usuario: 'fernanda.lima', pais: 'Portugal', ip: '185.199.41.7', rede: 'hospedagem', app: 'OfficeHome', mfa: 'aprovado', dispositivo_gerenciado: 'não', resultado: 'sucesso', malicioso: 1 });
-  out.push({ hora: hora(base, 21000), usuario: 'carlos.pereira', pais: 'Holanda', ip: '185.107.56.21', rede: 'hospedagem', app: 'IMAP (autenticação legada)', mfa: 'não exigido', dispositivo_gerenciado: 'não', resultado: 'sucesso', malicioso: 1 });
+  out.push({ hora: hora(base, 15000), usuario: 'fernanda.lima', pais: 'Portugal', ip: '198.51.100.141', rede: 'hospedagem', app: 'OfficeHome', mfa: 'aprovado', dispositivo_gerenciado: 'não', resultado: 'sucesso', malicioso: 1 });
+  out.push({ hora: hora(base, 21000), usuario: 'carlos.pereira', pais: 'Holanda', ip: '203.0.113.56', rede: 'hospedagem', app: 'IMAP (autenticação legada)', mfa: 'não exigido', dispositivo_gerenciado: 'não', resultado: 'sucesso', malicioso: 1 });
   return porHora(out);
 }
 
@@ -62,10 +62,12 @@ function registrosDlp(): Registro[] {
     out.push({ hora: hora(base, r.int(0, 36000)), usuario: r.um(USUARIOS), acao, arquivos: r.int(1, pequeno ? 3 : 15), bytes: r.int(20000, pequeno ? 8000000 : 30000000), destino: acao === 'copia_usb' ? 'USB' : acao === 'upload_nuvem_pessoal' ? 'drive-pessoal.exemplo' : acao === 'email_externo' ? 'corretora-parceira.exemplo' : 'interno', classificacao: r.um(['pública', 'interna', 'interna', 'confidencial']) });
   }
   for (let i = 0; i < 6; i++) {
-    out.push({ hora: hora(base, r.int(0, 36000)), usuario: 'aline.martins', acao: r.um(['copia_usb', 'upload_nuvem_pessoal']), arquivos: r.int(1, 2), bytes: r.int(100000, 3000000), destino: 'USB', classificacao: 'pública' });
+    const h = hora(base, r.int(0, 36000));
+    const acao = r.um(['copia_usb', 'upload_nuvem_pessoal']);
+    out.push({ hora: h, usuario: 'aline.martins', acao, arquivos: r.int(1, 2), bytes: r.int(100000, 3000000), destino: acao === 'copia_usb' ? 'USB' : 'drive-pessoal.exemplo', classificacao: 'pública' });
   }
   for (let i = 0; i < 10; i++) {
-    out.push({ hora: hora(base, 34000 + i * 120), usuario: 'bruno.carvalho', acao: 'upload_nuvem_pessoal', arquivos: 1, bytes: r.int(200000000, 400000000), destino: 'agencia-video.exemplo', classificacao: 'pública' });
+    out.push({ hora: hora(base, 34000 + i * 120), usuario: 'bruno.carvalho', acao: 'upload_externo', arquivos: 1, bytes: r.int(200000000, 400000000), destino: 'agencia-video.exemplo', classificacao: 'pública' });
   }
   for (let i = 0; i < 25; i++) {
     out.push({ hora: hora('2026-03-30T22:10:00', i * 90), usuario: 'marcos.gomes', acao: i < 10 ? 'download_sharepoint' : i % 2 ? 'copia_usb' : 'upload_nuvem_pessoal', arquivos: r.int(40, 120), bytes: r.int(150000000, 300000000), destino: i < 10 ? 'interno' : i % 2 ? 'USB' : 'drive-pessoal.exemplo', classificacao: 'confidencial' });
@@ -86,7 +88,7 @@ export const DIAS_53_60: Dia[] = [
       'Duas armadilhas clássicas. **"MFA aprovado, então é legítimo"**: o AiTM do dia 50 entrega login com MFA aprovado. **"O país é o mesmo da viagem"**: o atacante também consegue IP em Portugal. A exclusão de viagem precisa amarrar a pessoa, o país, o período e o dispositivo gerenciado. E **autenticação legada** (IMAP, POP, SMTP AUTH) nem passa por MFA; o certo é bloquear no acesso condicional, não excluir da regra.\n\n' +
       'Toda exclusão de viagem tem **data de validade**. Exceção sem prazo é a lembrança de férias que o atacante usa até o Natal.',
     chegada: [
-      { quem: 'keyla', texto: 'A regra de login no exterior disparou 49 vezes. Os Estados Unidos invadiram a Tabajara!', gesto: 'comemorar', expr: 'surpresa' },
+      { quem: 'keyla', texto: 'A regra de login no exterior disparou 51 vezes. Os Estados Unidos invadiram a Tabajara!', gesto: 'comemorar', expr: 'surpresa' },
       { quem: 'ro', texto: 'Keyla, isso é a VPN corporativa. Ela sai por Miami. A Tabajara inteira mora em Miami, segundo o seu alerta.', gesto: 'cintura' },
       { quem: 'jefferson', texto: 'O paulo.rodrigues está em Lisboa de férias. Ele mandou foto de pastel de nata no grupo.', gesto: 'apontar' },
       { quem: 'vandeco', texto: 'Geolocalização de IP é igual previsão do tempo: ajuda, mas ninguém deveria apostar a vida nela.', expr: 'neutro' },
@@ -108,11 +110,11 @@ export const DIAS_53_60: Dia[] = [
           { texto: 'Excluir Portugal, já que tem gente viajando para lá', filtro: 'pais=Portugal' },
         ],
         minReducao: 0.8,
-        explicacao: 'VPN corporativa, viagem amarrada a pessoa e dispositivo, e "dispositivo gerenciado com MFA" são exclusões que o atacante não satisfaz nesses dados. Excluir todo MFA aprovado esconderia a fernanda.lima, cuja sessão veio de hospedagem em Portugal com MFA aprovado, o retrato de um AiTM. Excluir Portugal esconderia a mesma coisa. O carlos.pereira entrou por IMAP, autenticação legada sem MFA: isso se resolve bloqueando protocolo legado, não com exclusão. Os cinco logins do Paraguai continuam alertando, e tudo bem: celular pessoal fora do país merece olhar.',
+        explicacao: 'VPN corporativa, viagem amarrada a pessoa e dispositivo, e "dispositivo gerenciado com MFA" são exclusões que o atacante não satisfaz nesses dados (a terceira só é segura porque o acesso condicional confere de verdade se o dispositivo é gerenciado; se esse dado vier só do que o navegador declara, ela vira porta aberta). Excluir todo MFA aprovado esconderia a fernanda.lima, cuja sessão veio de hospedagem em Portugal com MFA aprovado, o retrato de um AiTM. Excluir Portugal esconderia a mesma coisa. O carlos.pereira entrou por IMAP, autenticação legada sem MFA: isso se resolve bloqueando protocolo legado, não com exclusão. Os cinco logins do Paraguai continuam alertando, e tudo bem: celular pessoal fora do país merece olhar.',
       },
     ],
     saida: [
-      { quem: 'keyla', texto: 'De 49 para 7, e os dois ataques continuam lá. Vou emoldurar.', gesto: 'comemorar', expr: 'sorriso' },
+      { quem: 'keyla', texto: 'De 51 para 7, e os dois ataques continuam lá. Vou emoldurar.', gesto: 'comemorar', expr: 'sorriso' },
       { quem: 'ro', texto: 'Coloca validade na exceção do paulo. Senão ele volta de Lisboa e a exceção fica de férias para sempre.', gesto: 'apontar' },
     ],
   },
@@ -180,7 +182,7 @@ export const DIAS_53_60: Dia[] = [
     titulo: 'Admin de madrugada',
     resumo: 'Grupos privilegiados alterados: 4728, 4732 e 4756, ticket e horário.',
     aula:
-      'Colocar uma conta em grupo privilegiado é o atalho preferido de quem quer ficar no ambiente (`T1098`, Account Manipulation). O Windows registra no controlador de domínio: **4728** (membro adicionado a grupo **global** de segurança, como Domain Admins), **4732** (grupo **local** de domínio ou local da máquina, como Administradores) e **4756** (grupo **universal**, como Enterprise Admins). As remoções correspondentes são 4729, 4733 e 4757.\n\n' +
+      'Colocar uma conta em grupo privilegiado é o atalho preferido de quem quer ficar no ambiente (`T1098`, Account Manipulation). O Windows registra: **4728** (membro adicionado a grupo **global** de segurança, como Domain Admins), **4732** (grupo **local de domínio**, como o Administradores do domínio, ou grupo local de uma máquina) e **4756** (grupo **universal**, como Enterprise Admins). Mudança em grupo do domínio aparece no controlador de domínio; mudança no grupo local de um servidor aparece no log Security daquele servidor. As remoções correspondentes são 4729, 4733 e 4757.\n\n' +
       'Os campos que importam: quem alterou (`SubjectUserName`), quem entrou (`MemberName` ou `MemberSid`), qual grupo (`TargetUserName`) e em qual máquina. Cruze com a **gestão de mudanças**: alteração em Domain Admins sem ticket aprovado, de madrugada, para uma conta de terceiro, é alerta de alta prioridade, venha de quem vier.\n\n' +
       'Grupos que merecem regra própria: Domain Admins, Enterprise Admins, Schema Admins, Administrators do domínio, Account Operators, Backup Operators, DnsAdmins e Group Policy Creator Owners. Também vale monitorar alteração no `AdminSDHolder`, que propaga permissões para as contas protegidas.\n\n' +
       'Se a conta que alterou é de um administrador real, a hipótese não é "o admin enlouqueceu", é "a credencial do admin está com outra pessoa". Confirme com ele por telefone, não pelo chat. Às 2h47 da manhã, admin de verdade está dormindo ou trabalhando com ticket aberto.',
@@ -188,7 +190,7 @@ export const DIAS_53_60: Dia[] = [
       { quem: 'narrador', texto: 'Madrugada. A garoa bate na janela, o ar-condicionado faz um ruído de turbina e alguém virou Domain Admin.' },
       { quem: 'thiaguinho', texto: 'Tem um monte de 4728. Deve ser o helpdesk trabalhando até tarde. Gente dedicada.', gesto: 'ombros' },
       { quem: 'ro', texto: 'O helpdesk da Tabajara vai embora às 18h e não sabe nem o caminho do estacionamento depois disso.', gesto: 'cruzar' },
-      { quem: 'telefone', texto: 'Meu jovem, é o Leôncio. Não é nada da cooperativa, só não consegui dormir e lembrei de vocês.' },
+      { quem: 'telefone', texto: 'Meu jovem, é o Leôncio. Recebi um SMS dizendo que eu ganhei um trator. Não cliquei. Ainda. Só liguei pra avisar que estou resistindo.' },
       { quem: 'vandeco', texto: 'Procura grupo de admin sem ticket. Admin sem ticket de madrugada é igual visita sem convite: alguém abriu a porta.', expr: 'neutro' },
     ],
     fila: { quantidade: 6 },
@@ -427,7 +429,7 @@ export const DIAS_53_60: Dia[] = [
             efeitos: { reputacao: 10, sanidade: 5, energia: -5 },
           },
           {
-            texto: 'Corrigir o ticket sozinho e não falar nada para não constranger.',
+            texto: 'Corrigir o ticket por conta própria e não falar nada para não constranger.',
             reacao: [
               { quem: 'ro', texto: 'Bonito, mas amanhã ele fecha outro igual. Erro corrigido em silêncio é erro que volta.', gesto: 'nao' },
               { quem: 'gilmar', texto: 'O MTTR ficou ótimo. A lição, nem tanto.', expr: 'neutro' },
@@ -454,8 +456,8 @@ export const DIAS_53_60: Dia[] = [
       },
     ],
     saida: [
-      { quem: 'gilmar', texto: 'Amanhã é a prova. Quem passar vira N3 de verdade. Quem não passar continua fazendo o trabalho do N3 sem o salário, como manda a tradição.', gesto: 'apontar' },
-      { quem: 'neide', texto: 'Dorme bem hoje, {nome}. Prova boa se faz com café e com sono, nessa ordem não.', gesto: 'acenar', expr: 'sorriso' },
+      { quem: 'gilmar', texto: 'Amanhã é a prova. Quem passar vira N3 de verdade. Quem não passar continua no cargo de hoje, fazendo o trabalho do N3 sem o salário, como manda a tradição.', gesto: 'apontar' },
+      { quem: 'neide', texto: 'Dorme bem hoje, {nome}. Prova boa se faz com sono em dia. Café é para a fila.', gesto: 'acenar', expr: 'sorriso' },
     ],
   },
   {
@@ -468,7 +470,7 @@ export const DIAS_53_60: Dia[] = [
       'Revisão do ato: investigação começa por **hipótese** e cresce por **pivôs** até fechar o **escopo**; linha do tempo só fecha com tudo em **UTC**. **ATT&CK** organiza o comportamento em tática, técnica e subtécnica. **Tuning** bom usa exclusão específica, com dono e validade, e nunca esconde o ataque; **Sigma** documenta e porta detecção.\n\n' +
       'Nos logs do Windows: **4769 com 0x17** para muitos SPNs é Kerberoasting; **4624 tipo 3 + 7045** em sequência é movimento lateral; **Sysmon 10** no LSASS pede exclusão por caminho e assinatura; **Sysmon 13, 4698, 7045 e Sysmon 19 a 21** são persistência; **4728, 4732 e 4756** são grupos privilegiados.\n\n' +
       'Fora do Windows: **W3C** com POST de um IP só em `.aspx` estranho é webshell; **bytes enviados** de madrugada para destino novo é exfiltração; regra de caixa de entrada com **ForwardTo** externo e consentimento OAuth são persistência em e-mail; **CloudTrail** com `GetCallerIdentity` e rajada de `AccessDenied` é credencial exposta; **NXDOMAIN** em massa de um host é DGA; `vssadmin`, `wbadmin` e `bcdedit` fora de contexto é **P1**. **BEC** passa em SPF, DKIM e DMARC; **AiTM** passa no MFA comum.\n\n' +
-      'E o que não é log: **RTO e RPO**, failover com canal alternativo, lições aprendidas **sem culpados**, evidência com **cadeia de custódia**, ameaça interna com RH e jurídico. Boa prova. O tomate está ligado.',
+      'E o que não é log: **RTO e RPO**, failover com canal alternativo, lições aprendidas **sem culpados**, evidência com **cadeia de custódia**, ameaça interna com RH e jurídico. Boa prova.',
     chegada: [
       { quem: 'gilmar', texto: 'Dia de prova. Nota mínima 70. Liguei o tomate, mas é só de enfeite. Ou não.', gesto: 'apontar' },
       { quem: 'ro', texto: 'Respira. Você já fez tudo isso de verdade nos últimos trinta dias. A prova só pede para escrever.', gesto: 'sim', expr: 'sorriso' },
@@ -579,7 +581,7 @@ export const DIAS_53_60: Dia[] = [
       },
     ],
     saida: [
-      { quem: 'gilmar', texto: 'Prova entregue. Seja qual for a nota, amanhã tem fila. E o tomate continua contando.', gesto: 'sim' },
+      { quem: 'gilmar', texto: 'Prova entregue. Seja qual for a nota, amanhã tem fila. A fila não lê boletim.', gesto: 'sim' },
       { quem: 'ro', texto: 'O ato 2 acabou. O que vem agora é maior, mais quente e tem hospital no meio. Dorme.', expr: 'neutro' },
       { quem: 'vandeco', texto: 'Passando ou não, agora você já viu coisa que eu só vi em 2003. Isso não sai do currículo.', expr: 'sorriso' },
     ],

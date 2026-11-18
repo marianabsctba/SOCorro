@@ -24,8 +24,9 @@ export const DIAS_15_21: Dia[] = [
       { quem: 'brenda', texto: 'A regra veio crítica! Eu respeito a regra.', gesto: 'cintura' },
       { quem: 'ro', texto: 'Se tudo é P1, nada é P1. Quando o hospital pegar fogo, vai estar na fila atrás da impressora da Tabajara.' },
       { quem: 'pamela', texto: 'Eu sempre ajusto a prioridade pelo ativo e escrevo o motivo.', expr: 'neutro' },
-      { quem: 'gilmar', texto: 'Alguém deveria fazer isso. Anota aí: criar processo de ajuste de prioridade.', gesto: 'apontar' },
-      { quem: 'ro', texto: 'Ela acabou de descrever o processo, Gilmar.' },
+      { quem: 'gilmar', texto: 'Ótima ideia. Vou apresentar na reunião de segunda como iniciativa da coordenação.', gesto: 'apontar' },
+      { quem: 'ro', texto: 'Com o nome dela no slide, Gilmar.' },
+      { quem: 'gilmar', texto: 'No rodapé. Fonte 8. É o padrão do template.', expr: 'neutro' },
     ],
     fila: { quantidade: 6 },
     missoes: [
@@ -35,7 +36,7 @@ export const DIAS_15_21: Dia[] = [
         enunciado: 'Dê a prioridade certa para os casos que a Brenda marcou todos como P1.',
         perguntas: [
           {
-            p: 'Regra de severidade **crítica** "Mimikatz detectado" num servidor de homologação desligado da rede, que a equipe de pentest contratada usa, durante a janela do teste aprovada.',
+            p: 'Regra de severidade **crítica** "Mimikatz detectado" num servidor de homologação, numa rede de laboratório isolada que a equipe de pentest contratada usa, durante a janela do teste aprovada.',
             opcoes: ['Baixa prioridade (P4), registrando a janela aprovada como evidência', 'P1, porque Mimikatz é crítico', 'P2, por precaução', 'Fechar sem registrar'],
             certa: 0,
             explicacao: 'A detecção é real, mas é benigna e esperada: pentest autorizado, em ambiente isolado, com janela aprovada. A severidade da regra não muda o contexto. Registrar a autorização é o que protege você.',
@@ -73,7 +74,7 @@ export const DIAS_15_21: Dia[] = [
     titulo: 'Base64 com sotaque de UTF-16',
     resumo: 'PowerShell com -EncodedCommand: o que é, por que é suspeito e como ler sem executar.',
     aula: aula(
-      'O PowerShell aceita o script inteiro em base64 pelo parâmetro `-EncodedCommand` (ou abreviações como `-enc`, `-e`, `-ec`). O detalhe que todo analista precisa decorar: o texto é codificado em **UTF-16LE** antes do base64. Por isso o base64 de comando PowerShell tem cara de `SQBFAFgA...`, com muitos `A` alternados: são os bytes zero do UTF-16.',
+      'O PowerShell aceita o script inteiro em base64 pelo parâmetro `-EncodedCommand` (ou abreviações como `-enc`, `-e`, `-ec`). O detalhe que todo analista precisa decorar: o texto é codificado em **UTF-16LE** antes do base64. Por isso o base64 de comando PowerShell tem cara de `SQBFAFgA...` (que é `IEX`), cheio de `A`: são os bytes zero que o UTF-16LE coloca depois de cada letra comum.',
       'Os parâmetros que costumam vir junto: `-NoP` (NoProfile), `-W Hidden` (janela oculta), `-NonI` (não interativo), `-Exec Bypass` (ignora a política de execução). Nenhum deles é malicioso sozinho, e ferramentas legítimas de gerenciamento também usam `-EncodedCommand`. O que pesa é o conjunto: processo pai estranho, usuário comum, conteúdo que baixa e executa algo da internet. ATT&CK: T1059.001 (PowerShell) e T1027 (ofuscação).',
       'Para decodificar no Canivete: **base64** e depois **utf16le**. Nunca rode o comando para ver o que ele faz. Se o resultado tiver outra camada (outro base64, compressão, string invertida), continue decodificando. Procure URL, domínio, IP, nome de arquivo e caminho: esses viram IOCs no ticket, sempre "defangados" (`hxxp://`, `[.]`) para ninguém clicar sem querer.',
       'Do lado das fontes, o **evento 4104** (Script Block Logging, no log Microsoft-Windows-PowerShell/Operational) registra o script já decodificado, e o 4103 registra módulos. Sysmon 1 e o 4688 (com linha de comando habilitada) mostram a linha de comando original. Se o cliente não tem 4104 ligado, recomende: é de graça e já salvou muita madrugada.',
@@ -83,7 +84,7 @@ export const DIAS_15_21: Dia[] = [
       { quem: 'ro', texto: 'Anota a data. Isso não acontece todo ano.', expr: 'sorriso' },
       { quem: 'kevin', texto: 'Eu ia copiar e colar o comando no meu PowerShell pra ver o que fazia.', gesto: 'ombros' },
       { quem: 'vandeco', texto: 'Garoto, isso é igual cheirar o frasco pra ver se é veneno. Decodifica no Canivete. Lê. Não roda.', expr: 'bravo' },
-      { quem: 'vandeco', texto: 'Em 2003 ninguém codificava nada. O vírus vinha escrito "SOU UM VÍRUS". Era mais honesto.', gesto: 'pensar' },
+      { quem: 'vandeco', texto: 'No meu tempo o vírus pelo menos se apresentava: derrubava as letras da tela, tocava musiquinha. Era mais honesto.', gesto: 'pensar' },
     ],
     fila: { quantidade: 7 },
     missoes: [
@@ -121,7 +122,7 @@ export const DIAS_15_21: Dia[] = [
       { quem: 'gilmar', texto: 'Eu ouvi isso.', expr: 'bravo' },
       { quem: 'vandeco', texto: 'Era um elogio, chefe. Triângulo é uma planilha com ambição.', gesto: 'ombros' },
       { quem: 'keyla', texto: 'Minha meta é escrever uma regra no topo da pirâmide.' },
-      { quem: 'ro', texto: 'Comece saindo do porão, Keyla. Sua regra de ontem era um hash.' },
+      { quem: 'ro', texto: 'Comece saindo do porão, Keyla. A V7 ainda tem uma lista de hash de 2021 lá dentro.' },
     ],
     fila: { quantidade: 7 },
     missoes: [
@@ -175,11 +176,11 @@ export const DIAS_15_21: Dia[] = [
       'Resposta típica: rate limiting por IP e por conta, desafio para clientes suspeitos, bloqueio do padrão de user-agent, **reset de senha e encerramento de sessão** das contas que tiveram sucesso a partir do padrão do bot, e aviso ao titular. No Vigia: `url=/conta/login status=401 | contar por user_agent | ordenar -total` acha a assinatura do robô.',
     ),
     chegada: [
-      { quem: 'narrador', texto: 'Sexta-feira, 22h. A Panificadora Migalha de Byte anunciou sonho de creme com 70% de desconto. O e-commerce recebeu mais visitas que o site da Receita em maio.' },
+      { quem: 'narrador', texto: 'Véspera de Black Friday, 22h. A Panificadora Migalha de Byte antecipou o sonho de creme com 70% de desconto. O e-commerce recebeu mais visitas que o site da Receita em maio.' },
       { quem: 'chat', texto: 'Padaria (TI): está tudo lento, mas está vendendo! Por favor, não bloqueiem NADA. Nada. É Black Friday.' },
       { quem: 'gilmar', texto: 'Plano de guerra: ninguém sai, pizza por conta da empresa, e o Tomatinho fica no modo turbo.', gesto: 'cintura' },
       { quem: 'ro', texto: 'A pizza é do mesmo fornecedor do ano passado?', expr: 'neutro' },
-      { quem: 'gilmar', texto: 'É a de calabresa com ketchup. Licitação.' },
+      { quem: 'gilmar', texto: 'É a de calabresa com ketchup. Venceu a cotação de menor preço.' },
       { quem: 'nildo', texto: 'Aqui de Recife a gente tá vendo o mesmo tráfego, visse? Se precisar de ajuda é só chamar o SOC de verdade.', gesto: 'acenar', expr: 'sorriso' },
       { quem: 'ro', texto: 'O Nildo liga toda Black Friday só para dizer isso.' },
     ],
@@ -188,13 +189,13 @@ export const DIAS_15_21: Dia[] = [
       {
         tipo: 'siem',
         titulo: 'Quem não compra sonho',
-        enunciado: 'O WAF da padaria registrou a primeira hora da madrugada de Black Friday. No meio de clientes reais, tem um robô testando senha vazada. Descubra qual conta o robô conseguiu acessar.',
+        enunciado: 'O WAF da padaria registrou as primeiras horas da promoção. No meio de clientes reais, tem um robô testando senha vazada. Descubra qual conta o robô conseguiu acessar.',
         registros: wafDia18(),
         pergunta: 'Qual conta teve login bem-sucedido (200) feito pelo robô de credential stuffing?',
         resposta: 'regina.prado@exemplo.com.br',
         gabarito: 'url=/conta/login status=200 user_agent=*Firefox/45.0* | tabela hora,usuario,ip_origem,user_agent',
         dica: 'Primeiro ache a assinatura do robô: `url=/conta/login status=401 | contar por user_agent | ordenar -total`. Depois procure sucesso com aquele user-agent usando curinga: `url=/conta/login status=200 user_agent=*Firefox/45.0*`.',
-        explicacao: 'O robô usou 25 IPs de vários países, mas o mesmo user-agent de um Firefox de 2016, e foi direto no login, sem passar por produto nem carrinho. Em 70 tentativas falhas, uma deu certo: `regina.prado@exemplo.com.br`, às 01:13. Ação: encerrar a sessão, forçar troca de senha, avisar a titular e pedir rate limiting e desafio para aquele padrão. Sem bloquear a padaria inteira, como a TI pediu com tanto carinho.',
+        explicacao: 'O robô usou 23 IPs de vários países, mas o mesmo user-agent de um Firefox de 2016 rodando em Windows 7, e foi direto no login, sem passar por produto nem carrinho. Em 70 tentativas falhas, uma deu certo: `regina.prado@exemplo.com.br`, às 01:13 UTC (22:13 em Brasília). Ação: encerrar a sessão, forçar troca de senha, avisar a titular e pedir rate limiting e desafio para aquele padrão. Sem bloquear a padaria inteira, como a TI pediu com tanto carinho.',
       },
     ],
     saida: [
@@ -259,7 +260,7 @@ export const DIAS_15_21: Dia[] = [
             texto: 'Pedir a senha para "conferir se é forte o suficiente".',
             reacao: [
               { quem: 'telefone', texto: 'Dr. Leôncio: É Pé de Pano mais o... espera. O banco disse que nunca pede senha. Vocês pedem?' },
-              { quem: 'ro', texto: 'Ele estava certo pela primeira vez na vida e você estava errado. Nunca, jamais, em hipótese nenhuma, a senha do cliente.', expr: 'bravo' },
+              { quem: 'ro', texto: 'Pela primeira vez na vida o Dr. Leôncio desconfiou de alguém, e foi do SOC. Nunca, jamais, em hipótese nenhuma, a senha do cliente.', expr: 'bravo' },
             ],
             efeitos: { reputacao: -20, sanidade: -10 },
           },
@@ -321,7 +322,7 @@ export const DIAS_15_21: Dia[] = [
             p: 'Qual campo prova que foi o documento que disparou o PowerShell?',
             opcoes: ['ParentImage e ParentCommandLine, que mostram o Word abrindo Apolice_Renovacao_2026.docm', 'CurrentDirectory', 'IntegrityLevel', 'Computer'],
             certa: 0,
-            explicacao: 'ParentImage mostra o pai (Word) e ParentCommandLine mostra qual arquivo ele tinha aberto. A extensão .docm indica documento com macro habilitada.',
+            explicacao: 'ParentImage mostra o pai (Word) e ParentCommandLine mostra qual arquivo ele tinha aberto. A extensão .docm é o formato do Word que aceita macro, e o arquivo veio da pasta Downloads.',
           },
           {
             p: 'Qual técnica do MITRE ATT&CK descreve melhor a entrada desse ataque?',
@@ -374,12 +375,12 @@ export const DIAS_15_21: Dia[] = [
         resposta: '194.87.45.12',
         gabarito: 'evento=3 processo=*\\Temp\\* | tabela hora,host,processo,ip_destino,porta_destino',
         dica: 'Veja o arquivo nascendo com `evento=11 arquivo_alvo=*.exe`. Depois procure conexões (evento 3) de processo rodando da Temp: `evento=3 processo=*\\Temp\\* | tabela hora,host,processo,ip_destino`.',
-        explicacao: 'A sequência no NB-RH-007: às 10:41:02 o Outlook grava `curriculo_ana_2026.exe` na Temp (11); 7 segundos depois ele executa com o Outlook como pai (1); consulta `rh-vagas-curitiba[.]top` (22); conecta em `194.87.45.12:443` (3) e cria a chave Run "AtualizadorCurriculo" (13). Tudo em 13 segundos. A chave Run do OneDrive é ruído normal. Ticket com a cadeia inteira, IOCs defangados e pedido de isolamento.',
+        explicacao: 'A sequência no NB-RH-007: às 10:41:02 UTC o Outlook grava `curriculo_ana_2026.exe` na Temp (11); 7 segundos depois ele executa com o Outlook como pai (1); consulta `rh-vagas-curitiba[.]top` (22); conecta em `194.87.45.12:443` (3) e cria a chave Run "AtualizadorCurriculo" (13). Tudo em 13 segundos. A chave Run do OneDrive é ruído normal. Ticket com a cadeia inteira, IOCs defangados e pedido de isolamento.',
       },
     ],
     saida: [
       { quem: 'gilmar', texto: 'Treze segundos do arquivo à persistência. Treze! O Tomatinho nem esquentou.', gesto: 'cintura', expr: 'surpresa' },
-      { quem: 'vandeco', texto: 'O atacante tem MTTR melhor que o nosso, chefe. Fica a reflexão.' },
+      { quem: 'vandeco', texto: 'O atacante foi mais rápido que o nosso MTTA, chefe. Fica a reflexão.' },
     ],
   },
 ];

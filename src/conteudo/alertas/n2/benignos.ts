@@ -1,6 +1,6 @@
 // Falsos positivos e benignos verdadeiros de N2: parece ataque, mas o contexto explica.
 import type { ModeloAlerta } from '../../tipos';
-import { js, HORA, MADRUGADA, DATA, IP_EXT, IP_INT, U_TAB, U_PREF, U_HOSP, U_COOP, U_PAD, GMUD } from './comum';
+import { js, HORA, MADRUGADA, DATA, IP_EXT, U_TAB, U_PREF, U_HOSP, U_COOP, U_PAD, GMUD, IP_INS, IP_TAB } from './comum';
 
 export const N2_RUIDO: ModeloAlerta[] = [
   {
@@ -55,7 +55,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
       'Escopo inclui "ataques ao Kerberos do domínio prefeitura.local" e a origem {ip} é a máquina do pentester listada na carta.',
       'A Insônia foi avisada por e-mail formal com a janela e os IPs.',
     ],
-    vars: { ip: ['10.30.99.10', '10.30.99.11'], data: DATA, hora: HORA },
+    vars: { ip: ['10.20.99.10', '10.20.99.11'], data: DATA, hora: HORA },
     veredito: 'bp',
     justificativas: js(
       0,
@@ -78,13 +78,13 @@ export const N2_RUIDO: ModeloAlerta[] = [
     mitre: 'T1569.002',
     titulo: 'Serviço PSEXESVC criado em {host}',
     logs: [
-      '{data} {hora} {host} EventID=4624 LogonType=3 Account=adm.claudio.portela SourceIp=10.20.1.5 AuthPackage=Kerberos',
+      '{data} {hora} {host} EventID=4624 LogonType=3 Account=adm.claudio.portela SourceIp=10.10.1.5 AuthPackage=Kerberos',
       '{data} {hora} +2s {host} EventID=7045 ServiceName=PSEXESVC ImagePath=%SystemRoot%\\PSEXESVC.exe Account=LocalSystem',
       '{data} {hora} +5s {host} Sysmon 1 | Image=msiexec.exe | ParentImage=PSEXESVC.exe | Resumo do EDR: instalação silenciosa do agente de inventário corporativo',
     ],
     contexto: [
       'GMUD-{gmud} aprovada: "Implantar agente de inventário em 40 servidores via PsExec", executor claudio.portela, hoje das 19h às 23h.',
-      '10.20.1.5 é o servidor de salto (jump server) da TI, de onde a GMUD diz que sairia.',
+      '10.10.1.5 é o servidor de salto (jump server) da TI, de onde a GMUD diz que sairia.',
       'O pacote instalado tem o mesmo hash publicado no repositório interno.',
     ],
     vars: { host: ['TAB-APP03', 'TAB-SQL02', 'TAB-WEB01'], gmud: GMUD, data: DATA, hora: ['19:12:40', '20:31:05', '21:47:22'] },
@@ -111,15 +111,15 @@ export const N2_RUIDO: ModeloAlerta[] = [
     titulo: 'Ferramenta de acesso remoto iniciou sessão em {host}',
     logs: [
       '{data} {hora} {host} Sysmon 1 | Image=SuporteJaAgent.exe | ParentImage=services.exe | Resumo do EDR: agente de RMM assinado iniciou sessão de controle remoto',
-      '{data} {hora} {host} Sysmon 3 | Image=SuporteJaAgent.exe | DestinationHost=relay.suporteja.example | DestinationPort=443',
+      '{data} {hora} {host} Sysmon 3 | Image=SuporteJaAgent.exe | DestinationHostname=relay.suporteja.example | DestinationPort=443',
       'Guarita EDR: agente instalado em todos os 42 PDVs desde 2024',
     ],
     contexto: [
       'Contrato com a SuporteJá Sistemas para manutenção dos PDVs, com acesso remoto previsto em cláusula.',
-      'Chamado do fornecedor aberto às {hora}: "PDV da loja {loja} não imprime cupom", com o nome do técnico.',
+      'Chamado do fornecedor aberto às {hora}: "PDV {host} não imprime cupom", com o nome do técnico.',
       'A gerente da loja confirmou por telefone que pediu o suporte.',
     ],
-    vars: { host: ['PAD-LJ02-CX1', 'PAD-LJ07-CX2', 'PAD-LJ04-CX1'], loja: ['02', '04', '07'], data: DATA, hora: HORA },
+    vars: { host: ['PAD-LJ02-CX1', 'PAD-LJ07-CX2', 'PAD-LJ04-CX1'], data: DATA, hora: HORA },
     veredito: 'bp',
     justificativas: js(
       1,
@@ -150,7 +150,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
       'Desde então: 9.840 disparos, todos com 0x12.',
       '0x11 é AES128 e 0x12 é AES256; RC4 é 0x17.',
     ],
-    vars: { usuario: ['pamela.n1', 'kevin.n1', 'brenda.n1', 'rosangela.n2'], ip: IP_INT, data: DATA, hora: HORA },
+    vars: { usuario: ['pamela.n1', 'kevin.n1', 'brenda.n1', 'rosangela.n2'], ip: IP_INS, data: DATA, hora: HORA },
     veredito: 'fp',
     justificativas: js(
       2,
@@ -206,11 +206,11 @@ export const N2_RUIDO: ModeloAlerta[] = [
     mitre: 'T1558.003',
     titulo: 'Ticket de serviço RC4 para svc_cotador',
     logs: [
-      '{data} {hora} DC01.tabajara.local EventID=4769 ServiceName=svc_cotador TicketEncryptionType=0x17 (RC4) Client=10.20.30.15 Account=svc_integracao',
+      '{data} {hora} DC01.tabajara.local EventID=4769 ServiceName=svc_cotador TicketEncryptionType=0x17 (RC4) Client=10.10.30.15 Account=svc_integracao',
       'Vigia SIEM: 1 serviço, 1 origem, média de 96 pedidos por dia há 3 anos, o mesmo padrão toda hora',
     ],
     contexto: [
-      'CMDB: 10.20.30.15 é o servidor do cotador de seguros de 2012, em Java antigo, que só fala RC4.',
+      'CMDB: 10.10.30.15 é o servidor do cotador de seguros de 2012, em Java antigo, que só fala RC4.',
       'Risco aceito formalmente pela diretoria até a migração (RISCO-{gmud}), com senha de 30 caracteres na svc_cotador.',
       'Nenhum outro serviço pedido por essa origem.',
     ],
@@ -236,20 +236,20 @@ export const N2_RUIDO: ModeloAlerta[] = [
     mitre: 'T1114.003',
     titulo: 'Regra de caixa de entrada encaminhando para fora na conta de {usuario}',
     logs: [
-      '{"CreationTime":"{data}T{hora}","Operation":"New-InboxRule","UserId":"{usuario}@tabajaraseguros.com.br","ClientIP":"192.0.2.10","Parameters":"ForwardTo={usuario}@tabajaravida.com.br; From=sinistros@tabajaraseguros.com.br"}',
-      'Lista de domínios internos da regra: tabajaraseguros.com.br (atualizada em 2021)',
+      '{"CreationTime":"{data}T{hora}","Operation":"New-InboxRule","UserId":"{usuario}@tabajara.exemplo","ClientIP":"192.0.2.10","Parameters":"ForwardTo={usuario}@tabajaravida.exemplo; From=sinistros@tabajara.exemplo"}',
+      'Lista de domínios internos da regra: tabajara.exemplo (atualizada em 2021)',
     ],
     contexto: [
-      'Tabajara Vida é a seguradora incorporada pela Tabajara em 2025; tabajaravida.com.br está no mesmo tenant como domínio aceito.',
+      'Tabajara Vida é a seguradora incorporada pela Tabajara em 2025; tabajaravida.exemplo está no mesmo tenant como domínio aceito.',
       'O logon veio do IP do escritório, dispositivo gerenciado, MFA ok.',
-      '{usuario} foi transferida para a Tabajara Vida e pediu para continuar recebendo os avisos de sinistro.',
+      '{usuario} mudou de área para a Tabajara Vida e pediu para continuar recebendo os avisos de sinistro.',
     ],
     vars: { usuario: U_TAB, data: DATA, hora: HORA },
     veredito: 'fp',
     justificativas: js(
       3,
       'Encaminhamento para outro domínio é sempre BEC.',
-      'É benigno verdadeiro porque a usuária pediu.',
+      'É benigno verdadeiro porque a pessoa pediu.',
       'Resetar a senha e remover a regra por precaução.',
       'O destino é um domínio aceito do próprio tenant que a regra não conhece por ter lista desatualizada; nada saiu da empresa: falso positivo.',
     ),
@@ -267,7 +267,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
     mitre: 'T1528',
     titulo: 'Consentimento administrativo para app "Agenda de Salas Cirúrgicas"',
     logs: [
-      '{"activityDateTime":"{data}T{hora}","activityDisplayName":"Consent to application","initiatedBy":"adm.ti@hsptadeu.org.br","target":"Agenda de Salas Cirúrgicas","publisherVerified":true,"consentType":"AllPrincipals","scopes":"Calendars.ReadWrite User.Read.All"}',
+      '{"activityDateTime":"{data}T{hora}","activityDisplayName":"Consent to application","initiatedBy":"adm.ti@santapaciencia.exemplo","target":"Agenda de Salas Cirúrgicas","publisherVerified":true,"consentType":"AllPrincipals","scopes":"Calendars.ReadWrite User.Read.All"}',
       '{"activityDisplayName":"Add service principal","target":"Agenda de Salas Cirúrgicas","replyUrl":"hxxps://app.agendasalas.example/callback"}',
     ],
     contexto: [
@@ -297,7 +297,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
     mitre: 'T1078.004',
     titulo: 'Chave de acesso do usuário deploy-site usada de ASN novo',
     logs: [
-      '{"eventTime":"{data}T{hora}Z","eventName":"PutObject","userIdentity":"IAMUser/deploy-site","sourceIPAddress":"{ip}","bucket":"pao-de-lo-site","userAgent":"pipeline-ci/actions"}',
+      '{"eventTime":"{data}T{hora}Z","eventName":"PutObject","userIdentity":"IAMUser/deploy-site","sourceIPAddress":"{ip}","bucket":"migalha-site","userAgent":"pipeline-ci/actions"}',
       '{"eventTime":"{data}T{hora}Z","eventName":"CreateInvalidation","userIdentity":"IAMUser/deploy-site","sourceIPAddress":"{ip}"}',
     ],
     contexto: [
@@ -326,9 +326,9 @@ export const N2_RUIDO: ModeloAlerta[] = [
     fonte: 'Nuvem',
     severidade: 'crítica',
     mitre: 'T1530',
-    titulo: 'Bucket pao-de-lo-cardapio ficou público para leitura',
+    titulo: 'Bucket migalha-cardapio ficou público para leitura',
     logs: [
-      '{"eventTime":"{data}T{hora}Z","eventName":"PutBucketPolicy","userIdentity":"IAMUser/edu.ti","bucket":"pao-de-lo-cardapio","policy":"Effect=Allow Principal=* Action=s3:GetObject"}',
+      '{"eventTime":"{data}T{hora}Z","eventName":"PutBucketPolicy","userIdentity":"IAMUser/edu.ti","bucket":"migalha-cardapio","policy":"Effect=Allow Principal=* Action=s3:GetObject"}',
       'Inventário do bucket: 312 imagens .jpg e .webp do cardápio, nenhum outro tipo de arquivo',
     ],
     contexto: [
@@ -367,7 +367,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
       'O domínio pai é do fornecedor e tem 11 anos de registro.',
       'O padrão aparece em 100% das estações, não só em {host}.',
     ],
-    vars: { host: ['TAB-SIN-0412', 'TAB-ATD-0921'], ip: IP_INT, data: DATA, hora: HORA },
+    vars: { host: ['TAB-SIN-0412', 'TAB-ATD-0921'], ip: IP_TAB, data: DATA, hora: HORA },
     veredito: 'fp',
     justificativas: js(
       0,
@@ -422,12 +422,12 @@ export const N2_RUIDO: ModeloAlerta[] = [
     mitre: 'T1567.002',
     titulo: 'HSP-BKP01 enviou 240 GB para a internet',
     logs: [
-      'CEF:0|Firewall|NGFW|9.1|traffic|allow|5|src=10.40.2.10 dst=198.51.100.200 dpt=443 out=257698037760 app=backup-nuvem start={data} {hora}',
-      'Vigia SIEM: volume semelhante todo domingo nos últimos 6 meses, destino sempre o mesmo',
+      'CEF:0|Firewall|NGFW|9.1|traffic|allow|5|src=10.30.2.10 dst=198.51.100.210 dpt=443 out=257698037760 app=backup-nuvem start={data} {hora}',
+      'Vigia SIEM: volume semelhante toda semana nos últimos 6 meses, destino sempre o mesmo',
     ],
     contexto: [
-      'CMDB: HSP-BKP01 é o servidor de backup; 198.51.100.200 é o cofre do provedor de backup contratado (cópia offsite da regra 3-2-1).',
-      'Janela de backup completo: domingo das 00h às 06h.',
+      'CMDB: HSP-BKP01 é o servidor de backup; 198.51.100.210 é o cofre do provedor de backup contratado (cópia offsite da regra 3-2-1).',
+      'Janela do backup completo semanal: madrugada, das 00h às 06h.',
       'Os dados saem cifrados pelo próprio agente de backup antes do envio.',
     ],
     vars: { data: DATA, hora: MADRUGADA },
@@ -452,8 +452,8 @@ export const N2_RUIDO: ModeloAlerta[] = [
     mitre: 'T1557',
     titulo: 'Mesmo token de sessão de {usuario} usado de duas origens',
     logs: [
-      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@agropastoralo.coop.br","ipAddress":"198.51.100.33","sessionId":"5e2b-90aa-11c7","deviceDetail":"iOS, Outlook, gerenciado, compliant"}',
-      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@agropastoralo.coop.br","ipAddress":"2001:db8:4a:7::21","sessionId":"5e2b-90aa-11c7","deviceDetail":"iOS, Outlook, gerenciado, compliant"}',
+      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@pastoralo.exemplo","ipAddress":"198.51.100.33","sessionId":"5e2b-90aa-11c7","deviceDetail":"iOS, Outlook, gerenciado, compliant"}',
+      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@pastoralo.exemplo","ipAddress":"2001:db8:4a:7::21","sessionId":"5e2b-90aa-11c7","deviceDetail":"iOS, Outlook, gerenciado, compliant"}',
       'Enriquecimento: as duas origens pertencem à mesma operadora móvel, na mesma cidade',
     ],
     contexto: [
@@ -461,7 +461,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
       'Nenhuma ação estranha na caixa: só sincronização normal.',
       'A regra compara só o endereço IP, sem olhar dispositivo nem ASN.',
     ],
-    vars: { usuario: U_COOP, data: DATA, hora: HORA },
+    vars: { usuario: ['tiago.silo'], data: DATA, hora: HORA },
     veredito: 'fp',
     justificativas: js(
       1,
@@ -483,8 +483,8 @@ export const N2_RUIDO: ModeloAlerta[] = [
     mitre: 'T1098',
     titulo: 'Membro adicionado ao grupo Administradores local de HSP-PACS01',
     logs: [
-      '{data} {hora} HSP-PACS01 EventID=4732 Group=Administrators Member=HSPADEU\\fornecedor.pacs SubjectAccount=adm.infra',
-      '{data} {hora} DC01.hsptadeu.local EventID=4728 Group=GG_PACS_Fornecedor Member=fornecedor.pacs SubjectAccount=adm.infra',
+      '{data} {hora} HSP-PACS01 EventID=4732 Group=Administrators Member=HSP\\fornecedor.pacs SubjectAccount=adm.infra',
+      '{data} {hora} DC01.hsp.local EventID=4728 Group=GG_PACS_Fornecedor Member=fornecedor.pacs SubjectAccount=adm.infra',
     ],
     contexto: [
       'GMUD-{gmud} aprovada: "Acesso temporário do fornecedor do PACS para atualização da versão, válido por 48 h", executor adm.infra.',
@@ -519,7 +519,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
       'Permissões do grupo: gerenciar filas de impressão das escolas municipais, sem direito em servidores',
     ],
     contexto: [
-      'Chamado {gmud}: "Professora nova da escola Monteiro Lobato precisa liberar a fila de impressão".',
+      'Chamado {gmud}: "{usuario} começou a dar aula numa escola municipal e precisa liberar a fila de impressão".',
       'O grupo não é membro de nenhum grupo privilegiado do domínio.',
       'A regra disparou 214 vezes este mês, sempre por grupos com "Admin" no nome sem privilégio real.',
     ],
@@ -533,18 +533,18 @@ export const N2_RUIDO: ModeloAlerta[] = [
     ),
     explicacao:
       'Privilégio é o que o grupo **pode fazer**, não o nome dele. Regras de grupos privilegiados devem usar uma lista explícita (Domain Admins, Enterprise Admins, Administrators, Account Operators, Backup Operators, grupos com direitos em servidores críticos) ou o SID. Sugira trocar a condição por essa lista e cobrir também grupos aninhados.',
-    piada: 'A professora agora é administradora. Das impressoras. Que não têm papel desde março.',
+    piada: 'Agora a escola tem mais uma pessoa administradora. Das impressoras. Que estão sem papel desde março.',
     peso: 2,
   },
   {
     id: 'n2-fp-certutil-crl-interna',
     nivel: 'N2',
     cliente: 'tabajara',
-    regra: 'LOLBIN_CERTUTIL_COM_URL',
+    regra: 'LOLBIN_CERTUTIL_DOWNLOAD',
     fonte: 'EDR',
     severidade: 'alta',
     mitre: 'T1105',
-    titulo: 'certutil.exe acessando URL em {host}',
+    titulo: 'certutil.exe baixando arquivo de URL em {host}',
     logs: [
       '{data} {hora} {host} Sysmon 1 | Image=certutil.exe | ParentImage=gpscript.exe | Resumo do EDR: verificação da cadeia de certificado e da lista de revogação na AC interna (hxxp://pki.tabajara.local/crl)',
       'Guarita EDR: nenhum arquivo executável gravado, nenhum filho criado',
@@ -553,7 +553,7 @@ export const N2_RUIDO: ModeloAlerta[] = [
     contexto: [
       'GPO "Validar certificados VPN" executa a verificação no logon.',
       'pki.tabajara.local é a autoridade certificadora interna, cadastrada no CMDB.',
-      'A regra dispara para qualquer certutil com URL, sem olhar o destino nem a ação.',
+      'A regra trata qualquer certutil com URL como download, sem olhar o destino nem a ação.',
     ],
     vars: { host: ['TAB-SIN-0412', 'TAB-JUR-0107', 'TAB-ATD-0921'], data: DATA, hora: HORA },
     veredito: 'fp',
@@ -603,11 +603,11 @@ export const N2_RUIDO: ModeloAlerta[] = [
     id: 'n2-fp-rundll32-painel-controle',
     nivel: 'N2',
     cliente: 'cooperativa',
-    regra: 'LOLBIN_RUNDLL32_EXECUCAO',
+    regra: 'LOLBIN_RUNDLL32_ABUSO',
     fonte: 'EDR',
     severidade: 'média',
     mitre: 'T1218.011',
-    titulo: 'rundll32.exe executado em {host}',
+    titulo: 'Abuso de rundll32.exe em {host}',
     logs: [
       '{data} {hora} {host} Sysmon 1 | Image=rundll32.exe | ParentImage=explorer.exe | Resumo do EDR: abertura das propriedades de impressora (printui.dll, função padrão do Windows)',
       'Guarita EDR: DLL assinada pela Microsoft em System32, sem rede, sem filho',
@@ -632,14 +632,15 @@ export const N2_RUIDO: ModeloAlerta[] = [
     id: 'n2-fp-tarefa-atualizador',
     nivel: 'N2',
     cliente: 'tabajara',
-    regra: 'TAREFA_AGENDADA_CRIADA',
+    regra: 'TAREFA_AGENDADA_FORA_DE_PROGRAM_FILES',
     fonte: 'SIEM',
     severidade: 'média',
     mitre: 'T1053.005',
-    titulo: 'Tarefa agendada criada em {host}',
+    titulo: 'Tarefa agendada com executável fora de Program Files em {host}',
     logs: [
       '{data} {hora} {host} EventID=4698 TaskName=\\NavegadorCorporativoUpdateTaskMachineUA Author=SYSTEM Action=C:\\Program Files (x86)\\NavegadorCorp\\Update\\NavUpdate.exe',
       'Guarita EDR: NavUpdate.exe assinado pelo fabricante do navegador homologado, prevalência 100%',
+      'Lógica da regra: Action não começa com "C:\\Program Files\\" (o caminho com "(x86)" fica de fora da exceção)',
     ],
     contexto: [
       'O navegador corporativo foi atualizado ontem para a nova versão, que recria a tarefa de atualização.',
@@ -651,25 +652,25 @@ export const N2_RUIDO: ModeloAlerta[] = [
       2,
       'Persistência maliciosa, isolar.',
       'Benigno verdadeiro de pentest.',
-      'Tarefa criada pelo SYSTEM durante a atualização do navegador homologado, com executável assinado em Program Files e presente em todo o parque: atividade normal de software e falso positivo.',
+      'O executável está em Program Files (x86), assinado, criado pelo SYSTEM na atualização do navegador homologado e presente em todo o parque; a regra só não reconhece o caminho com (x86): falso positivo.',
     ),
     explicacao:
-      'Tarefa agendada é mecanismo de persistência, mas todo atualizador também usa. Avalie **caminho** (Program Files exige administrador), **assinatura**, **autor** e **prevalência**. Uma tarefa que aparece em todas as máquinas ao mesmo tempo, depois de uma atualização conhecida, é rotina; uma tarefa única em pasta pública é o que importa.',
+      'Aqui a regra errou o próprio critério: o executável está em `Program Files (x86)`, que a exceção não cobre por um detalhe de texto. Tarefa agendada é mecanismo de persistência, mas todo atualizador também usa. Avalie **caminho** (Program Files exige administrador), **assinatura**, **autor** e **prevalência**. Uma tarefa que aparece em todas as máquinas ao mesmo tempo, depois de uma atualização conhecida, é rotina; uma tarefa única em pasta pública é o que importa.',
     piada: 'O navegador se atualiza mais que o currículo do Jefferson, e olha que ele presta concurso todo mês.',
   },
   {
     id: 'n2-fp-webshell-scanner-404',
     nivel: 'N2',
     cliente: 'prefeitura',
-    regra: 'IIS_POST_ARQUIVO_ASPX_SUSPEITO',
+    regra: 'IIS_WEBSHELL_ASPX_EM_USO',
     fonte: 'WAF',
     severidade: 'crítica',
     mitre: 'T1505.003',
     titulo: 'POST em arquivos .aspx com nome de webshell no portal',
     logs: [
       '#Fields: date time s-ip cs-method cs-uri-stem s-port c-ip cs(User-Agent) sc-status sc-bytes',
-      '{data} {hora} 10.30.1.15 POST /shell.aspx 443 {ip} Mozilla/5.0 404 1245',
-      '{data} {hora} +1s 10.30.1.15 POST /cmd.aspx 443 {ip} Mozilla/5.0 404 1245',
+      '{data} {hora} 10.20.0.80 POST /shell.aspx 443 {ip} Mozilla/5.0 404 1245',
+      '{data} {hora} +1s 10.20.0.80 POST /cmd.aspx 443 {ip} Mozilla/5.0 404 1245',
       'Vigia SIEM: 380 caminhos distintos, todos 404, mesmo tamanho de resposta, em 2 minutos',
     ],
     contexto: [
@@ -695,27 +696,28 @@ export const N2_RUIDO: ModeloAlerta[] = [
     id: 'n2-fp-wmi-inventario',
     nivel: 'N2',
     cliente: 'hospital',
-    regra: 'WMI_EVENT_SUBSCRIPTION_NOVA',
+    regra: 'WMI_PERSISTENCIA_EXECUCAO_DE_CODIGO',
     fonte: 'EDR',
     severidade: 'alta',
     mitre: 'T1546.003',
-    titulo: 'Assinatura de evento WMI permanente criada em {host}',
+    titulo: 'Persistência WMI com execução de código em {host}',
     logs: [
       '{data} {hora} {host} Sysmon 19 | WmiEventFilter criado | Name=InventarioHW_Agente | Namespace=root\\cimv2',
       '{data} {hora} {host} Sysmon 20 | WmiEventConsumer criado | Type=LogFileEventConsumer | Resumo do EDR: grava inventário de hardware em arquivo local',
       'Guarita EDR: criado por InvAgent.exe, assinado pelo fornecedor de gestão de ativos do hospital',
+      'Lógica da regra: qualquer Sysmon 19 ou 20, sem olhar o tipo do consumidor',
     ],
     contexto: [
       'O agente de inventário foi implantado ontem em 300 estações pela GMUD-{gmud}.',
       'O consumidor só grava em arquivo de log; não executa comando.',
-      '{usuario} nem sabe o que é WMI e está ocupada com a escala do plantão.',
+      '{usuario} nem sabe o que é WMI e só quer fechar a escala do plantão.',
     ],
     vars: { host: ['HSP-ENF-07', 'HSP-UTI-02', 'HSP-FAT-05'], usuario: U_HOSP, gmud: GMUD, data: DATA, hora: HORA },
     veredito: 'fp',
     justificativas: js(
       1,
       'Persistência WMI de malware, isolar a estação.',
-      'Assinatura WMI criada pelo agente de inventário assinado e implantado por GMUD, com consumidor que só grava log: ferramenta legítima e falso positivo.',
+      'Assinatura WMI do agente de inventário assinado, implantado por GMUD, com consumidor que só grava log e não executa nada: a regra acusou execução de código que não existe, falso positivo.',
       'Benigno verdadeiro de red team.',
     ),
     explicacao:
@@ -743,10 +745,10 @@ export const N2_RUIDO: ModeloAlerta[] = [
     veredito: 'fp',
     justificativas: js(
       0,
-      'O OneDrive instala por usuário em AppData e registra a chave Run no primeiro logon; binário assinado e igual ao do parque: falso positivo.',
+      'O OneDrive corporativo se instala por usuário em AppData e registra a chave Run no primeiro logon; o caminho é o padrão do produto, não "incomum", e o binário é assinado e igual ao do parque: falso positivo.',
       'Persistência em AppData é sempre maliciosa, isolar.',
       'Benigno verdadeiro de pentest autorizado.',
-      'Trocar a senha da usuária por precaução.',
+      'Trocar a senha de {usuario} por precaução.',
     ),
     explicacao:
       'AppData é suspeito, mas não é proibido: vários aplicativos legítimos se instalam por usuário ali. Por isso a regra precisa de **assinatura**, **prevalência** e **processo gravador**. Uma lista de permissão por caminho exato e assinante resolve o ruído sem cegar a detecção do malware que só imita o nome.',

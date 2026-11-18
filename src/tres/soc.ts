@@ -470,7 +470,7 @@ export function construir(site: Site): Sala {
   tomate.scale.y = 0.8;
   tomate.position.set(10.5, 0.81, -6.1);
   g.add(tomate);
-  const placaG = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.5), new THREE.MeshBasicMaterial({ map: cartaz(bravo ? ['COORDENAÇÃO', 'aqui a gente conversa', 'com o incidente'] : ['COORDENAÇÃO', 'Abriu ticket?', 'Então não aconteceu.'], '#ffffff', '#1b1b1b', 256, 96) }));
+  const placaG = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.5), new THREE.MeshBasicMaterial({ map: cartaz(bravo ? ['COORDENAÇÃO', 'aqui a gente conversa', 'com o incidente'] : ['COORDENAÇÃO', 'Não abriu ticket?', 'Então não aconteceu.'], '#ffffff', '#1b1b1b', 256, 96) }));
   placaG.position.set(ox0 + 1.6, 2.2, oz1 + 0.04);
   g.add(placaG);
 

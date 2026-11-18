@@ -80,7 +80,7 @@ export function proxyDia9(): Registro[] {
     ['internetbanking.bancoexemplo.com.br', 'Financeiro', '/login'],
     ['g1.globo.com', 'Notícias', '/pr/parana'],
     ['www.mercadolivre.com.br', 'Compras', '/ofertas'],
-    ['portal-corretora-parceira.com.br', 'Desconhecida', '/cotacao'],
+    ['portal-corretora-parceira.exemplo', 'Desconhecida', '/cotacao'],
   ];
   const out: Registro[] = [];
   for (let i = 0; i < 120; i++) {
@@ -128,7 +128,7 @@ function rotulo(r: ReturnType<typeof rng>, n: number): string {
 export function dnsDia10(): Registro[] {
   const r = rng(1010);
   const base = '2026-03-12T13:00:00';
-  const comuns = ['www.google.com', 'outlook.office365.com', 'login.microsoftonline.com', 'www.tabajaraseguros.com.br', 'wpad.tabajara.local', 'srv-arq-01.tabajara.local', 'api.whatsapp.net', 'g1.globo.com'];
+  const comuns = ['www.google.com', 'outlook.office365.com', 'login.microsoftonline.com', 'www.tabajara.exemplo', 'wpad.tabajara.local', 'srv-arq-01.tabajara.local', 'api.whatsapp.net', 'g1.globo.com'];
   const out: Registro[] = [];
   for (let i = 0; i < 110; i++) {
     const consulta = r.um(comuns);
@@ -147,7 +147,7 @@ export function dnsDia10(): Registro[] {
     out.push({ hora: hora('2026-03-12T14:20:00', k * 7), host: 'DT-ATEND-031', consulta: `${sub}.relatorio-sync.xyz`, tipo: 'TXT', dominio: 'relatorio-sync.xyz', tamanho_sub: sub.length });
   }
   // um TXT legítimo para não ficar fácil demais
-  for (let k = 0; k < 4; k++) out.push({ hora: hora(base, r.int(0, 4 * 3600)), host: 'SRV-ARQ-01', consulta: '_dmarc.tabajaraseguros.com.br', tipo: 'TXT', dominio: 'tabajaraseguros.com.br', tamanho_sub: 6 });
+  for (let k = 0; k < 4; k++) out.push({ hora: hora(base, r.int(0, 4 * 3600)), host: 'SRV-ARQ-01', consulta: '_dmarc.tabajara.exemplo', tipo: 'TXT', dominio: 'tabajara.exemplo', tamanho_sub: 6 });
   return porHora(out);
 }
 
@@ -156,7 +156,7 @@ export function firewallDia14(): Registro[] {
   const r = rng(1414);
   const base = '2026-03-18T00:00:00';
   const out: Registro[] = [];
-  const publicos = ['200.150.10.5', '200.150.10.6', '200.150.10.20'];
+  const publicos = ['192.0.2.5', '192.0.2.6', '192.0.2.20'];
   // tráfego permitido para os serviços publicados
   for (let i = 0; i < 60; i++) {
     out.push({ hora: hora(base, r.int(0, 86000)), acao: 'allow', ip_origem: ipExterno(r), ip_destino: r.um(publicos), porta_destino: r.um([443, 443, 443, 80, 25]), protocolo: 'TCP', regra: 'PUBLICADOS' });
@@ -171,7 +171,7 @@ export function firewallDia14(): Registro[] {
   for (let k = 0; k < 35; k++) out.push({ hora: hora('2026-03-18T04:00:00', k * 41), acao: 'deny', ip_origem: '186.215.40.99', ip_destino: r.um(publicos), porta_destino: 445, protocolo: 'TCP', regra: 'NEGA-TUDO' });
   // o achado: um IP, um destino, muitas portas diferentes em poucos segundos
   const portas = [21, 22, 23, 25, 53, 80, 110, 111, 135, 139, 143, 161, 389, 443, 445, 465, 587, 631, 993, 995, 1080, 1433, 1521, 1723, 2049, 2082, 3000, 3306, 3389, 5060, 5432, 5900, 5985, 6379, 8000, 8080, 8443, 8888, 9000, 9200, 10000, 27017];
-  portas.forEach((p, k) => out.push({ hora: hora('2026-03-18T02:17:00', k), acao: p === 443 || p === 80 ? 'allow' : 'deny', ip_origem: '103.77.21.9', ip_destino: '200.150.10.5', porta_destino: p, protocolo: 'TCP', regra: p === 443 || p === 80 ? 'PUBLICADOS' : 'NEGA-TUDO' }));
+  portas.forEach((p, k) => out.push({ hora: hora('2026-03-18T02:17:00', k), acao: p === 443 || p === 80 ? 'allow' : 'deny', ip_origem: '103.77.21.9', ip_destino: '192.0.2.5', porta_destino: p, protocolo: 'TCP', regra: p === 443 || p === 80 ? 'PUBLICADOS' : 'NEGA-TUDO' }));
   return porHora(out);
 }
 
@@ -238,17 +238,17 @@ export function sysmonDia21(): Registro[] {
 /** dia 26: pushes de MFA, com um bombardeio de madrugada */
 export function mfaDia26(): Registro[] {
   const r = rng(2626);
-  const base = '2026-04-01T07:00:00';
+  const base = '2026-04-01T10:00:00';
   const out: Registro[] = [];
   for (let i = 0; i < 70; i++) {
-    out.push({ hora: hora(base, r.int(0, 11 * 3600)), usuario: r.um(USUARIOS), app: r.um(['Outlook', 'VPN', 'Portal RH', 'Teams']), resultado: r.chance(0.9) ? 'aprovado' : r.um(['negado', 'sem_resposta']), ip_origem: r.um(['200.150.10.1', ipInterno(r)]), cidade: 'Curitiba' });
+    out.push({ hora: hora(base, r.int(0, 11 * 3600)), usuario: r.um(USUARIOS), app: r.um(['Outlook', 'VPN', 'Portal RH', 'Teams']), resultado: r.chance(0.9) ? 'aprovado' : r.um(['negado', 'sem_resposta']), ip_origem: r.um(['192.0.2.1', ipInterno(r)]), cidade: 'Curitiba' });
   }
   // alguém que esqueceu o celular na mesa e tem três pushes sem resposta: chato, mas normal
-  for (let k = 0; k < 3; k++) out.push({ hora: hora('2026-04-01T14:00:00', k * 200), usuario: 'bruno.carvalho', app: 'Outlook', resultado: 'sem_resposta', ip_origem: '200.150.10.1', cidade: 'Curitiba' });
-  // o bombardeio: senha certa, push atrás de push, até a pessoa ceder
+  for (let k = 0; k < 3; k++) out.push({ hora: hora('2026-04-01T17:00:00', k * 200), usuario: 'bruno.carvalho', app: 'Outlook', resultado: 'sem_resposta', ip_origem: '192.0.2.1', cidade: 'Curitiba' });
+  // o bombardeio: senha certa, push atrás de push, até a pessoa ceder (05:10 UTC é 02:10 em Brasília)
   for (let k = 0; k < 22; k++) {
-    out.push({ hora: hora('2026-04-01T02:10:00', k * 75 + r.int(0, 20)), usuario: 'juliana.santos', app: 'VPN', resultado: r.chance(0.6) ? 'negado' : 'sem_resposta', ip_origem: '77.91.124.56', cidade: 'Amsterdã' });
+    out.push({ hora: hora('2026-04-01T05:10:00', k * 75 + r.int(0, 20)), usuario: 'juliana.santos', app: 'VPN', resultado: r.chance(0.6) ? 'negado' : 'sem_resposta', ip_origem: '77.91.124.56', cidade: 'Amsterdã' });
   }
-  out.push({ hora: '2026-04-01T02:39:58Z', usuario: 'juliana.santos', app: 'VPN', resultado: 'aprovado', ip_origem: '77.91.124.56', cidade: 'Amsterdã' });
+  out.push({ hora: '2026-04-01T05:39:58Z', usuario: 'juliana.santos', app: 'VPN', resultado: 'aprovado', ip_origem: '77.91.124.56', cidade: 'Amsterdã' });
   return porHora(out);
 }

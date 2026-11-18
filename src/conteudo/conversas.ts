@@ -3,7 +3,7 @@ import type { PersonagemId } from './tipos';
 
 export const CONVERSAS: Record<PersonagemId, string[]> = {
   gilmar: [
-    'Abriu ticket? Então não aconteceu. Fechou ticket sem evidência? Então aconteceu duas vezes.',
+    'Não abriu ticket? Então não aconteceu. Fechou ticket sem evidência? Então aconteceu duas vezes.',
     'Meu timer de tomate marca 25 minutos. É o MTTR que eu sonho. Na vida real ele toca três vezes por alerta.',
     'O diretor perguntou por que a fila nunca zera. Eu respondi "porque a internet existe". Ele anotou.',
     'Se o cliente ligar bravo, fala devagar, repete o que ele disse e anota o horário. Funciona com cliente e com sogro.',

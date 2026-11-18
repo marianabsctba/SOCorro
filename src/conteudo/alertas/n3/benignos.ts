@@ -1,6 +1,6 @@
 // Falsos positivos e benignos verdadeiros de N3: alto nível, alto barulho, contexto decide.
 import type { ModeloAlerta } from '../../tipos';
-import { js, HORA, MADRUGADA, DATA3, IP_EXT, IP_INT, U_TAB, GMUD } from '../n2/comum';
+import { js, HORA, MADRUGADA, DATA3, IP_EXT, U_TAB, GMUD, IP_COOP } from '../n2/comum';
 
 export const N3_RUIDO: ModeloAlerta[] = [
   {
@@ -79,7 +79,7 @@ export const N3_RUIDO: ModeloAlerta[] = [
     logs: [
       '{data} {hora} DC01.tabajara.local EventID=4662 SubjectUserName=MSOL_7a1c0b ObjectType=domainDNS',
       'Properties: 1131f6aa-9c07-11d1-f79f-00c04fc2dcd2 (DS-Replication-Get-Changes) e 1131f6ad-9c07-11d1-f79f-00c04fc2dcd2 (DS-Replication-Get-Changes-All)',
-      'Origem: TAB-AADC01 (10.20.0.30) | padrão a cada 2 minutos',
+      'Origem: TAB-AADC01 (10.10.0.30) | padrão a cada 2 minutos',
     ],
     contexto: [
       'TAB-AADC01 é o servidor do Entra Connect, que sincroniza o hash das senhas com a nuvem.',
@@ -116,7 +116,7 @@ export const N3_RUIDO: ModeloAlerta[] = [
       'A Tabajara pediu que o SOC trate o exercício como real até o fim e reporte o tempo de detecção, sem bloquear.',
       'O ponto de contato do exercício confirmou por telefone que a ação é da equipe.',
     ],
-    vars: { ip: ['10.20.99.21', '10.20.99.22'], data: DATA3, hora: MADRUGADA },
+    vars: { ip: ['10.10.99.21', '10.10.99.22'], data: DATA3, hora: MADRUGADA },
     veredito: 'bp',
     justificativas: js(
       3,
@@ -242,7 +242,7 @@ export const N3_RUIDO: ModeloAlerta[] = [
       'O agente informa status a cada 5 minutos, como diz a documentação do produto.',
       'O padrão existe desde a implantação, em todos os hosts com agente.',
     ],
-    vars: { host: ['COOP-FIN-01', 'COOP-CONT-02', 'COOP-COMP-01'], ip: IP_INT, data: DATA3, hora: HORA },
+    vars: { host: ['COOP-FIN-01', 'COOP-CONT-02', 'COOP-COMP-01'], ip: IP_COOP, data: DATA3, hora: HORA },
     veredito: 'fp',
     justificativas: js(
       0,
@@ -294,8 +294,8 @@ export const N3_RUIDO: ModeloAlerta[] = [
     mitre: 'T1550.001',
     titulo: 'Token de {usuario} usado de dois países em 10 minutos',
     logs: [
-      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@tabajaraseguros.com.br","ipAddress":"198.51.100.70","location":"BR","deviceId":"tab-nb-4471","deviceDetail":"gerenciado, compliant"}',
-      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@tabajaraseguros.com.br","ipAddress":"198.51.100.71","location":"US","deviceId":"tab-nb-4471","deviceDetail":"gerenciado, compliant"}',
+      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@tabajara.exemplo","ipAddress":"198.51.100.70","location":"BR","deviceId":"tab-nb-4471","deviceDetail":"gerenciado, compliant"}',
+      '{"createdDateTime":"{data}T{hora}Z","userPrincipalName":"{usuario}@tabajara.exemplo","ipAddress":"198.51.100.71","location":"US","deviceId":"tab-nb-4471","deviceDetail":"gerenciado, compliant"}',
       'Enriquecimento: os dois IPs pertencem à faixa de saída do SASE corporativo da Tabajara',
     ],
     contexto: [
@@ -356,7 +356,7 @@ export const N3_RUIDO: ModeloAlerta[] = [
     mitre: 'T1133',
     titulo: 'Ressonância magnética com sessão de acesso remoto externo',
     logs: [
-      'CEF:0|Firewall|NGFW|9.1|vpn|allow|5|src=10.50.4.12 (HSP-RM-CONSOLE) dst={ip} dpt=443 app=vpn-fabricante start={data} {hora} duration=3600',
+      'CEF:0|Firewall|NGFW|9.1|vpn|allow|5|src=10.30.8.31 (HSP-RM-CONSOLE) dst={ip} dpt=443 app=vpn-fabricante start={data} {hora} duration=3600',
       'Vigia SIEM: única conexão externa do equipamento no mês; nenhuma conexão para outros hosts da rede interna',
     ],
     contexto: [
@@ -427,7 +427,7 @@ export const N3_RUIDO: ModeloAlerta[] = [
       'O usuário pentest-nuvem tem apenas a política de leitura de segurança e expira na sexta.',
       'Nenhuma chamada fora do escopo.',
     ],
-    vars: { ip: ['192.0.2.150', '192.0.2.151'], data: DATA3, hora: HORA },
+    vars: { ip: ['192.0.2.160', '192.0.2.161'], data: DATA3, hora: HORA },
     veredito: 'bp',
     justificativas: js(
       0,
