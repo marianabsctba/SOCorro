@@ -32,8 +32,11 @@ def idade(anos):
 PARDO = {"african": 0.45, "caucasian": 0.45, "asian": 0.1}
 # roupas de escritório de quem trabalha em turno
 POLO = ["namuhekam_male_polo_shirt", "toigo_wool_pants", "shoes02"]
-CAMISETA_M = ["elvs_crude_t-shirt_male", "cortu_cargo_pants", "shoes03"]
-CAMISETA_F = ["toigo_basic_tucked_t-shirt", "toigo_wool_pants", "toigo_flats"]
+# nada de "crude t-shirt" (barra esfarrapada de propósito) nem camiseta para dentro (abre buraco na cintura)
+CASUAL_M2 = ["male_casualsuit02", "shoes03"]
+CASUAL_M3 = ["male_casualsuit03", "shoes02"]
+CASUAL_F1 = ["female_casualsuit01", "toigo_flats"]
+CASUAL_F2 = ["female_casualsuit02", "toigo_flats"]
 SUETER_F = ["toigo_fisherman_sweater", "toigo_wool_pants", "toigo_ballet_flats"]
 
 # elenco do SOC Olho Vivo (adultos, roupa de escritório de quem trabalha em turno)
@@ -41,16 +44,16 @@ SPECS = [
     dict(id="gilmar", f=0, anos=52, raca=PARDO, peso=0.85, musc=0.45, alt=0.55, cabelo=None, roupas=POLO, capa=0, pele="middleage_caucasian_male"),
     dict(id="ro", f=1, anos=44, raca="african", peso=0.6, musc=0.45, alt=0.5, cabelo="afro01", roupas=SUETER_F, capa=0, pele="middleage_african_female"),
     dict(id="vandeco", f=0, anos=58, raca="caucasian", peso=0.62, musc=0.4, alt=0.6, cabelo="short01", roupas=["namuhekam_male_polo_shirt", "toigo_wool_pants", "shoes01"], capa=0, pele="middleage_caucasian_male"),
-    dict(id="thiaguinho", f=0, anos=24, raca=PARDO, peso=0.42, musc=0.45, alt=0.55, cabelo="short03", roupas=CAMISETA_M, capa=0, pele="young_caucasian_male"),
-    dict(id="keyla", f=1, anos=31, raca="asian", peso=0.42, musc=0.45, alt=0.45, cabelo="ponytail01", roupas=CAMISETA_F, capa=0, pele="young_asian_female"),
+    dict(id="thiaguinho", f=0, anos=24, raca=PARDO, peso=0.42, musc=0.45, alt=0.55, cabelo="short03", roupas=CASUAL_M2, capa=0, pele="young_caucasian_male"),
+    dict(id="keyla", f=1, anos=31, raca="asian", peso=0.42, musc=0.45, alt=0.45, cabelo="ponytail01", roupas=CASUAL_F1, capa=0, pele="young_asian_female"),
     dict(id="neide", f=1, anos=60, raca="african", peso=0.75, musc=0.4, alt=0.3, cabelo="braid01", roupas=["toigo_fisherman_sweater", "toigo_long_full_skirt", "toigo_ballet_flats"], capa=0, pele="middleage_african_female"),
     dict(id="leoncio", f=0, anos=61, raca="caucasian", peso=0.8, musc=0.4, alt=0.5, cabelo="short01", roupas=["male_elegantsuit01", "shoes02"], capa=0, pele="middleage_caucasian_male"),
     dict(id="socorro", f=1, anos=49, raca=PARDO, peso=0.58, musc=0.45, alt=0.45, cabelo="long01", roupas=["toigo_female_suit_2", "toigo_ballet_flats"], capa=0, pele="middleage_caucasian_female"),
     dict(id="nildo", f=0, anos=35, raca={"african": 0.6, "caucasian": 0.3, "asian": 0.1}, peso=0.5, musc=0.5, alt=0.45, cabelo="short04", roupas=POLO, capa=0, pele="young_african_male"),
-    dict(id="kevin", f=0, anos=23, raca="caucasian", peso=0.45, musc=0.45, alt=0.6, cabelo="short02", roupas=CAMISETA_M, capa=0, pele="young_caucasian_male"),
-    dict(id="brenda", f=1, anos=22, raca=PARDO, peso=0.45, musc=0.45, alt=0.45, cabelo="long01", roupas=CAMISETA_F, capa=0, pele="young_caucasian_female"),
-    dict(id="jefferson", f=0, anos=26, raca="african", peso=0.5, musc=0.5, alt=0.5, cabelo="afro01", roupas=["elvs_crude_t-shirt_male", "toigo_wool_pants", "shoes04"], capa=0, pele="young_african_male"),
-    dict(id="pamela", f=1, anos=28, raca="caucasian", peso=0.5, musc=0.45, alt=0.5, cabelo="bob01", roupas=SUETER_F, capa=0, pele="young_caucasian_female"),
+    dict(id="kevin", f=0, anos=23, raca="caucasian", peso=0.45, musc=0.45, alt=0.6, cabelo="short02", roupas=POLO, capa=0, pele="young_caucasian_male"),
+    dict(id="brenda", f=1, anos=22, raca=PARDO, peso=0.45, musc=0.45, alt=0.45, cabelo="long01", roupas=SUETER_F, capa=0, pele="young_caucasian_female"),
+    dict(id="jefferson", f=0, anos=26, raca="african", peso=0.5, musc=0.5, alt=0.5, cabelo="afro01", roupas=CASUAL_M3, capa=0, pele="young_african_male"),
+    dict(id="pamela", f=1, anos=28, raca="caucasian", peso=0.5, musc=0.45, alt=0.5, cabelo="ponytail01", roupas=SUETER_F, capa=0, pele="young_caucasian_female"),
 ]
 
 

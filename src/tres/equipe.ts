@@ -2,7 +2,8 @@
 // o Gilmar rondando com o timer, a Dona Neide passando, o Thiaguinho cochilando de madrugada).
 import * as THREE from 'three';
 import { Humano } from './humanos';
-import { caminho, type Assento, type Sala } from './soc';
+import type { Assento, Sala } from './soc';
+import { Navegacao } from './nav';
 import type { PersonagemId, Site, Turno } from '../conteudo/tipos';
 
 export interface Membro {
@@ -45,7 +46,10 @@ const LUGAR: Partial<Record<PersonagemId, number>> = {
 
 export class Equipe {
   membros = new Map<PersonagemId, Membro>();
-  constructor(public sala: Sala) {}
+  nav: Navegacao;
+  constructor(public sala: Sala) {
+    this.nav = new Navegacao(sala);
+  }
 
   /** monta a equipe do turno; extras entram mesmo fora da escala (quem fala na cena do dia) */
   montar(site: Site, turno: Turno, extras: PersonagemId[] = []) {
@@ -108,7 +112,7 @@ export class Equipe {
     if (m.fazendo === 'sentado') this.levantar(m);
     m.fazendo = 'andando';
     const de = { x: m.h.raiz.position.x, z: m.h.raiz.position.z };
-    await m.h.irPara(caminho(de, alvo), vel);
+    await m.h.irPara(this.nav.caminho(de, alvo), vel);
   }
 
   async voltarAoLugar(m: Membro) {
@@ -117,7 +121,7 @@ export class Equipe {
       m.h.tocar('parado');
       return;
     }
-    await m.h.irPara(caminho({ x: m.h.raiz.position.x, z: m.h.raiz.position.z }, { x: m.cadeira.x, z: m.cadeira.z + 0.35 }), 1.1);
+    await m.h.irPara(this.nav.caminho({ x: m.h.raiz.position.x, z: m.h.raiz.position.z }, { x: m.cadeira.x, z: m.cadeira.z + 0.35 }), 1.1);
     if (m.ocupado) return;
     this.sentar(m);
     this.rotinaSentada(m);
@@ -144,14 +148,14 @@ export class Equipe {
     const alvo = alvos[Math.floor(Math.random() * alvos.length)];
     if (!alvo?.cadeira) return;
     m.fazendo = 'ronda';
-    await m.h.irPara(caminho({ x: m.h.raiz.position.x, z: m.h.raiz.position.z }, { x: alvo.cadeira.x + 0.5, z: alvo.cadeira.z + 0.75 }), 1.0);
+    await m.h.irPara(this.nav.caminho({ x: m.h.raiz.position.x, z: m.h.raiz.position.z }, { x: alvo.cadeira.x + 0.5, z: alvo.cadeira.z + 0.75 }), 1.0);
     if (m.ocupado) return;
     m.h.olharPara(alvo.cadeira.monitor.x, alvo.cadeira.monitor.z);
     m.h.gesto('cruzar', 5);
     await esperar(5500);
     if (m.ocupado) return;
     const p = this.pontoLivre(m.id);
-    await m.h.irPara(caminho({ x: m.h.raiz.position.x, z: m.h.raiz.position.z }, p), 1.0);
+    await m.h.irPara(this.nav.caminho({ x: m.h.raiz.position.x, z: m.h.raiz.position.z }, p), 1.0);
     m.fazendo = 'em_pe';
   }
 
@@ -166,7 +170,7 @@ export class Equipe {
       { x: -2, z: -6.2 },
     ];
     const p = pts[Math.floor(Math.random() * pts.length)];
-    await m.h.irPara(caminho({ x: m.h.raiz.position.x, z: m.h.raiz.position.z }, p), 0.8);
+    await m.h.irPara(this.nav.caminho({ x: m.h.raiz.position.x, z: m.h.raiz.position.z }, p), 0.8);
     if (m.ocupado) return;
     m.h.tocar('mexendo');
     await esperar(2500);
@@ -209,7 +213,7 @@ export class Equipe {
       const ang = Math.atan2(dx, dz) + (outros ? (outros % 2 ? 0.7 : -0.7) * Math.ceil(outros / 2) : 0);
       const alvo = { x: perto.x + Math.sin(ang) * 1.4, z: perto.z + Math.cos(ang) * 1.4 };
       m.fazendo = 'conversa';
-      await m.h.irPara(caminho({ x: p.x, z: p.z }, alvo), 1.7);
+      await m.h.irPara(this.nav.caminho({ x: p.x, z: p.z }, alvo), 1.7);
     } else if (m.fazendo === 'sentado') m.h.pararGesto();
     m.fazendo = 'conversa';
     m.h.olharPara(perto.x, perto.z);

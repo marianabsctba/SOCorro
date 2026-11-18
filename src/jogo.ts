@@ -61,6 +61,11 @@ export async function iniciar() {
       b?.click();
       return b ? b.innerText : 'nada';
     },
+    // segura a câmera onde o teste colocar (o menu gira a câmera sozinho)
+    posar: () => {
+      modo = 'tela';
+      document.querySelector('.menu')?.remove();
+    },
     irParaDia: (n: number) => {
       estado().dia = n;
       salvar();

@@ -14,6 +14,8 @@ const DEDO_OSSO = /^(index|middle|ring|pinky|thumb)_0([1-3])_([lr])$/;
 export const CURVA = { sinal: 1, eixo: 'z' as 'x' | 'y' | 'z' };
 // dedos juntos (no modelo eles vêm abertos em leque, o que parece garra) e quanto cada um dobra
 // pose parada: quanto corrige a animação (1 = braço solto de vez), afastamento do tronco e cotovelo
+/** altura do teclado no mundo (mesa a 0,76 m) */
+export const DIGITAR = { altura: 0.81 };
 export const RELAX = { parado: 1, falando: 0.35, fora: 0.3, cotovelo: 0.1 };
 export const JUNTA = { sinal: 1, eixo: 'x' as 'x' | 'y' | 'z', ang: 0, dobra: 0.8, fecha: 0.85 };
 // giro extra da palma e polegar encostado na mão (ajustados olhando as fotos)
@@ -224,6 +226,20 @@ export class Humano {
           // peças que vêm do MakeHuman com cor ruim: botinha quase branca, terninho rosa-choque, camiseta cinza metálica
           if (roupa && /ankle_boots/.test(mt.name)) mt.color.setHex(0x5a3e2e);
           if (roupa && /basic_tucked_t-shirt/.test(mt.name)) mt.color.setHex(0xa9bfd8);
+          // o mesmo suéter em várias pessoas: cada uma com sua cor (a Rô fica com o vermelho original)
+          const corSueter = ({ pamela: 0x3f8f8a, brenda: 0xc9a227, neide: 0x8a6fa8 } as Record<string, number>)[id];
+          if (roupa && corSueter && mt.map && /sweater/i.test(mt.name)) {
+            const c = mt.clone();
+            c.map = repintarLaranja(mt.map, corSueter, true);
+            return c;
+          }
+          // a mesma polo serve para vários: cada um com sua cor
+          const corPolo = ({ kevin: 0x6f93c4, nildo: 0x7fa36f, vandeco: 0xcbb68e } as Record<string, number>)[id];
+          if (roupa && corPolo && /polo/i.test(mt.name)) {
+            const c = mt.clone();
+            c.color.setHex(corPolo);
+            return c;
+          }
           if (roupa && mt.map && /female_suit_2/.test(mt.name) && !mt.userData.recolorido) {
             // terninho com cor própria: ameixa da Dona Socorro, grafite para as outras
             mt.map = repintarLaranja(mt.map, ({ socorro: 0x6e3b52 } as Record<string, number>)[id] ?? 0x4a4a54, true);
@@ -260,7 +276,8 @@ export class Humano {
         const m = DEDO_OSSO.exec(o.name);
         if (!m) return;
         const seg = Number(m[2]);
-        const ang = m[1] === 'thumb' ? [0, 0.1, 0.15, 0.1][seg] : [0, 0.14, 0.24, 0.16][seg];
+        // mão relaxada de verdade: dedos dobrados nas três falanges (pouco dobrado parecia mão de manequim)
+        const ang = m[1] === 'thumb' ? [0, 0.16, 0.26, 0.16][seg] : [0, 0.32, 0.48, 0.3][seg];
         const abre = seg === 1 ? ({ index: 1, middle: 0, ring: -1, pinky: -2, thumb: 0 } as Record<string, number>)[m[1]] : 0;
         this.dedos.push({ osso: o, repouso: o.quaternion.clone(), ang, abre, lado: m[3] === 'l' ? 1 : -1, ehPolegar: m[1] === 'thumb' && seg === 1 });
       });
@@ -416,6 +433,46 @@ export class Humano {
     if (dedo) this.alinhar(mao, dedo, dir, peso * 0.8);
   }
 
+  /**
+   * braço por cinemática inversa: o cotovelo fica no plano do polo, a mão chega no alvo,
+   * os dedos apontam para "dedos" e o mindinho fica do lado de "fora" (palma para baixo)
+   */
+  private ikBraco(lado: string, alvo: THREE.Vector3, polo: THREE.Vector3, dedos: THREE.Vector3, fora: THREE.Vector3, peso: number) {
+    const r = this.raiz;
+    const ombro = r.getObjectByName('upperarm_' + lado);
+    const cot = r.getObjectByName('lowerarm_' + lado);
+    const mao = r.getObjectByName('hand_' + lado);
+    const meio = r.getObjectByName('middle_01_' + lado);
+    if (!ombro || !cot || !mao) return;
+    const S = ombro.getWorldPosition(new THREE.Vector3());
+    const E0 = cot.getWorldPosition(new THREE.Vector3());
+    const W0 = mao.getWorldPosition(new THREE.Vector3());
+    const a = S.distanceTo(E0);
+    const b = E0.distanceTo(W0);
+    const para = alvo.clone().sub(S);
+    const d = Math.min(para.length(), (a + b) * 0.999);
+    para.normalize();
+    const cosA = Math.max(-1, Math.min(1, (a * a + d * d - b * b) / (2 * a * d)));
+    const sinA = Math.sqrt(1 - cosA * cosA);
+    const perp = polo.clone().addScaledVector(para, -polo.dot(para)).normalize();
+    const E = S.clone().addScaledVector(para, a * cosA).addScaledVector(perp, a * sinA);
+    this.alinhar(ombro, cot, E.clone().sub(S).normalize(), peso);
+    const E1 = cot.getWorldPosition(new THREE.Vector3());
+    this.alinhar(cot, mao, alvo.clone().sub(E1).normalize(), peso);
+    if (meio) this.alinhar(mao, meio, dedos, peso);
+    // gira a mão em volta do próprio eixo até o mindinho ficar para fora (palma virada para a mesa)
+    const ind = r.getObjectByName('index_01_' + lado);
+    const min = r.getObjectByName('pinky_01_' + lado);
+    if (meio && ind && min) {
+      const eixo = meio.getWorldPosition(new THREE.Vector3()).sub(mao.getWorldPosition(new THREE.Vector3())).normalize();
+      const k = min.getWorldPosition(new THREE.Vector3()).sub(ind.getWorldPosition(new THREE.Vector3()));
+      k.addScaledVector(eixo, -k.dot(eixo)).normalize();
+      const tt = fora.clone().addScaledVector(eixo, -fora.dot(eixo)).normalize();
+      const ang = Math.acos(Math.max(-1, Math.min(1, k.dot(tt)))) * (k.clone().cross(tt).dot(eixo) < 0 ? -1 : 1);
+      this.girar(mao, eixo, ang * peso);
+    }
+  }
+
   private aplicarGesto(dt: number) {
     const g = this.gestoAtual;
     if (!g) return;
@@ -503,15 +560,19 @@ export class Humano {
         }
         break;
       case 'digitar': {
-        // mãos no teclado, à frente do peito e na altura da mesa, com os dedos batendo em ritmo irregular
+        // mãos no teclado: cinemática inversa de dois ossos (ombro e cotovelo) até um ponto em cima da mesa,
+        // cotovelo para baixo e para fora, palma para baixo e dedos apontando para a tela
         for (const lado of ['l', 'r']) {
           const o = fora(lado);
-          const sx = lado === 'l' ? 1 : -1;
-          const bate = Math.max(0, Math.sin(t * (lado === 'l' ? 13 : 11.5) + this.semente * 3)) * 0.018 * (0.6 + 0.4 * Math.sin(t * 0.7 + this.semente));
-          const alvo = (peito ?? r).getWorldPosition(new THREE.Vector3()).addScaledVector(F, 0.46).addScaledVector(U, -0.26 + bate).addScaledVector(o, -0.05 + sx * 0);
-          this.poseBraco(lado, dir(-0.62, 0.72, o, 0.1), alvo, true, p);
+          const ombro = r.getObjectByName('upperarm_' + lado);
+          if (!ombro) continue;
+          const bate = Math.max(0, Math.sin(t * (lado === 'l' ? 13 : 11.5) + this.semente * 3)) * 0.012 * (0.6 + 0.4 * Math.sin(t * 0.7 + this.semente));
+          const alvo = ombro.getWorldPosition(new THREE.Vector3()).addScaledVector(F, 0.4).addScaledVector(o, -0.1);
+          alvo.y = DIGITAR.altura + bate;
+          const polo = new THREE.Vector3().addScaledVector(U, -1).addScaledVector(o, 0.55).addScaledVector(F, -0.2);
+          this.ikBraco(lado, alvo, polo, F.clone().addScaledVector(U, -0.12).normalize(), o, p);
         }
-        if (cabeca) this.girar(pescoco ?? cabeca, lateral, 0.12 * p);
+        if (cabeca) this.girar(pescoco ?? cabeca, lateral, 0.04 * p);
         break;
       }
       case 'beber': {
@@ -682,7 +743,9 @@ export class Humano {
         this.aplicarGesto(dt);
       } else this.gestoAtual = null;
       // dedos se mexem de leve, como mão relaxada respirando
-      this.curvarDedos(1 + Math.sin(performance.now() / 900 + this.semente) * 0.18);
+      // digitando, os dedos curvam sobre as teclas e mexem um pouco mais
+      const digita = this.gestoAtual?.nome === 'digitar';
+      this.curvarDedos((digita ? 1.3 : 1) * (1 + Math.sin(performance.now() / (digita ? 120 : 900) + this.semente) * (digita ? 0.1 : 0.12)));
       this.juntarDedos();
     }
   }

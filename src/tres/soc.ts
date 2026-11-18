@@ -543,23 +543,3 @@ export function construir(site: Site): Sala {
     },
   };
 }
-
-/** caminho de uma cadeira até um ponto, andando pelos corredores entre as fileiras */
-export function caminho(de: { x: number; z: number }, para: { x: number; z: number }): { x: number; z: number }[] {
-  const pts: { x: number; z: number }[] = [];
-  const corredorDe = (z: number) => {
-    // corredor logo atrás da cadeira (ou o da frente, se estiver no fundo)
-    for (const zr of FILAS_Z) if (Math.abs(z - (zr + 0.62)) < 0.4 || Math.abs(z - zr) < 0.6) return zr + 1.45;
-    return null;
-  };
-  const cd = corredorDe(de.z);
-  if (cd !== null) pts.push({ x: de.x, z: cd });
-  pts.push({ x: CORREDOR_X, z: cd ?? de.z });
-  const cp = corredorDe(para.z);
-  if (cp !== null) {
-    pts.push({ x: CORREDOR_X, z: cp });
-    pts.push({ x: para.x, z: cp });
-  } else pts.push({ x: CORREDOR_X, z: para.z });
-  pts.push(para);
-  return pts;
-}
