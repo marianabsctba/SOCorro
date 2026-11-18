@@ -2,7 +2,6 @@
 // sala do coordenador de vidro, sala de servidores, copa com a cafeteira (o ativo mais crítico do prédio).
 // O SOC Alfa (Curitiba) e o SOC Bravo (Recife) usam a mesma planta com acabamento diferente.
 import * as THREE from 'three';
-import { pbr } from './pbr';
 import { cartaz, telaDiasSemIncidente, telaGrafico, telaJanela, telaKpi, telaMapa, telaPaint, telaPrint, telaSiem } from './telas';
 import type { Site } from '../conteudo/tipos';
 
@@ -59,43 +58,60 @@ function cilindro(rt: number, rb: number, h: number, mat: THREE.Material, x: num
   return m;
 }
 
+/** cor de destaque de cada SOC: rosa e ciano no Alfa, laranja e ciano no Bravo */
+export const ACENTO = { alfa: 0xe05fa0, bravo: 0xff9a3c, ciano: 0x36d6ff };
+let ACC: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({ color: ACENTO.alfa, toneMapped: false });
+const CIANO = new THREE.MeshBasicMaterial({ color: ACENTO.ciano, toneMapped: false });
+
+/** piso elevado de sala técnica: placas escuras de 60 cm com junta */
 function texCarpete(site: Site): THREE.CanvasTexture {
   const cv = document.createElement('canvas');
   cv.width = cv.height = 256;
   const g = cv.getContext('2d')!;
-  const [a, b] = site === 'alfa' ? ['#3a4150', '#323846'] : ['#5a4a3e', '#514236'];
-  for (let i = 0; i < 4; i++)
-    for (let j = 0; j < 4; j++) {
+  const [a, b, junta] = site === 'alfa' ? ['#1c212b', '#1f2530', '#0d1016'] : ['#272220', '#2b2522', '#120f0d'];
+  for (let i = 0; i < 2; i++)
+    for (let j = 0; j < 2; j++) {
       g.fillStyle = (i + j) % 2 ? a : b;
-      g.fillRect(i * 64, j * 64, 64, 64);
+      g.fillRect(i * 128, j * 128, 128, 128);
     }
   const img = g.getImageData(0, 0, 256, 256);
   for (let k = 0; k < img.data.length; k += 4) {
-    const n = (Math.random() - 0.5) * 22;
+    const n = (Math.random() - 0.5) * 10;
     img.data[k] += n;
     img.data[k + 1] += n;
     img.data[k + 2] += n;
   }
   g.putImageData(img, 0, 0);
+  g.strokeStyle = junta;
+  g.lineWidth = 3;
+  for (let i = 0; i <= 2; i++) {
+    g.beginPath();
+    g.moveTo(i * 128, 0);
+    g.lineTo(i * 128, 256);
+    g.moveTo(0, i * 128);
+    g.lineTo(256, i * 128);
+    g.stroke();
+  }
   const t = new THREE.CanvasTexture(cv);
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
-  t.repeat.set(12, 8);
+  t.repeat.set(20, 13.3);
   t.colorSpace = THREE.SRGBColorSpace;
   t.anisotropy = 8;
   return t;
 }
 
+/** forro escuro com grelha, como sala de operação (luz vem das tiras de LED) */
 function texForro(): THREE.CanvasTexture {
   const cv = document.createElement('canvas');
   cv.width = cv.height = 128;
   const g = cv.getContext('2d')!;
-  g.fillStyle = '#e9e9e6';
+  g.fillStyle = '#191c23';
   g.fillRect(0, 0, 128, 128);
-  g.strokeStyle = '#b9bab5';
-  g.lineWidth = 3;
+  g.strokeStyle = '#0e1015';
+  g.lineWidth = 4;
   g.strokeRect(0, 0, 128, 128);
-  for (let i = 0; i < 300; i++) {
-    g.fillStyle = `rgba(0,0,0,${Math.random() * 0.06})`;
+  for (let i = 0; i < 200; i++) {
+    g.fillStyle = `rgba(255,255,255,${Math.random() * 0.03})`;
     g.fillRect(Math.random() * 128, Math.random() * 128, 2, 2);
   }
   const t = new THREE.CanvasTexture(cv);
@@ -105,15 +121,52 @@ function texForro(): THREE.CanvasTexture {
   return t;
 }
 
+/** painel acústico em colmeia (a cara de "sala de ciber" que todo cliente espera ver na visita) */
+function texParede(site: Site, rep: [number, number]): THREE.CanvasTexture {
+  const cv = document.createElement('canvas');
+  cv.width = 256;
+  cv.height = 222;
+  const g = cv.getContext('2d')!;
+  g.fillStyle = site === 'alfa' ? '#242a35' : '#33302d';
+  g.fillRect(0, 0, 256, 222);
+  const r = 32;
+  const h = Math.sqrt(3) * r;
+  for (let col = -1; col < 6; col++)
+    for (let lin = -1; lin < 5; lin++) {
+      const cx = col * r * 1.5;
+      const cy = lin * h + (col % 2 ? h / 2 : 0);
+      g.beginPath();
+      for (let k = 0; k < 6; k++) {
+        const a = (Math.PI / 3) * k;
+        const x = cx + Math.cos(a) * (r - 3);
+        const y = cy + Math.sin(a) * (r - 3);
+        if (k) g.lineTo(x, y);
+        else g.moveTo(x, y);
+      }
+      g.closePath();
+      const tom = 0.9 + ((col * 7 + lin * 13) % 5) * 0.04;
+      g.fillStyle = site === 'alfa' ? `rgb(${Math.round(42 * tom)},${Math.round(49 * tom)},${Math.round(62 * tom)})` : `rgb(${Math.round(60 * tom)},${Math.round(55 * tom)},${Math.round(50 * tom)})`;
+      g.fill();
+    }
+  const t = new THREE.CanvasTexture(cv);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(rep[0], rep[1]);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 8;
+  return t;
+}
+
 // ------------------------------------------------------------ móveis
 
 const MAT = {
-  tampo: new THREE.MeshStandardMaterial({ color: 0xd8d2c6, roughness: 0.55 }),
-  tampoEscuro: new THREE.MeshStandardMaterial({ color: 0x3b3f47, roughness: 0.5 }),
+  tampo: new THREE.MeshStandardMaterial({ color: 0x262a32, roughness: 0.35, metalness: 0.1 }),
+  tampoEscuro: new THREE.MeshStandardMaterial({ color: 0x15181e, roughness: 0.5 }),
+  acrilico: new THREE.MeshStandardMaterial({ color: 0x9fb3c8, roughness: 0.35, transparent: true, opacity: 0.22, depthWrite: false }),
+  malha: new THREE.MeshStandardMaterial({ color: 0x15171c, roughness: 0.85 }),
   metal: new THREE.MeshStandardMaterial({ color: 0x9aa0a8, roughness: 0.35, metalness: 0.7 }),
   preto: new THREE.MeshStandardMaterial({ color: 0x15171b, roughness: 0.45 }),
   plasticoPreto: new THREE.MeshStandardMaterial({ color: 0x1f2126, roughness: 0.7 }),
-  tecido: new THREE.MeshStandardMaterial({ color: 0x2a2d35, roughness: 0.95 }),
+  tecido: new THREE.MeshStandardMaterial({ color: 0x1e2128, roughness: 0.95 }),
   tecidoRosa: new THREE.MeshStandardMaterial({ color: 0x8a2c5c, roughness: 0.95 }),
   vidro: new THREE.MeshStandardMaterial({ color: 0xbcd6e0, roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.18, depthWrite: false }),
   caneca: new THREE.MeshStandardMaterial({ color: 0xf2f0ea, roughness: 0.4 }),
@@ -133,6 +186,29 @@ const MAT = {
   papel: new THREE.MeshStandardMaterial({ color: 0xf7f3e8, roughness: 0.9 }),
   amarelo: new THREE.MeshStandardMaterial({ color: 0xf2d24b, roughness: 0.8 }),
 };
+
+/** letreiro luminoso com halo (canvas com sombra colorida) */
+function letreiro(texto: string, cor: string): THREE.CanvasTexture {
+  const cv = document.createElement('canvas');
+  cv.width = 1024;
+  cv.height = 256;
+  const g = cv.getContext('2d')!;
+  g.font = 'bold 120px "Space Grotesk", sans-serif';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.shadowColor = cor;
+  for (const blur of [60, 30, 12]) {
+    g.shadowBlur = blur;
+    g.fillStyle = cor;
+    g.fillText(texto, 512, 128);
+  }
+  g.shadowBlur = 0;
+  g.fillStyle = '#fff4fb';
+  g.fillText(texto, 512, 128);
+  const t = new THREE.CanvasTexture(cv);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
 
 function telaMat(tex: THREE.Texture) {
   return new THREE.MeshBasicMaterial({ map: tex, toneMapped: false });
@@ -154,9 +230,18 @@ export function cadeira(g: THREE.Object3D, x: number, z: number, ry: number, ras
   }
   cilindro(0.025, 0.025, 0.36, MAT.metal, 0, 0.26, 0, c, 10);
   caixa(0.5, 0.08, 0.48, rasgada ? MAT.tecidoRosa : MAT.tecido, 0, 0.47, 0, c);
-  // encosto atrás de quem senta (quem senta olha para +z local)
-  caixa(0.46, 0.6, 0.06, rasgada ? MAT.tecidoRosa : MAT.tecido, 0, 0.84, -0.25, c);
+  // encosto atrás de quem senta (quem senta olha para +z local): malha alta com apoio de cabeça
+  caixa(0.46, 0.66, 0.05, rasgada ? MAT.tecidoRosa : MAT.malha, 0, 0.87, -0.25, c);
+  caixa(0.3, 0.14, 0.06, rasgada ? MAT.tecidoRosa : MAT.tecido, 0, 1.28, -0.26, c);
   caixa(0.04, 0.3, 0.04, MAT.plasticoPreto, 0, 0.6, -0.25, c);
+  caixa(0.03, 0.9, 0.03, MAT.plasticoPreto, 0, 0.92, -0.285, c, false);
+  // braços da cadeira
+  for (const sx of [-0.25, 0.25]) {
+    caixa(0.04, 0.2, 0.04, MAT.plasticoPreto, sx, 0.6, -0.02, c, false);
+    caixa(0.06, 0.03, 0.26, MAT.tecido, sx, 0.71, -0.02, c, false);
+  }
+  // filete de cor no encosto (a cadeira "gamer corporativa" que o RH comprou em lote)
+  if (!rasgada) caixa(0.012, 0.5, 0.008, ACC, 0.16, 0.9, -0.28, c, false);
   if (rasgada) {
     // o rasgo no assento da cadeira gamer
     const r = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 0.05), new THREE.MeshBasicMaterial({ color: 0xe8e0c8 }));
@@ -195,10 +280,13 @@ function caneca(g: THREE.Object3D, x: number, y: number, z: number, rosa = false
 function estacao(g: THREE.Object3D, x: number, z: number, telas: [THREE.Texture, THREE.Texture], extra: { rasgada?: boolean; coxinha?: boolean; postit?: boolean }) {
   const y = 0.74;
   caixa(1.6, 0.04, 0.75, MAT.tampo, x, y, z, g);
-  for (const sx of [-0.75, 0.75]) caixa(0.04, y, 0.7, MAT.metal, x + sx, y / 2, z, g);
-  caixa(1.5, 0.3, 0.02, MAT.metal, x, 0.45, z - 0.34, g, false);
-  // divisória baixa entre fileiras
-  caixa(1.6, 0.35, 0.03, MAT.tampoEscuro, x, y + 0.2, z - 0.39, g);
+  // pés em painel inteiro, de mesa de operação, e fita de LED sob a borda da frente
+  for (const sx of [-0.77, 0.77]) caixa(0.05, y, 0.7, MAT.tampoEscuro, x + sx, y / 2, z, g);
+  caixa(1.5, 0.3, 0.02, MAT.tampoEscuro, x, 0.45, z - 0.34, g, false);
+  caixa(1.56, 0.01, 0.01, ACC, x, y - 0.026, z + 0.372, g, false);
+  // divisória de acrílico fosco entre fileiras, com um fio de luz no topo
+  caixa(1.6, 0.42, 0.02, MAT.acrilico, x, y + 0.23, z - 0.39, g, false);
+  caixa(1.6, 0.012, 0.024, CIANO, x, y + 0.445, z - 0.39, g, false);
   const mon: THREE.Vector3[] = [];
   [-0.33, 0.33].forEach((dx, i) => {
     const mx = x + dx;
@@ -217,6 +305,24 @@ function estacao(g: THREE.Object3D, x: number, z: number, telas: [THREE.Texture,
     mon.push(new THREE.Vector3(mx, y + 0.42, mz));
   });
   caixa(0.44, 0.02, 0.14, MAT.plasticoPreto, x, y + 0.03, z + 0.12, g, false);
+  // teclado mecânico com luz por baixo (sim, RGB; não, não deixa ninguém mais rápido)
+  const brilho = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.2), new THREE.MeshBasicMaterial({ color: ACC.color, transparent: true, opacity: 0.18, depthWrite: false, toneMapped: false }));
+  brilho.rotation.x = -Math.PI / 2;
+  brilho.position.set(x, y + 0.022, z + 0.12);
+  g.add(brilho);
+  // headset pendurado no canto da mesa
+  const hs = new THREE.Group();
+  hs.position.set(x + 0.62, y + 0.09, z - 0.1);
+  const arco = new THREE.Mesh(new THREE.TorusGeometry(0.08, 0.008, 6, 16, Math.PI), MAT.preto);
+  hs.add(arco);
+  for (const sx of [-0.08, 0.08]) {
+    const fone = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.03, 14), MAT.plasticoPreto);
+    fone.rotation.z = Math.PI / 2;
+    fone.position.set(sx, 0, 0);
+    hs.add(fone);
+  }
+  hs.rotation.y = 0.4;
+  g.add(hs);
   caixa(0.06, 0.02, 0.1, MAT.plasticoPreto, x + 0.32, y + 0.03, z + 0.12, g, false);
   caneca(g, x - 0.55, y + 0.02, z + 0.1, Math.random() < 0.3);
   if (extra.coxinha) {
@@ -239,6 +345,9 @@ function estacao(g: THREE.Object3D, x: number, z: number, telas: [THREE.Texture,
 
 function rackServidor(g: THREE.Object3D, x: number, z: number, leds: THREE.Mesh[]) {
   caixa(0.6, 2.0, 1.0, MAT.rack, x, 1.0, z, g);
+  // moldura da porta com fio de luz (corredor frio)
+  caixa(0.01, 1.96, 0.01, CIANO, x + 0.305, 1.0, z - 0.49, g, false);
+  caixa(0.01, 1.96, 0.01, CIANO, x + 0.305, 1.0, z + 0.49, g, false);
   for (let i = 0; i < 14; i++) {
     const y = 0.25 + i * 0.12;
     caixa(0.54, 0.09, 0.02, MAT.plasticoPreto, x + 0.31, y, z, g, false).rotation.y = Math.PI / 2;
@@ -261,6 +370,7 @@ export function construir(site: Site): Sala {
   const inter: Interativo[] = [];
   const animar: ((dt: number, t: number) => void)[] = [];
   const bravo = site === 'bravo';
+  ACC = new THREE.MeshBasicMaterial({ color: bravo ? ACENTO.bravo : ACENTO.alfa, toneMapped: false });
 
   // chão, forro e paredes
   const chao = new THREE.Mesh(new THREE.PlaneGeometry(L.x1 - L.x0, L.z1 - L.z0), new THREE.MeshStandardMaterial({ map: texCarpete(site), roughness: 0.95 }));
@@ -271,8 +381,8 @@ export function construir(site: Site): Sala {
   forro.rotation.x = Math.PI / 2;
   forro.position.y = L.alto;
   g.add(forro);
-  const parede = pbr('reboco', [6, 1.2], { color: bravo ? 0xf3d9a4 : 0xd9dde2 });
-  const parede2 = pbr('reboco', [4, 1.2], { color: bravo ? 0xf3d9a4 : 0xd9dde2 });
+  const parede = new THREE.MeshStandardMaterial({ map: texParede(site, [9, 1.6]), roughness: 0.9 });
+  const parede2 = new THREE.MeshStandardMaterial({ map: texParede(site, [6, 1.6]), roughness: 0.9 });
   const W = L.x1 - L.x0;
   const D = L.z1 - L.z0;
   caixa(W, L.alto, 0.2, parede, 0, L.alto / 2, L.z0 - 0.1, g, false);
@@ -284,20 +394,27 @@ export function construir(site: Site): Sala {
   caixa(W, 0.1, 0.02, rodape, 0, 0.05, L.z0 + 0.01, g, false);
   caixa(W, 0.1, 0.02, rodape, 0, 0.05, L.z1 - 0.01, g, false);
 
-  // painéis de luz no forro (emissivos; nada de luz pontual, que pesa na web)
-  for (let i = -2; i <= 2; i++)
-    for (let j = -1; j <= 1; j++) {
-      const p = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 0.6), MAT.luzTeto);
-      p.rotation.x = Math.PI / 2;
-      p.position.set(i * 4.4 - 1, L.alto - 0.01, j * 4.6);
-      g.add(p);
-    }
+  // tiras de LED no forro sobre cada corredor (emissivas; nada de luz pontual, que pesa na web)
+  const luzLinha = new THREE.MeshBasicMaterial({ color: bravo ? 0xfff1dc : 0xe4f3ff, toneMapped: false });
+  for (const zl of [-6.4, ...FILAS_Z.map((zr) => zr + 1.45)]) caixa(19, 0.02, 0.08, luzLinha, -1.5, L.alto - 0.02, zl, g, false);
+  // sanca de luz colorida no alto das paredes e fio de luz no rodapé
+  for (const [w, d, x, z] of [[W - 0.1, 0.03, 0, L.z0 + 0.03], [W - 0.1, 0.03, 0, L.z1 - 0.03], [0.03, D - 0.1, L.x0 + 0.03, 0], [0.03, D - 0.1, L.x1 - 0.03, 0]] as const) {
+    caixa(w, 0.03, d, ACC, x, L.alto - 0.12, z, g, false);
+    caixa(w, 0.012, d, CIANO, x, 0.11, z, g, false);
+  }
+  // caminho de luz no piso do corredor principal, até a porta
+  for (const sx of [-0.85, 0.85]) caixa(0.025, 0.006, 14.6, CIANO, CORREDOR_X + sx, 0.004, 0.4, g, false);
 
   // ---------------- videowall (parede norte)
   const vwX = -2;
   const vwTex = [telaMapa(), telaKpi(), bravo ? telaPrint() : telaDiasSemIncidente(), telaSiem(9), telaGrafico(2), telaGrafico(3)];
   const moldura = new THREE.MeshStandardMaterial({ color: 0x0a0a0c, roughness: 0.3 });
   caixa(7.6, 2.9, 0.12, moldura, vwX, 1.95, L.z0 + 0.07, g, false);
+  // contorno de LED do videowall
+  caixa(7.7, 0.025, 0.02, ACC, vwX, 3.41, L.z0 + 0.14, g, false);
+  caixa(7.7, 0.025, 0.02, ACC, vwX, 0.49, L.z0 + 0.14, g, false);
+  caixa(0.025, 2.93, 0.02, ACC, vwX - 3.85, 1.95, L.z0 + 0.14, g, false);
+  caixa(0.025, 2.93, 0.02, ACC, vwX + 3.85, 1.95, L.z0 + 0.14, g, false);
   vwTex.forEach((t, i) => {
     const col = i % 3;
     const lin = Math.floor(i / 3);
@@ -339,8 +456,9 @@ export function construir(site: Site): Sala {
   caixa(L.x1 - ox0 - 1.4, L.alto, 0.06, MAT.vidro, ox0 + 1.4 + (L.x1 - ox0 - 1.4) / 2, L.alto / 2, oz1, g, false);
   caixa(0.08, L.alto, 0.08, MAT.metal, ox0, L.alto / 2, oz1, g, false);
   obst.push([ox0 - 0.08, ox0 + 0.08, L.z0, oz1], [ox0 + 1.4, L.x1, oz1 - 0.08, oz1 + 0.08]);
-  caixa(1.8, 0.04, 0.8, MAT.madeira, 9.8, 0.74, -6.2, g);
-  caixa(1.7, 0.7, 0.04, MAT.madeira, 9.8, 0.37, -6.55, g);
+  caixa(1.8, 0.04, 0.8, MAT.tampo, 9.8, 0.74, -6.2, g);
+  caixa(1.7, 0.7, 0.04, MAT.tampoEscuro, 9.8, 0.37, -6.55, g);
+  caixa(1.76, 0.01, 0.01, ACC, 9.8, 0.71, -5.8, g, false);
   obst.push([8.8, 10.8, -6.7, -5.7]);
   const monG = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.34), telaMat(telaKpi()));
   monG.position.set(9.8, 1.2, -6.4);
@@ -356,6 +474,12 @@ export function construir(site: Site): Sala {
   placaG.position.set(ox0 + 1.6, 2.2, oz1 + 0.04);
   g.add(placaG);
 
+  // letreiro em neon na parede leste (o marketing insistiu)
+  const neon = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 0.8), new THREE.MeshBasicMaterial({ map: letreiro(bravo ? 'SOC BRAVO' : 'OLHO VIVO · SOC', bravo ? '#ff9a3c' : '#ff6fb5'), transparent: true, toneMapped: false, depthWrite: false }));
+  neon.position.set(L.x1 - 0.03, 2.55, 0.9);
+  neon.rotation.y = -Math.PI / 2;
+  g.add(neon);
+
   // ---------------- sala de servidores (vidro), canto noroeste
   const sx1 = -9.2;
   const sz1 = -3.2;
@@ -364,6 +488,13 @@ export function construir(site: Site): Sala {
   obst.push([L.x0, sx1 + 0.1, L.z0, sz1 + 0.1]);
   const leds: THREE.Mesh[] = [];
   for (let i = 0; i < 4; i++) rackServidor(g, -11.3, -7.2 + i * 1.05, leds);
+  // corredor frio: luz azul no chão e no teto da sala de servidores
+  const frio = new THREE.MeshBasicMaterial({ color: 0x2a7bff, transparent: true, opacity: 0.35, toneMapped: false, depthWrite: false });
+  const chaoFrio = new THREE.Mesh(new THREE.PlaneGeometry(1.0, 4.4), frio);
+  chaoFrio.rotation.x = -Math.PI / 2;
+  chaoFrio.position.set(-10.4, 0.006, -5.6);
+  g.add(chaoFrio);
+  caixa(0.06, 0.02, 4.4, CIANO, -10.4, L.alto - 0.03, -5.6, g, false);
   // nobreak com aviso (a piada do dia 45)
   caixa(0.5, 0.9, 0.7, MAT.preto, -9.8, 0.45, -3.9, g);
   const aviso = new THREE.Mesh(new THREE.PlaneGeometry(0.46, 0.3), new THREE.MeshBasicMaterial({ map: cartaz(['NOBREAK', 'NÃO LIGAR', 'CAFETEIRA', 'AQUI'], '#f2d24b', '#111', 128, 96) }));
@@ -376,7 +507,8 @@ export function construir(site: Site): Sala {
   });
 
   // ---------------- copa, canto sudeste
-  caixa(0.7, 0.9, 4.6, MAT.branco, 11.6, 0.45, 5.3, g);
+  caixa(0.7, 0.9, 4.6, MAT.tampoEscuro, 11.6, 0.45, 5.3, g);
+  caixa(0.02, 0.012, 4.5, ACC, 11.24, 0.86, 5.3, g, false);
   caixa(0.72, 0.04, 4.62, MAT.tampoEscuro, 11.6, 0.92, 5.3, g);
   obst.push([11.2, L.x1, 3.0, 7.6]);
   // a cafeteira
@@ -393,16 +525,17 @@ export function construir(site: Site): Sala {
   placaCafe.rotation.y = -Math.PI / 2;
   g.add(placaCafe);
   // geladeira
-  caixa(0.7, 1.8, 0.7, MAT.branco, 11.5, 0.9, 7.4, g);
+  caixa(0.7, 1.8, 0.7, MAT.inox, 11.5, 0.9, 7.4, g);
   obst.push([11.1, L.x1, 7.0, L.z1]);
   const bilhete = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), new THREE.MeshBasicMaterial({ map: cartaz(['QUEM', 'COMEU MEU', 'IOGURTE?', '(logs no', 'Vigia)'], '#f2d24b', '#222', 96, 96) }));
   bilhete.position.set(11.14, 1.3, 7.4);
   bilhete.rotation.y = -Math.PI / 2;
   g.add(bilhete);
   // mesa da copa
-  cilindro(0.5, 0.5, 0.04, MAT.madeira, 9.0, 0.74, 5.2, g, 24);
+  cilindro(0.5, 0.5, 0.04, MAT.tampo, 9.0, 0.74, 5.2, g, 24);
   cilindro(0.05, 0.05, 0.72, MAT.metal, 9.0, 0.37, 5.2, g, 10);
-  obst.push([8.5, 9.5, 4.7, 5.7]);
+  // mesa e as duas cadeiras da copa
+  obst.push([8.5, 9.5, 4.1, 6.3]);
   cadeira(g, 9.0, 4.4, 0);
   cadeira(g, 9.0, 6.0, Math.PI);
   if (bravo) {
@@ -419,15 +552,15 @@ export function construir(site: Site): Sala {
   const vistaTex = telaJanela(site);
   for (const zc of [1.2, 5.0]) {
     const v = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 1.6), telaMat(vistaTex));
-    v.position.set(L.x0 + 0.02, 1.75, zc);
+    v.position.set(L.x0 + 0.075, 1.75, zc);
     v.rotation.y = Math.PI / 2;
     g.add(v);
     caixa(0.1, 1.72, 3.32, MAT.metal, L.x0 + 0.01, 1.75, zc, g, false);
     const vidro = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 1.6), MAT.vidro);
-    vidro.position.set(L.x0 + 0.08, 1.75, zc);
+    vidro.position.set(L.x0 + 0.085, 1.75, zc);
     vidro.rotation.y = Math.PI / 2;
     g.add(vidro);
-    caixa(0.12, 0.03, 3.32, MAT.metal, L.x0 + 0.06, 1.75, zc, g, false);
+    caixa(0.03, 0.03, 3.32, MAT.metal, L.x0 + 0.095, 1.75, zc, g, false);
   }
   inter.push({ id: 'janela', pos: new THREE.Vector3(L.x0 + 0.3, 1.7, 3.1), rotulo: bravo ? 'Olhar o mar' : 'Olhar a garoa', raio: 3 });
 
@@ -501,9 +634,9 @@ export function construir(site: Site): Sala {
   }
 
   // luz
-  const hemi = new THREE.HemisphereLight(bravo ? 0xfff2d8 : 0xeef3ff, bravo ? 0x6a5040 : 0x3a3f4a, bravo ? 1.25 : 1.05);
+  const hemi = new THREE.HemisphereLight(bravo ? 0xffeedd : 0xdfe9ff, bravo ? 0x3a2c24 : 0x1c2230, bravo ? 1.05 : 0.95);
   g.add(hemi);
-  const sol = new THREE.DirectionalLight(bravo ? 0xffe2b0 : 0xf2f4ff, bravo ? 1.6 : 1.1);
+  const sol = new THREE.DirectionalLight(bravo ? 0xffe2b0 : 0xe8efff, bravo ? 1.2 : 0.85);
   sol.position.set(-6, 9, 4);
   sol.target.position.set(0, 0, 0);
   sol.castShadow = true;

@@ -513,7 +513,7 @@ function quadro(dt: number, t: number) {
   // o CSS esconde o botão E e a mira fora do modo livre (no diálogo o botão ficava por cima do texto)
   if (document.body.dataset.modo !== modo) document.body.dataset.modo = modo;
   sala?.atualizar(dt, t);
-  equipe?.atualizar(dt);
+  equipe?.atualizar(dt, modo === 'menu' ? undefined : J.pos);
   atualizarTelas(t);
   if (modo === 'menu') {
     vitrineT += dt;

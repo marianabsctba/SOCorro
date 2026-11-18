@@ -75,6 +75,12 @@ export class Navegacao {
     return true;
   }
 
+  /** dá para ficar em pé aqui? (usado para empurrar quem esbarra em alguém sem jogar a pessoa dentro da mesa) */
+  livreEm(x: number, z: number) {
+    const [i, j] = this.celula({ x, z });
+    return this.ok(i, j);
+  }
+
   caminho(de: P, para: P): P[] {
     const [si, sj] = this.soltar(de);
     const [gi, gj] = this.soltar(para);

@@ -262,22 +262,34 @@ export function cartaz(linhas: string[], fundo = '#f4f0e6', cor = '#1b1b1b', w =
 export function telaJanela(site: 'alfa' | 'bravo') {
   return criar(512, 256, (g, w, h, t) => {
     if (site === 'alfa') {
+      // Curitiba de noite: céu de chumbo, prédios com janelas acesas e garoa eterna
       const c = g.createLinearGradient(0, 0, 0, h);
-      c.addColorStop(0, '#8d97a3');
-      c.addColorStop(1, '#b8bec4');
+      c.addColorStop(0, '#0b1020');
+      c.addColorStop(1, '#27304a');
       g.fillStyle = c;
       g.fillRect(0, 0, w, h);
-      // prédios no nevoeiro
       const r = semente(3);
-      for (let i = 0; i < 14; i++) {
+      for (let i = 0; i < 18; i++) {
         const x = r() * w;
-        const bw = 25 + r() * 50;
-        const bh = 60 + r() * 140;
-        g.fillStyle = `rgba(80,88,98,${0.25 + r() * 0.3})`;
+        const bw = 26 + r() * 52;
+        const bh = 70 + r() * 150;
+        const perto = r() < 0.5;
+        g.fillStyle = perto ? '#0d1220' : '#161d30';
         g.fillRect(x, h - bh, bw, bh);
+        // janelas acesas (algumas piscam: é o pessoal do turno da noite de outros SOCs)
+        for (let jy = h - bh + 8; jy < h - 6; jy += 10)
+          for (let jx = x + 4; jx < x + bw - 4; jx += 8) {
+            const v = r();
+            if (v < 0.32) {
+              g.fillStyle = v < 0.06 && Math.sin(t * 2 + jx) > 0.6 ? '#7fd8ff' : '#f4d79a';
+              g.globalAlpha = perto ? 0.85 : 0.5;
+              g.fillRect(jx, jy, 3, 4);
+            }
+          }
+        g.globalAlpha = 1;
       }
       // garoa
-      g.strokeStyle = 'rgba(255,255,255,0.35)';
+      g.strokeStyle = 'rgba(190,210,255,0.25)';
       const rr = semente(Math.floor(t * 10));
       for (let i = 0; i < 90; i++) {
         const x = rr() * w;

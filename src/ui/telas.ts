@@ -16,19 +16,74 @@ function camada(html: string, cls = 'veu'): HTMLElement {
   return d;
 }
 
+// linhas de log que aparecem sendo "digitadas" na primeira página
+const LOG_ABERTURA = [
+  '07:00:00  olhovivo-soc-alfa  EventID=4624 LogonType=2  usuario=voce  resultado=SUCESSO',
+  '07:00:01  vigia-siem         fila=412 alertas  falso_positivo=71%  cafe=0',
+  '07:00:02  sentinela-edr      host=NB-SOC-15  cadeira=rasgada  severidade=baixa',
+  '07:00:03  chamadao           status=FORA_DO_AR  motivo="é segunda-feira"',
+  '07:00:04  gilmar             "abriu ticket? então não aconteceu."',
+  '07:00:05  telefone           origem=Dr. Leoncio  horario=03:12  tentativas=7',
+  '07:00:06  vigia-siem         regra=NOVO_ANALISTA_NA_FILA  disparou=1  confianca=alta',
+];
+
+const TICKER = [
+  'Mimikatz detectado (era o antivírus)',
+  'Viagem impossível: Curitiba → Orlando em 4 min (era a VPN)',
+  'Força bruta na Tabajara (era a impressora de 2009)',
+  'Túnel DNS suspeito (era o Spotify)',
+  'Dr. Leôncio clicou em "veja sua multa"',
+  'MFA aprovado na 21ª notificação',
+  'Thiaguinho fechou 400 alertas em lote',
+  'Cafeteira ligada no nobreak',
+  'Dias sem incidente: 0',
+];
+
+/** primeira página: a pessoa "classifica" o próprio alerta de chegada */
 export function menuInicial(temSave: boolean, diaSave: number): Promise<'novo' | 'continuar'> {
   return new Promise((res) => {
     const d = camada(
-      `<h1 class="logo">SOC<i>orro</i></h1>
-      <p class="slogan">90 dias dentro de um SOC de verdade. Falso positivo, café, cliente ligando às 3h e um curso completo de operações de segurança disfarçado de jogo.</p>
-      <div class="acoes">
-        ${temSave ? `<button class="bt" data-r="continuar">Continuar (dia ${diaSave})</button>` : ''}
-        <button class="bt ${temSave ? 'sec' : ''}" data-r="novo">${temSave ? 'Começar outra carreira' : 'Bater o primeiro ponto'}</button>
-        <button class="bt sec" data-r="como">Como se joga</button>
-      </div>
-      <div class="rodape">Olho Vivo Segurança Gerenciada Ltda. é fictícia, assim como todos os clientes, IPs e tragédias. Powered by Mariana BS · <a href="https://github.com/marianabsctba/SOCorro" target="_blank" rel="noopener">código</a></div>`,
+      `<div class="abertura">
+        <div class="ab-alerta">
+          <div class="ab-faixa"><span class="ab-pisca"></span>Alerta #000001 · crítico · Vigia SIEM · SOC Alfa</div>
+          <div class="ab-corpo">
+            <div class="ab-meta"><span>regra: NOVO_ANALISTA_NA_FILA</span><span>ATT&amp;CK: TA0001 (você entrou)</span><span>cliente: todos</span></div>
+            <h1 class="ab-titulo">SOC<i>orro</i></h1>
+            <p class="ab-sub">90 dias num SOC de verdade. Falso positivo, café queimado, cliente ligando às 3h e um curso completo de operações de segurança escondido dentro de um jogo.</p>
+            <pre class="ab-log" aria-hidden="true"></pre>
+            <div class="ab-pergunta">Classifique este alerta:</div>
+            <div class="ab-acoes">
+              ${temSave ? `<button class="ab-bt ab-tp" data-r="continuar"><b>Verdadeiro positivo</b><span>voltar ao turno do dia ${diaSave}</span></button>` : ''}
+              <button class="ab-bt ${temSave ? 'ab-bp' : 'ab-tp'}" data-r="novo"><b>${temSave ? 'Benigno' : 'Verdadeiro positivo'}</b><span>${temSave ? 'apagar tudo e começar outra carreira' : 'assumir o turno e bater o primeiro ponto'}</span></button>
+              <button class="ab-bt ab-fp" data-r="como"><b>Falso positivo</b><span>preciso ler o playbook antes (como se joga)</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="ab-ticker"><div class="ab-rolo">${[...TICKER, ...TICKER].map((t) => `<span>⚠ ${t}</span>`).join('')}</div></div>
+        <div class="ab-assina">
+          <span class="ab-powered">Powered by <b>Mariana BS</b></span>
+          <span class="ab-aviso">Olho Vivo Segurança Gerenciada é fictícia, assim como clientes, IPs e tragédias · <a href="https://github.com/marianabsctba/SOCorro" target="_blank" rel="noopener">código</a></span>
+        </div>
+      </div>`,
       'menu',
     );
+    // o log vai sendo escrito, linha a linha, como um SIEM ao vivo
+    const pre = d.querySelector('.ab-log') as HTMLElement;
+    let linha = 0;
+    let col = 0;
+    const tique = window.setInterval(() => {
+      if (!d.isConnected || linha >= LOG_ABERTURA.length) {
+        clearInterval(tique);
+        return;
+      }
+      col += 3;
+      const feitas = LOG_ABERTURA.slice(0, linha).join('\n');
+      pre.textContent = (feitas ? feitas + '\n' : '') + LOG_ABERTURA[linha].slice(0, col) + '▌';
+      if (col >= LOG_ABERTURA[linha].length) {
+        linha++;
+        col = 0;
+      }
+    }, 28);
     d.querySelectorAll<HTMLElement>('[data-r]').forEach((b) =>
       b.addEventListener('click', async () => {
         Som.clique();
@@ -38,6 +93,7 @@ export function menuInicial(temSave: boolean, diaSave: number): Promise<'novo' |
           return;
         }
         if (r === 'novo' && temSave && !confirm('Começar de novo apaga a carreira salva. Tem certeza?')) return;
+        clearInterval(tique);
         d.remove();
         res(r as 'novo' | 'continuar');
       }),

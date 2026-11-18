@@ -151,7 +151,7 @@ export function modeloDe(id: string): string {
 }
 
 const CLIPE: Record<string, string> = {
-  parado: 'Idle_Loop', falando: 'Idle_Talking_Loop', andando: 'Walk_Loop', correndo: 'Jog_Fwd_Loop', feitico: 'Spell_Simple_Idle_Loop',
+  parado: 'Idle_Loop', falando: 'Idle_Talking_Loop', andando: 'Walk_Formal_Loop', correndo: 'Jog_Fwd_Loop', feitico: 'Spell_Simple_Idle_Loop',
   apanhando: 'Hit_Head', mexendo: 'Interact', comemorando: 'Dance_Loop', formal: 'Walk_Formal_Loop',
   sentado: 'Sitting_Idle_Loop', sentado_falando: 'Sitting_Talking_Loop',
 };
@@ -307,7 +307,8 @@ export class Humano {
   }
 
   /** em pé e parado: braços soltos ao lado do corpo, cotovelo pouco dobrado (a animação parada da biblioteca tem postura de luta) */
-  private bracosRelaxados(peso: number) {
+  /** balanco: quanto cada braço vai para a frente (+) ou para trás (-) enquanto anda */
+  private bracosRelaxados(peso: number, balanco?: Record<string, number>) {
     const r = this.raiz;
     r.updateMatrixWorld(true);
     const frente = V3.set(Math.sin(r.rotation.y), 0, Math.cos(r.rotation.y));
@@ -322,9 +323,11 @@ export class Humano {
       fora.y = 0;
       fora.normalize();
       // braço um pouco afastado do tronco: colado demais, o paletó repuxa e faz corcova no ombro
-      const braco = V6.set(0, -1, 0).multiplyScalar(0.94).addScaledVector(fora, RELAX.fora).addScaledVector(frente, 0.07).normalize();
+      const bal = balanco?.[lado] ?? 0;
+      const braco = V6.set(0, -1, 0).multiplyScalar(0.94).addScaledVector(fora, RELAX.fora * (balanco ? 0.6 : 1)).addScaledVector(frente, 0.07 + bal * 0.42).normalize();
       this.alinhar(ombro, cot, braco, peso);
-      const ante = V7.copy(braco).multiplyScalar(0.96).addScaledVector(frente, RELAX.cotovelo).normalize();
+      // andando, o cotovelo dobra mais quando o braço vai à frente (como gente de verdade)
+      const ante = V7.copy(braco).multiplyScalar(0.96).addScaledVector(frente, RELAX.cotovelo + (balanco ? 0.12 + Math.max(0, bal) * 0.35 : 0)).normalize();
       this.alinhar(cot, mao, ante, peso);
       if (dedo) this.alinhar(mao, dedo, V8.copy(ante).addScaledVector(fora, -0.15).normalize(), peso);
       // palma virada para a coxa e polegar para a frente (sem isso a palma ficava para a frente, feito garra)
@@ -344,6 +347,38 @@ export class Humano {
         mao.updateMatrixWorld(true);
       }
     }
+  }
+
+  /** coluna e pescoço de pé (a caminhada da biblioteca anda curvada, com a cabeça projetada) */
+  private endireitar(peso: number) {
+    const r = this.raiz;
+    r.updateMatrixWorld(true);
+    const cima = new THREE.Vector3(0, 1, 0);
+    const frente = new THREE.Vector3(Math.sin(r.rotation.y), 0, Math.cos(r.rotation.y));
+    const cadeia: [string, string, number][] = [
+      ['spine_01', 'spine_02', 0.6],
+      ['spine_02', 'spine_03', 0.7],
+      ['spine_03', 'neck_01', 0.8],
+      ['neck_01', 'head', 0.9],
+    ];
+    for (const [a, b, k] of cadeia) {
+      const o = r.getObjectByName(a);
+      const f = r.getObjectByName(b);
+      // levemente para a frente, como quem anda olhando o caminho, nunca para trás
+      if (o && f) this.alinhar(o, f, cima.clone().addScaledVector(frente, 0.04).normalize(), peso * k);
+    }
+  }
+
+  /** fase do passo medida nos pés: braço esquerdo vai à frente quando o pé direito está à frente */
+  private balancoPasso(): Record<string, number> {
+    const r = this.raiz;
+    const pe = (l: string) => r.getObjectByName('foot_' + l)?.getWorldPosition(new THREE.Vector3());
+    const pl = pe('l');
+    const pr = pe('r');
+    if (!pl || !pr) return { l: 0, r: 0 };
+    const frente = new THREE.Vector3(Math.sin(r.rotation.y), 0, Math.cos(r.rotation.y));
+    const d = Math.max(-1, Math.min(1, pr.sub(pl).dot(frente) / 0.45));
+    return { l: d, r: -d };
   }
 
   /** mão relaxada: dedos levemente dobrados para dentro */
@@ -735,9 +770,11 @@ export class Humano {
       if (andando || ['parado', 'falando', 'feitico', 'apanhando', 'mexendo', 'comemorando', 'sentado', 'sentado_falando'].includes(est)) this.tocarSemMudarEstado(est);
       this.mixer.update(dt);
       // parado: braços soltos; falando: só suaviza o gesto
-      const alvo = this.sentado ? 0 : est === 'parado' ? RELAX.parado : est === 'falando' ? RELAX.falando : 0;
+      // a caminhada da biblioteca joga os braços para trás e dobra o punho: andando, o braço é nosso
+      const alvo = this.sentado ? 0 : andando ? 1 : est === 'parado' ? RELAX.parado : est === 'falando' ? RELAX.falando : 0;
       this.pesoRelax += (alvo - this.pesoRelax) * Math.min(1, dt * 4);
-      if (this.pesoRelax > 0.01) this.bracosRelaxados(this.pesoRelax);
+      if (andando) this.endireitar(0.75);
+      if (this.pesoRelax > 0.01) this.bracosRelaxados(this.pesoRelax, andando ? this.balancoPasso() : undefined);
       if (!andando) {
         this.tiquesParado(dt);
         this.aplicarGesto(dt);

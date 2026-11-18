@@ -178,7 +178,63 @@ export class Equipe {
     m.fazendo = 'em_pe';
   }
 
-  atualizar(dt: number) {
+  /**
+   * ninguém atravessa ninguém: quem está em pé e perto demais de outra pessoa (ou de quem joga)
+   * é empurrado para o lado, devagar, sem cair dentro de móvel; quem está sentado não sai do lugar
+   */
+  private desviar(dt: number, jogador?: { x: number; z: number }) {
+    const R = 0.62;
+    const lista = [...this.membros.values()];
+    const empurra = (m: Membro, dx: number, dz: number) => {
+      const p = m.h.raiz.position;
+      const nx = p.x + dx;
+      const nz = p.z + dz;
+      if (this.nav.livreEm(nx, nz)) {
+        p.x = nx;
+        p.z = nz;
+      } else if (this.nav.livreEm(nx, p.z)) p.x = nx;
+      else if (this.nav.livreEm(p.x, nz)) p.z = nz;
+    };
+    const k = Math.min(1, dt * 6);
+    for (let i = 0; i < lista.length; i++) {
+      const a = lista[i];
+      const pa = a.h.raiz.position;
+      const aFixo = a.h.sentado;
+      if (jogador && !aFixo) {
+        const dx = pa.x - jogador.x;
+        const dz = pa.z - jogador.z;
+        const d = Math.hypot(dx, dz);
+        if (d < R && d > 1e-4) empurra(a, (dx / d) * (R - d) * k, (dz / d) * (R - d) * k);
+      }
+      for (let j = i + 1; j < lista.length; j++) {
+        const b = lista[j];
+        const bFixo = b.h.sentado;
+        if (aFixo && bFixo) continue;
+        const pb = b.h.raiz.position;
+        let dx = pa.x - pb.x;
+        let dz = pa.z - pb.z;
+        let d = Math.hypot(dx, dz);
+        if (d >= R) continue;
+        if (d < 1e-4) {
+          dx = 1;
+          dz = 0;
+          d = 1;
+        }
+        // de frente um para o outro: além de afastar, cada um puxa um pouco para a sua direita
+        const lado = 0.35;
+        const ux = dx / d;
+        const uz = dz / d;
+        const sobra = (R - d) * k;
+        const fa = aFixo ? 0 : bFixo ? 1 : 0.5;
+        const fb = bFixo ? 0 : aFixo ? 1 : 0.5;
+        if (fa) empurra(a, (ux - uz * lado) * sobra * fa, (uz + ux * lado) * sobra * fa);
+        if (fb) empurra(b, (-ux + uz * lado) * sobra * fb, (-uz - ux * lado) * sobra * fb);
+      }
+    }
+  }
+
+  atualizar(dt: number, jogador?: { x: number; z: number }) {
+    this.desviar(dt, jogador);
     for (const m of this.membros.values()) {
       m.h.update(dt);
       if (m.ocupado) continue;
