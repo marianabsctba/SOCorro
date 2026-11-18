@@ -27,7 +27,7 @@ Guia de tom, mundo e elenco para quem escreve conteúdo. O contrato técnico est
 ### Clientes (ids em `ClienteId`)
 
 - `tabajara`: **Tabajara Seguros S.A.**, seguradora de Curitiba. Impressora de 2009, estagiária que saiu de lá (piada interna com o jogo Crachá Provisório), RH que manda planilha com CPF por e-mail.
-- `prefeitura`: **Prefeitura de Itaquaquecetuba do Norte**. Windows 7 no protocolo, vereador que posta tudo no Instagram, senha `Prefeitura@2019` reaproveitada.
+- `prefeitura`: **Prefeitura de Pindaíba do Sul**. Windows 7 no protocolo, vereador que posta tudo no Instagram, senha `Prefeitura@2019` reaproveitada.
 - `hospital`: **Hospital São Judas Tadeu das Causas Perdidas**. Equipamento médico que não pode reiniciar, plantão 24h, prontuário que não pode parar. Alvo do ransomware no ato 3.
 - `cooperativa`: **Cooperativa Agro Boi Gordo**, interior do Paraná. Diretor Dr. Leôncio, que clica em tudo, liga às 3h e transfere R$ 380 mil num golpe de BEC.
 - `padaria`: **Padaria Pão de Ló Digital**, rede de padarias com e-commerce. Tem EDR e não tem backup. Black Friday do sonho.

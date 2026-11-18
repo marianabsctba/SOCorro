@@ -20,7 +20,7 @@ export interface AlertaFila {
 const CLIENTES: ClienteId[] = ['tabajara', 'prefeitura', 'hospital', 'cooperativa', 'padaria', 'olhovivo'];
 export const NOME_CLIENTE: Record<ClienteId, string> = {
   tabajara: 'Tabajara Seguros',
-  prefeitura: 'Prefeitura de Itaquaquecetuba do Norte',
+  prefeitura: 'Prefeitura de Pindaíba do Sul',
   hospital: 'Hospital São Judas Tadeu',
   cooperativa: 'Cooperativa Agro Boi Gordo',
   padaria: 'Padaria Pão de Ló Digital',

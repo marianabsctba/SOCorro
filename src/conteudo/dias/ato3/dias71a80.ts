@@ -424,7 +424,7 @@ export const DIAS_71_80: Dia[] = [
       'A Olho Vivo, como operadora, apoia com fatos: quais campos vazaram, quantos registros, desde quando, se o acesso foi encerrado. A decisão de comunicar e o texto final são do controlador, a prefeitura, com o encarregado e o jurídico.',
     ].join('\n\n'),
     chegada: [
-      { quem: 'pamela', texto: 'Achei a planilha do IPTU de Itaquaquecetuba do Norte num site de vazamentos. 41 mil linhas: nome, CPF, endereço e valor do imposto.', gesto: 'apontar', expr: 'triste' },
+      { quem: 'pamela', texto: 'Achei a planilha do IPTU de Pindaíba do Sul num site de vazamentos. 41 mil linhas: nome, CPF, endereço e valor do imposto.', gesto: 'apontar', expr: 'triste' },
       { quem: 'ro', texto: 'A planilha tinha senha?' },
       { quem: 'pamela', texto: 'Tinha. Prefeitura@2019.', expr: 'neutro' },
       { quem: 'ro', texto: 'Claro que tinha. A senha mais famosa do Paraná.', gesto: 'cruzar' },

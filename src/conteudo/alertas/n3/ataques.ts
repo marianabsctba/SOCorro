@@ -47,7 +47,7 @@ export const N3_TP: ModeloAlerta[] = [
     mitre: 'T1486',
     titulo: 'Mesmo arquivo de texto criado em 900 pastas de {host}',
     logs: [
-      '{data} {hora} {host} Sysmon 11 | TargetFilename=C:\\Users\\Public\\Documents\\COMO_RECUPERAR_ITAQUA.txt | Image=C:\\ProgramData\\vmtoolsd.exe',
+      '{data} {hora} {host} Sysmon 11 | TargetFilename=C:\\Users\\Public\\Documents\\COMO_RECUPERAR_PINDAIBA.txt | Image=C:\\ProgramData\\vmtoolsd.exe',
       '{data} {hora} +40s {host} Sentinela EDR | o mesmo nome de arquivo criado em 900 pastas, mesmo hash | processo pai sem assinatura, nome imitando ferramenta de virtualização',
       '{data} {hora} +1m {host} EventID=7036 | serviços de banco de dados e de backup parados em sequência',
     ],

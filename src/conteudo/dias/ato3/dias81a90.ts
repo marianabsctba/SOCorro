@@ -313,7 +313,7 @@ export const DIAS_81_90: Dia[] = [
         receita: ['hex', 'xor:90'],
         pergunta: 'Qual é o domínio do C2 na configuração?',
         resposta: 'painel-iptu-cobranca.top',
-        explicacao: 'Primeiro transforme o texto hexadecimal em bytes, depois faça XOR de cada byte com 90 (0x5A). Sai a configuração: C2 `painel-iptu-cobranca.top` na porta 8443, beacon de 300 segundos com 15% de jitter, campanha NORTE-IPTU. O domínio vai para bloqueio e para hunting em todos os clientes, e o nome da campanha acende uma luz: IPTU, norte... a Prefeitura de Itaquaquecetuba do Norte precisa ser avisada.',
+        explicacao: 'Primeiro transforme o texto hexadecimal em bytes, depois faça XOR de cada byte com 90 (0x5A). Sai a configuração: C2 `painel-iptu-cobranca.top` na porta 8443, beacon de 300 segundos com 15% de jitter, campanha NORTE-IPTU. O domínio vai para bloqueio e para hunting em todos os clientes, e o nome da campanha acende uma luz: IPTU, norte... a Prefeitura de Pindaíba do Sul precisa ser avisada.',
       },
     ],
     saida: [
@@ -336,7 +336,7 @@ export const DIAS_81_90: Dia[] = [
       'Achou a conta comprometida? Derrube a sessão de VPN, desabilite a conta, veja o que ela acessou depois do login (logon tipo 3 e 10 nos servidores, compartilhamentos, exfiltração) e procure a mesma quadrilha nos outros clientes. Neste caso, temos até o nome da campanha.',
     ].join('\n\n'),
     chegada: [
-      { quem: 'chat', texto: 'Prefeitura de Itaquaquecetuba do Norte: "o sistema de tributos está lento e apareceu uma sessão de VPN de alguém que está de férias".' },
+      { quem: 'chat', texto: 'Prefeitura de Pindaíba do Sul: "o sistema de tributos está lento e apareceu uma sessão de VPN de alguém que está de férias".' },
       { quem: 'vandeco', texto: 'Eu falei. NORTE-IPTU. Eles voltaram para o lugar onde foram bem recebidos.', gesto: 'apontar', expr: 'bravo' },
       { quem: 'ro', texto: 'Aposto um café que a senha é Prefeitura@ mais o ano atual. Eles atualizaram a senha. Só o ano.', gesto: 'cruzar' },
       { quem: 'gilmar', texto: 'Timer ligado. E já liguei para a Dona Socorro: o Bravo entra junto se precisar de contenção coordenada.', gesto: 'sim' },

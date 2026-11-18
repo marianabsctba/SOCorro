@@ -56,7 +56,7 @@ function semente(n: number) {
 
 const SEV = ['#3fb59f', '#e0b23c', '#e8772e', '#d64545'];
 const REGRAS = ['Falha de logon em massa', 'PowerShell codificado', 'Viagem impossível', 'Mimikatz detectado', 'DNS suspeito', 'Acesso a categoria proibida', 'Varredura de portas', 'Macro do Office', 'MFA negado repetido', 'Regra de caixa de entrada', 'Conexão para país de risco', 'Arquivo em quarentena', 'Logon fora do horário', 'Certificado vencido', 'Scanner não autorizado'];
-const CLIENTES = ['TABAJARA', 'PREF. ITAQUÁ N.', 'HOSP. S. JUDAS', 'COOP. BOI GORDO', 'PÃO DE LÓ', 'OLHO VIVO'];
+const CLIENTES = ['TABAJARA', 'PREF. PINDAÍBA', 'HOSP. S. JUDAS', 'COOP. BOI GORDO', 'PÃO DE LÓ', 'OLHO VIVO'];
 
 /** monitor do analista: lista de alertas do Vigia rolando */
 export function telaSiem(var_: number) {

@@ -274,7 +274,7 @@ export function registrosDia80(): Registro[] {
 }
 
 // ---------------------------------------------------------------------------
-// Dia 87: a quadrilha volta na VPN da Prefeitura de Itaquaquecetuba do Norte
+// Dia 87: a quadrilha volta na VPN da Prefeitura de Pindaíba do Sul
 // ---------------------------------------------------------------------------
 export function registrosDia87(): Registro[] {
   const r = rng(8706);
